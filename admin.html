@@ -4,7 +4,6 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>
@@ -19,16 +18,31 @@ box-sizing:border-box;
 font-family:Tahoma,Arial;
 }
 
+
 body{
 
 margin:0;
-
 background:#f1f5f9;
 
 }
 
 
-.header{
+/* Layout */
+
+.app{
+
+display:flex;
+min-height:100vh;
+
+}
+
+
+
+/* Sidebar */
+
+.sidebar{
+
+width:260px;
 
 background:#1e3a8a;
 
@@ -36,27 +50,105 @@ color:white;
 
 padding:20px;
 
+}
+
+
+
+.sidebar h2{
+
+text-align:center;
+
+margin-bottom:30px;
+
+}
+
+
+
+.sidebar button{
+
+width:100%;
+
+padding:14px;
+
+margin-bottom:10px;
+
+background:transparent;
+
+color:white;
+
+border:0;
+
+border-radius:8px;
+
+text-align:right;
+
+cursor:pointer;
+
+font-size:15px;
+
+}
+
+
+
+.sidebar button:hover{
+
+background:#2563eb;
+
+}
+
+
+
+/* Main */
+
+.main{
+
+flex:1;
+
+padding:25px;
+
+}
+
+
+
+.header{
+
+background:white;
+
+padding:20px;
+
+border-radius:15px;
+
+margin-bottom:20px;
+
 display:flex;
 
 justify-content:space-between;
 
 align-items:center;
 
-}
-
-
-.header h1{
-
-margin:0;
-
-font-size:24px;
+box-shadow:0 5px 15px #ddd;
 
 }
 
 
-.container{
 
-padding:25px;
+.logout{
+
+background:#dc2626!important;
+
+}
+
+
+
+/* Cards */
+
+.cards{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+
+gap:20px;
 
 }
 
@@ -66,169 +158,42 @@ padding:25px;
 
 background:white;
 
+padding:25px;
+
+border-radius:15px;
+
+box-shadow:0 5px 15px #ddd;
+
+text-align:center;
+
+}
+
+
+
+.card h3{
+
+color:#1e3a8a;
+
+}
+
+
+
+#content{
+
+background:white;
+
 border-radius:15px;
 
 padding:25px;
 
-margin-bottom:20px;
-
-box-shadow:0 5px 20px rgba(0,0,0,.12);
-
-}
-
-
-
-h2{
-
-color:#1e3a8a;
-
-margin-top:0;
-
-}
-
-
-
-.grid{
-
-display:grid;
-
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-
-gap:15px;
-
-}
-
-
-
-label{
-
-font-weight:bold;
-
-display:block;
-
-margin-bottom:6px;
-
-}
-
-
-
-input,select{
-
-width:100%;
-
-padding:12px;
-
-border:1px solid #cbd5e1;
-
-border-radius:8px;
-
-font-size:15px;
-
-}
-
-
-
-button{
-
-border:0;
-
-padding:12px 20px;
-
-border-radius:8px;
-
-cursor:pointer;
-
-font-weight:bold;
-
-}
-
-
-
-.primary{
-
-background:#2563eb;
-
-color:white;
-
-width:100%;
-
-}
-
-
-
-.logout{
-
-background:#dc2626;
-
-color:white;
-
-}
-
-
-
-table{
-
-width:100%;
-
-border-collapse:collapse;
-
-margin-top:15px;
-
-}
-
-
-
-th{
-
-background:#1e3a8a;
-
-color:white;
-
-padding:12px;
-
-}
-
-
-
-td{
-
-padding:12px;
-
-text-align:center;
-
-border-bottom:1px solid #ddd;
-
-}
-
-
-
-.message{
-
-margin-top:15px;
-
-font-weight:bold;
-
-}
-
-
-
-.success{
-
-color:green;
-
-}
-
-
-
-.error{
-
-color:red;
+min-height:400px;
 
 }
 
 
 
 </style>
+
 
 </head>
 
@@ -237,21 +202,64 @@ color:red;
 
 
 
-<div class="header">
+<div class="app">
 
 
-<h1>
-🏫 UCA School Management System
-</h1>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+
+<h2>
+🏫 UCA
+</h2>
+
+
+
+<button onclick="loadPage('dashboard')">
+🏠 الرئيسية
+</button>
+
+
+<button onclick="loadPage('users')">
+👥 إدارة المستخدمين
+</button>
+
+
+
+<button onclick="loadPage('plans')">
+📂 الخطط الدراسية
+</button>
+
+
+
+<button onclick="loadPage('distribution')">
+📅 توزيع الأسابيع
+</button>
+
+
+
+<button onclick="loadPage('reports')">
+📊 التقارير
+</button>
+
+
+
+<button onclick="loadPage('settings')">
+⚙ الإعدادات
+</button>
+
 
 
 <button class="logout" id="logoutBtn">
 
-تسجيل الخروج
+🚪 تسجيل الخروج
 
 </button>
 
 
+
 </div>
 
 
@@ -259,38 +267,22 @@ color:red;
 
 
 
-<div class="container">
+<!-- Main -->
+
+<div class="main">
 
 
 
-<div class="card">
+<div class="header">
 
+
+<div>
 
 <h2>
-بيانات المدير
+لوحة المدير
 </h2>
 
-
-<div class="grid">
-
-
-<div>
-الاسم:
-<strong id="adminName"></strong>
-</div>
-
-
-<div>
-البريد:
-<strong id="adminEmail"></strong>
-</div>
-
-
-<div>
-الدور:
-<strong id="adminRole"></strong>
-</div>
-
+<span id="adminInfo"></span>
 
 </div>
 
@@ -300,188 +292,18 @@ color:red;
 
 
 
-
-
-
-<div class="card">
-
-
-<h2>
-إضافة مستخدم جديد
-</h2>
-
-
-
-<div class="grid">
-
-
-<div>
-
-<label>
-الاسم
-</label>
-
-<input id="newName">
-
-</div>
-
-
-
-<div>
-
-<label>
-البريد الإلكتروني
-</label>
-
-<input id="newEmail" type="email">
-
-</div>
-
-
-
-<div>
-
-<label>
-كلمة المرور
-</label>
-
-<input id="newPassword" type="password">
-
-</div>
-
-
-
-<div>
-
-<label>
-الدور
-</label>
-
-
-<select id="newRole">
-
-
-<option value="Teacher">
-معلم
-</option>
-
-
-<option value="Head">
-رئيس قسم
-</option>
-
-
-<option value="Coordinator">
-منسق
-</option>
-
-
-<option value="StageManager">
-مدير مرحلة
-</option>
-
-
-<option value="Viewer">
-مشاهد
-</option>
-
-
-<option value="Manager">
-مدير
-</option>
-
-
-</select>
-
-
-</div>
+<div id="content">
 
 
 </div>
 
 
 
-<br>
-
-
-<button class="primary" id="createUserBtn">
-
-إنشاء المستخدم
-
-</button>
-
-
-
-<div id="message" class="message"></div>
-
-
 </div>
 
 
 
-
-
-
-
-
-<div class="card">
-
-
-<h2>
-قائمة المستخدمين
-</h2>
-
-
-<table>
-
-
-<thead>
-
-<tr>
-
-<th>
-الاسم
-</th>
-
-
-<th>
-البريد
-</th>
-
-
-<th>
-الدور
-</th>
-
-
-<th>
-الحالة
-</th>
-
-
-</tr>
-
-</thead>
-
-
-<tbody id="usersTable">
-
-
-</tbody>
-
-
-</table>
-
-
 </div>
-
-
-
-
-
-
-</div>
-
 
 
 
@@ -499,9 +321,7 @@ protectPage,
 
 currentUser,
 
-logout,
-
-createUser
+logout
 
 }
 
@@ -509,33 +329,7 @@ from "./auth.js";
 
 
 
-import {
-
-db
-
-}
-
-from "./firebase-config.js";
-
-
-
-import {
-
-ref,
-
-get
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-
-
-
-
-
-// حماية الصفحة
-
+// حماية المدير فقط
 
 protectPage([
 
@@ -547,32 +341,20 @@ protectPage([
 
 
 
+const user=currentUser();
 
 
-const admin =
-currentUser();
+if(user){
 
 
+adminInfo.innerHTML=
 
-if(admin){
-
-
-adminName.textContent =
-admin.name || "-";
-
-
-adminEmail.textContent =
-admin.email || "-";
-
-
-adminRole.textContent =
-admin.role || "-";
-
+`
+${user.name || ""}<br>
+${user.email}
+`;
 
 }
-
-
-
 
 
 
@@ -590,89 +372,203 @@ logout();
 
 
 
-
-
-async function loadUsers(){
-
-
-const snapshot =
-await get(
-ref(db,"users")
-);
+window.loadPage=function(page){
 
 
 
-usersTable.innerHTML="";
+const content=
+document.getElementById("content");
 
 
 
-if(!snapshot.exists()){
-
-
-usersTable.innerHTML=
-
-`
-<tr>
-<td colspan="4">
-لا يوجد مستخدمون
-</td>
-</tr>
-`;
-
-return;
-
-}
+switch(page){
 
 
 
-const users =
-snapshot.val();
+case "dashboard":
+
+
+content.innerHTML=`
+
+<h2>
+الرئيسية
+</h2>
+
+
+<div class="cards">
+
+
+<div class="card">
+
+<h3>
+المستخدمون
+</h3>
+
+<p>
+إدارة المستخدمين والصلاحيات
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+الخطط
+</h3>
+
+<p>
+رفع وتوزيع الخطط
+</p>
+
+</div>
 
 
 
+<div class="card">
+
+<h3>
+التقارير
+</h3>
+
+<p>
+تقارير النظام
+</p>
+
+</div>
 
 
-Object.keys(users).forEach(uid=>{
-
-
-const u =
-users[uid];
-
-
-
-usersTable.innerHTML +=
-
-
-`
-
-<tr>
-
-<td>
-${u.name || ""}
-</td>
-
-
-<td>
-${u.email || ""}
-</td>
-
-
-<td>
-${u.role || ""}
-</td>
-
-
-<td>
-${u.active ? "فعال":"موقوف"}
-</td>
-
-
-</tr>
+</div>
 
 `;
 
+break;
 
-});
+
+
+
+
+case "users":
+
+
+content.innerHTML=`
+
+<h2>
+إدارة المستخدمين
+</h2>
+
+<p>
+سيتم إضافة إدارة المستخدمين هنا:
+</p>
+
+<ul>
+
+<li>إضافة مستخدم</li>
+
+<li>تعديل مستخدم</li>
+
+<li>تغيير الدور</li>
+
+<li>تعطيل المستخدم</li>
+
+</ul>
+
+`;
+
+break;
+
+
+
+
+
+
+case "plans":
+
+
+content.innerHTML=`
+
+<h2>
+إدارة الخطط
+</h2>
+
+<p>
+رفع ملفات الخطط وتعديلها
+</p>
+
+`;
+
+break;
+
+
+
+
+
+
+case "distribution":
+
+
+content.innerHTML=`
+
+<h2>
+توزيع الأسابيع
+</h2>
+
+<p>
+توزيع الأهداف على الأسابيع والفصول
+</p>
+
+`;
+
+break;
+
+
+
+
+
+
+
+case "reports":
+
+
+content.innerHTML=`
+
+<h2>
+التقارير
+</h2>
+
+<p>
+تقارير الأداء والإنجاز
+</p>
+
+`;
+
+break;
+
+
+
+
+
+
+
+case "settings":
+
+
+content.innerHTML=`
+
+<h2>
+الإعدادات
+</h2>
+
+<p>
+إعدادات السنة الدراسية والفصول
+</p>
+
+`;
+
+break;
+
+
+}
 
 
 
@@ -682,74 +578,9 @@ ${u.active ? "فعال":"موقوف"}
 
 
 
-loadUsers();
+// الصفحة الافتراضية
 
-
-
-
-
-
-
-
-
-createUserBtn.onclick =
-async()=>{
-
-
-message.className="message";
-
-
-try{
-
-
-await createUser({
-
-name:newName.value.trim(),
-
-email:newEmail.value.trim(),
-
-password:newPassword.value,
-
-role:newRole.value
-
-
-});
-
-
-
-message.className="message success";
-
-message.innerHTML =
-"تم إنشاء المستخدم بنجاح";
-
-
-
-newName.value="";
-newEmail.value="";
-newPassword.value="";
-
-
-
-loadUsers();
-
-
-}
-
-catch(error){
-
-
-message.className="message error";
-
-message.innerHTML =
-error.message;
-
-
-}
-
-
-
-};
-
+loadPage("dashboard");
 
 
 

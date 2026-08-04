@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+السنوات والفصول
+</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+
+<body>
+
+
+<div class="app">
+
+
+<aside class="sidebar">
+
+
+<h2>
+🏫 UCA
+</h2>
+
+
+<button onclick="backAdmin()">
+
+⬅ لوحة المدير
+
+</button>
+
+
+<button id="logoutBtn">
+
+🚪 خروج
+
+</button>
+
+
+</aside>
+
+
+
+
+
+
+<main class="main">
+
+
+<header class="header">
+
+<h2>
+إدارة السنوات والفصول الدراسية
+</h2>
+
+</header>
+
+
+
+
+
+<section class="content">
+
+
+
+<div class="card">
+
+
+<h3>
+إضافة سنة دراسية
+</h3>
+
+
+<input id="yearName"
+placeholder="مثال: 2026-2027">
+
+
+<button id="addYear"
+class="btn btn-primary">
+
+إضافة السنة
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h3>
+السنوات الدراسية
+
+</h3>
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+السنة
+</th>
+
+<th>
+الحالة
+</th>
+
+<th>
+إجراء
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="yearsTable">
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h3>
+الفصول الدراسية
+
+</h3>
+
+
+<button id="addSemester"
+class="btn btn-success">
+
+إضافة فصل
+
+</button>
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+الفصل
+</th>
+
+<th>
+الحالة
+</th>
+
+<th>
+إجراء
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="semesterTable">
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+</section>
+
+
+
+</main>
+
+
+</div>
+
+
+
+<script type="module" src="academic_years.js"></script>
+
+
+</body>
+
+
+</html>

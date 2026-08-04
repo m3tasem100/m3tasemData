@@ -4,252 +4,15 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>UCA Admin Dashboard</title>
+<title>
+UCA Admin Dashboard
+</title>
 
 
-<style>
-
-*{
-box-sizing:border-box;
-font-family:Tahoma,Arial;
-}
-
-
-body{
-
-margin:0;
-background:#f1f5f9;
-
-}
-
-
-.app{
-
-display:flex;
-min-height:100vh;
-
-}
-
-
-.sidebar{
-
-width:260px;
-background:#1e3a8a;
-color:white;
-padding:20px;
-
-}
-
-
-.sidebar h2{
-
-text-align:center;
-margin-bottom:30px;
-
-}
-
-
-.sidebar button{
-
-width:100%;
-padding:14px;
-margin-bottom:10px;
-
-background:transparent;
-border:0;
-border-radius:8px;
-
-color:white;
-cursor:pointer;
-text-align:right;
-
-font-size:15px;
-
-}
-
-
-
-.sidebar button:hover{
-
-background:#2563eb;
-
-}
-
-
-
-.logout{
-
-background:#dc2626!important;
-
-}
-
-
-
-.main{
-
-flex:1;
-padding:25px;
-
-}
-
-
-
-.header{
-
-background:white;
-padding:20px;
-border-radius:15px;
-
-display:flex;
-justify-content:space-between;
-
-margin-bottom:20px;
-
-}
-
-
-
-#content{
-
-background:white;
-padding:25px;
-border-radius:15px;
-
-}
-
-
-
-.card{
-
-background:white;
-padding:20px;
-
-border-radius:15px;
-
-box-shadow:0 5px 15px #ddd;
-
-margin-bottom:20px;
-
-}
-
-
-
-.grid{
-
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-
-gap:15px;
-
-}
-
-
-
-input,select{
-
-width:100%;
-
-padding:12px;
-
-border-radius:8px;
-
-border:1px solid #ccc;
-
-margin-bottom:10px;
-
-}
-
-
-
-button.action{
-
-background:#2563eb;
-color:white;
-
-padding:12px;
-
-border:0;
-
-border-radius:8px;
-
-cursor:pointer;
-
-}
-
-
-
-table{
-
-width:100%;
-border-collapse:collapse;
-
-}
-
-
-
-th{
-
-background:#1e3a8a;
-color:white;
-
-padding:12px;
-
-}
-
-
-td{
-
-padding:10px;
-
-border-bottom:1px solid #ddd;
-
-text-align:center;
-
-}
-
-
-
-.small{
-
-padding:6px 10px;
-border:0;
-border-radius:6px;
-cursor:pointer;
-
-}
-
-
-
-.edit{
-
-background:#f59e0b;
-color:white;
-
-}
-
-
-
-.delete{
-
-background:#dc2626;
-color:white;
-
-}
-
-
-
-.active{
-
-background:#16a34a;
-color:white;
-
-}
-
-
-
-</style>
+<link rel="stylesheet" href="style.css">
 
 
 </head>
@@ -262,48 +25,116 @@ color:white;
 <div class="app">
 
 
-<div class="sidebar">
 
+<!-- ======================
+     SIDEBAR
+======================= -->
+
+
+<aside class="sidebar">
+
+
+<div class="logo">
 
 <h2>
 🏫 UCA
 </h2>
 
+<p>
+School Management
+</p>
+
+</div>
 
 
-<button onclick="loadPage('dashboard')">
+
+
+<button onclick="loadModule('dashboard')">
+
 🏠 الرئيسية
+
 </button>
 
 
 
-<button onclick="loadPage('users')">
-👥 المستخدمون
+
+<button onclick="loadModule('users')">
+
+👥 إدارة المستخدمين
+
 </button>
 
 
 
-<button onclick="loadPage('plans')">
-📂 الخطط
+
+
+<button onclick="loadModule('departments')">
+
+🏢 الأقسام
+
 </button>
 
 
 
-<button onclick="loadPage('distribution')">
+
+
+<button onclick="loadModule('subjects')">
+
+📚 المواد
+
+</button>
+
+
+
+
+
+<button onclick="loadModule('grades')">
+
+🎓 الصفوف والشعب
+
+</button>
+
+
+
+
+
+<button onclick="loadModule('plans')">
+
+📂 الخطط الدراسية
+
+</button>
+
+
+
+
+
+<button onclick="loadModule('distribution')">
+
 📅 توزيع الأسابيع
+
 </button>
 
 
 
-<button onclick="loadPage('reports')">
+
+
+<button onclick="loadModule('reports')">
+
 📊 التقارير
+
 </button>
 
 
 
-<button onclick="loadPage('settings')">
+
+
+<button onclick="loadModule('settings')">
+
 ⚙ الإعدادات
+
 </button>
+
+
 
 
 
@@ -314,296 +145,82 @@ color:white;
 </button>
 
 
-</div>
+
+</aside>
 
 
 
 
 
 
-<div class="main">
 
 
-<div class="header">
+
+
+<!-- ======================
+       MAIN
+======================= -->
+
+
+<main class="main">
+
+
+
+<header class="header">
 
 
 <div>
 
+
 <h2>
+
 لوحة المدير
+
 </h2>
 
 
-<div id="adminInfo"></div>
+<p id="userInfo">
 
-
-</div>
-
-
-</div>
-
-
-
-<div id="content"></div>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<script type="module">
-
-
-import {
-
-protectPage,
-currentUser,
-logout,
-createUser
-
-}
-
-from "./auth.js";
-
-
-
-import {
-
-db
-
-}
-
-from "./firebase-config.js";
-
-
-
-import {
-
-ref,
-get,
-update,
-remove
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-
-
-
-
-protectPage(["Manager"]);
-
-
-
-
-
-
-
-const admin=currentUser();
-
-
-
-if(admin){
-
-
-adminInfo.innerHTML=
-
-`
-${admin.name || ""}
-<br>
-${admin.email}
-`;
-
-}
-
-
-
-
-
-
-
-logoutBtn.onclick=()=>{
-
-logout();
-
-};
-
-
-
-
-
-
-
-
-
-
-window.loadPage=function(page){
-
-
-
-switch(page){
-
-
-
-case "dashboard":
-
-
-content.innerHTML=`
-
-<h2>
-الرئيسية
-</h2>
-
-
-<div class="grid">
-
-
-<div class="card">
-
-<h3>
-المستخدمون
-</h3>
-
-<p>
-إدارة الصلاحيات والحسابات
 </p>
 
-</div>
-
-
-<div class="card">
-
-<h3>
-الخطط
-</h3>
-
-<p>
-إدارة الخطط السنوية
-</p>
 
 </div>
 
 
-<div class="card">
 
-<h3>
-التقارير
-</h3>
 
-<p>
-تقارير النظام
-</p>
+<div>
 
-</div>
+
+<span id="date">
+
+</span>
 
 
 </div>
 
-`;
-
-break;
 
 
+</header>
 
 
 
 
 
-case "users":
 
 
-content.innerHTML=`
-
-<h2>
-👥 إدارة المستخدمين
-</h2>
+<section id="content" class="content">
 
 
-
-<div class="card">
-
-
-<h3>
-إضافة مستخدم
-</h3>
+</section>
 
 
 
-<input id="newName"
-placeholder="الاسم">
+
+</main>
 
 
 
-<input id="newEmail"
-placeholder="البريد الإلكتروني">
-
-
-
-<input id="newPassword"
-type="password"
-placeholder="كلمة المرور">
-
-
-
-<select id="newRole">
-
-
-<option value="Teacher">
-Teacher
-</option>
-
-
-<option value="Head">
-Head
-</option>
-
-
-<option value="Coordinator">
-Coordinator
-</option>
-
-
-<option value="StageManager">
-StageManager
-</option>
-
-
-<option value="Viewer">
-Viewer
-</option>
-
-
-<option value="Manager">
-Manager
-</option>
-
-
-</select>
-
-
-
-<button class="action"
-onclick="createNewUser()">
-
-إنشاء المستخدم
-
-</button>
-
-
-
-<p id="msg"></p>
 
 
 </div>
@@ -613,519 +230,11 @@ onclick="createNewUser()">
 
 
 
-
-
-<div class="card">
-
-
-<h3>
-المستخدمون
-
-</h3>
-
-
-<table>
-
-
-<thead>
-
-<tr>
-
-<th>
-الاسم
-</th>
-
-<th>
-البريد
-</th>
-
-<th>
-الدور
-</th>
-
-<th>
-الحالة
-</th>
-
-<th>
-الإجراءات
-</th>
-
-
-</tr>
-
-</thead>
-
-
-<tbody id="usersTable">
-
-</tbody>
-
-
-</table>
-
-
-</div>
-
-
-`;
-
-
-
-loadUsers();
-
-
-break;
-
-
-
-
-
-
-
-case "plans":
-
-
-content.innerHTML=
-
-`
-
-<h2>
-إدارة الخطط
-</h2>
-
-`;
-
-break;
-
-
-
-
-
-case "distribution":
-
-
-content.innerHTML=
-
-`
-
-<h2>
-توزيع الأسابيع
-
-</h2>
-
-`;
-
-break;
-
-
-
-
-
-
-case "reports":
-
-
-content.innerHTML=
-
-`
-
-<h2>
-التقارير
-
-</h2>
-
-`;
-
-break;
-
-
-
-
-
-
-case "settings":
-
-
-content.innerHTML=
-
-`
-
-<h2>
-الإعدادات
-
-</h2>
-
-`;
-
-break;
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-window.loadUsers=async function(){
-
-
-
-const snap =
-await get(
-ref(db,"users")
-);
-
-
-
-usersTable.innerHTML="";
-
-
-
-if(!snap.exists())
-return;
-
-
-
-const users=snap.val();
-
-
-
-
-Object.keys(users).forEach(uid=>{
-
-
-let u=users[uid];
-
-
-
-usersTable.innerHTML +=
-
-`
-
-<tr>
-
-
-<td>
-${u.name || ""}
-</td>
-
-
-<td>
-${u.email || ""}
-</td>
-
-
-
-<td>
-
-<select onchange="changeRole('${uid}',this.value)">
-
-
-<option value="Manager" ${u.role=="Manager"?"selected":""}>
-Manager
-</option>
-
-
-<option value="Teacher" ${u.role=="Teacher"?"selected":""}>
-Teacher
-</option>
-
-
-<option value="Head" ${u.role=="Head"?"selected":""}>
-Head
-</option>
-
-
-<option value="Coordinator" ${u.role=="Coordinator"?"selected":""}>
-Coordinator
-</option>
-
-
-<option value="StageManager" ${u.role=="StageManager"?"selected":""}>
-StageManager
-</option>
-
-
-<option value="Viewer" ${u.role=="Viewer"?"selected":""}>
-Viewer
-</option>
-
-
-
-</select>
-
-
-</td>
-
-
-
-
-
-<td>
-
-${u.active ? "فعال":"موقوف"}
-
-</td>
-
-
-
-
-
-<td>
-
-
-<button class="small edit"
-onclick="editUser('${uid}')">
-
-تعديل
-
-</button>
-
-
-
-<button class="small active"
-onclick="toggleUser('${uid}',${u.active})">
-
-تفعيل/تعطيل
-
-</button>
-
-
-
-<button class="small delete"
-onclick="deleteUser('${uid}')">
-
-حذف
-
-</button>
-
-
-</td>
-
-
-</tr>
-
-
-`;
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-window.changeRole=async function(uid,role){
-
-
-await update(
-
-ref(db,"users/"+uid),
-
-{
-
-role:role
-
-}
-
-);
-
-
-loadUsers();
-
-
-}
-
-
-
-
-
-
-
-
-
-window.toggleUser=async function(uid,status){
-
-
-
-await update(
-
-ref(db,"users/"+uid),
-
-{
-
-active:!status
-
-}
-
-);
-
-
-
-loadUsers();
-
-
-}
-
-
-
-
-
-
-
-
-
-window.editUser=async function(uid){
-
-
-
-let name =
-prompt(
-"الاسم الجديد"
-);
-
-
-
-if(!name)
-return;
-
-
-
-await update(
-
-ref(db,"users/"+uid),
-
-{
-
-name:name
-
-}
-
-);
-
-
-
-loadUsers();
-
-
-}
-
-
-
-
-
-
-
-
-
-window.deleteUser=async function(uid){
-
-
-
-if(!confirm(
-"حذف المستخدم؟"
-))
-
-return;
-
-
-
-await remove(
-
-ref(db,"users/"+uid)
-
-);
-
-
-
-loadUsers();
-
-
-}
-
-
-
-
-
-
-
-
-
-window.createNewUser=async function(){
-
-
-
-try{
-
-
-await createUser({
-
-name:newName.value,
-
-email:newEmail.value,
-
-password:newPassword.value,
-
-role:newRole.value
-
-
-});
-
-
-
-msg.innerHTML=
-"تم إنشاء المستخدم";
-
-
-loadUsers();
-
-
-}
-
-
-catch(e){
-
-
-msg.innerHTML=e.message;
-
-
-}
-
-
-}
-
-
-
-
-
-
-
-loadPage("dashboard");
-
-
-</script>
+<script type="module" src="admin.js"></script>
 
 
 
 </body>
+
 
 </html>

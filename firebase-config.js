@@ -32,25 +32,14 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 const firebaseConfig = {
 
 
-apiKey: "YOUR_API_KEY",
-
-
-authDomain: "YOUR_PROJECT.firebaseapp.com",
-
-
-databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-
-
-projectId: "YOUR_PROJECT_ID",
-
-
-storageBucket: "YOUR_PROJECT.appspot.com",
-
-
-messagingSenderId: "YOUR_SENDER_ID",
-
-
-appId: "YOUR_APP_ID"
+apiKey: "AIzaSyBWpahddzrX3iffUThUQoo5edxGbi0J7yc",
+  authDomain: "uca-pms-8f7b1.firebaseapp.com",
+  databaseURL: "https://uca-pms-8f7b1-default-rtdb.firebaseio.com",
+  projectId: "uca-pms-8f7b1",
+  storageBucket: "uca-pms-8f7b1.firebasestorage.app",
+  messagingSenderId: "559264692532",
+  appId: "1:559264692532:web:14426f15f058db05458d61",
+  measurementId: "G-EDMZHQRGHK"
 
 
 };

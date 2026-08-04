@@ -2,13 +2,11 @@
 
 <html lang="ar" dir="rtl">
 
-
 <head>
 
 <meta charset="UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 
 <title>
 إدارة المستخدمين
@@ -17,15 +15,14 @@
 
 <link rel="stylesheet" href="style.css">
 
-
 </head>
-
 
 
 <body>
 
 
 <div class="app">
+
 
 
 <aside class="sidebar">
@@ -36,21 +33,19 @@
 </h2>
 
 
-<button onclick="goAdmin()">
-
-⬅ العودة للوحة المدير
-
+<button onclick="backAdmin()">
+⬅ لوحة المدير
 </button>
 
 
 <button id="logoutBtn">
-
 🚪 تسجيل الخروج
-
 </button>
 
 
 </aside>
+
+
 
 
 
@@ -63,13 +58,13 @@
 
 <header class="header">
 
-
 <h2>
 إدارة المستخدمين
 </h2>
 
-
 </header>
+
+
 
 
 
@@ -79,11 +74,13 @@
 
 
 
+
+
 <div class="card">
 
 
 <h3>
-إضافة مستخدم
+إضافة مستخدم جديد
 </h3>
 
 
@@ -94,15 +91,28 @@ placeholder="الاسم">
 
 
 <input id="email"
-placeholder="البريد">
+type="email"
+placeholder="البريد الإلكتروني">
+
+
+
+<input id="password"
+type="password"
+placeholder="كلمة المرور">
+
+
 
 
 
 <select id="role">
 
-
 <option value="Manager">
 مدير
+</option>
+
+
+<option value="Teacher">
+معلم
 </option>
 
 
@@ -121,11 +131,6 @@ placeholder="البريد">
 </option>
 
 
-<option value="Teacher">
-معلم
-</option>
-
-
 <option value="Viewer">
 مشاهد
 </option>
@@ -137,29 +142,10 @@ placeholder="البريد">
 
 
 
-<select id="active">
-
-
-<option value="true">
-فعال
-</option>
-
-
-<option value="false">
-معطل
-</option>
-
-
-</select>
-
-
-
-
-
-<button id="addBtn"
+<button id="createBtn"
 class="btn btn-primary">
 
-إضافة
+إنشاء المستخدم
 
 </button>
 
@@ -174,14 +160,13 @@ class="btn btn-primary">
 
 
 
-
 <div class="card">
 
 
 <h3>
-المستخدمون
-
+قائمة المستخدمين
 </h3>
+
 
 
 
@@ -190,6 +175,7 @@ class="btn btn-primary">
 
 
 <thead>
+
 
 <tr>
 
@@ -225,6 +211,7 @@ class="btn btn-primary">
 
 
 
+
 <tbody id="usersTable">
 
 
@@ -240,12 +227,14 @@ class="btn btn-primary">
 
 
 
+
+
 </section>
 
 
 
-
 </main>
+
 
 
 </div>

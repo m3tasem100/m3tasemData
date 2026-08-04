@@ -4,8 +4,8 @@
 import {
 
 auth,
-
-db
+db,
+app
 
 }
 
@@ -15,12 +15,21 @@ from "./firebase-config.js";
 
 import {
 
+initializeApp,
+deleteApp
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+
+
+
+import {
+
+getAuth,
 signInWithEmailAndPassword,
-
 signOut,
-
 onAuthStateChanged,
-
 createUserWithEmailAndPassword
 
 }
@@ -32,12 +41,9 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import {
 
 ref,
-
 get,
-
 set,
-
-push
+update
 
 }
 
@@ -47,9 +53,9 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
-// =================================
+// =============================
 // LOGIN
-// =================================
+// =============================
 
 
 export async function login(){
@@ -86,50 +92,24 @@ result.user.uid;
 
 
 
-const userRef =
-ref(db,"users/"+uid);
-
-
-
-const snapshot =
-await get(userRef);
-
-
-
-if(!snapshot.exists()){
-
-
-await set(
-userRef,
-{
-
-name:
-result.user.displayName || "New User",
-
-email:
-result.user.email,
-
-role:
-"Viewer",
-
-active:true
-
-}
-
+const snap =
+await get(
+ref(db,"users/"+uid)
 );
 
 
+
+if(!snap.exists()){
+
+throw new Error(
+"المستخدم غير موجود في قاعدة البيانات"
+);
+
 }
 
 
 
-const userSnap =
-await get(userRef);
-
-
-
-const user =
-userSnap.val();
+const user=snap.val();
 
 
 
@@ -140,7 +120,6 @@ localStorage.setItem(
 JSON.stringify({
 
 uid,
-
 ...user
 
 })
@@ -152,39 +131,37 @@ uid,
 redirectByRole(user.role);
 
 
-
 }
 
 catch(error){
 
-console.error(error);
+
+console.log(error);
 
 
-if(message)
-
-message.innerHTML =
-firebaseError(error.code);
-
-
-}
+message.innerHTML=
+error.message;
 
 
 }
 
 
-
-window.login = login;
-
+}
 
 
 
+window.login=login;
 
 
 
 
-// =================================
-// CREATE USER BY MANAGER
-// =================================
+
+
+
+
+// =============================
+// CREATE USER WITHOUT LOGOUT
+// =============================
 
 
 export async function createUser(data){
@@ -196,20 +173,50 @@ currentUser();
 
 
 
-if(!current || current.role !== "Manager"){
+if(!current ||
+current.role!=="Manager"){
+
 
 throw new Error(
-"ليس لديك صلاحية إنشاء مستخدم"
+"ليس لديك صلاحية"
 );
+
 
 }
 
 
 
+// إنشاء تطبيق Firebase مؤقت
+
+
+const secondaryApp =
+initializeApp(
+
+app.options,
+
+"Secondary"
+
+);
+
+
+
+const secondaryAuth =
+getAuth(secondaryApp);
+
+
+
+
+
+try{
+
+
+// إنشاء المستخدم
+
+
 const result =
 await createUserWithEmailAndPassword(
 
-auth,
+secondaryAuth,
 
 data.email,
 
@@ -224,31 +231,38 @@ result.user.uid;
 
 
 
+
+
+// حفظ البيانات
+
+
 await set(
 
 ref(db,"users/"+uid),
 
 {
 
-
 name:data.name,
-
 
 email:data.email,
 
-
 role:data.role,
-
 
 active:true,
 
-
 createdAt:
-new Date().toISOString()
-
+Date.now()
 
 }
 
+);
+
+
+
+
+
+await deleteApp(
+secondaryApp
 );
 
 
@@ -258,64 +272,19 @@ return uid;
 
 }
 
+catch(error){
 
 
+await deleteApp(
+secondaryApp
+);
 
 
-
-
-// =================================
-// REDIRECT
-// =================================
-
-
-function redirectByRole(role){
-
-
-switch(role){
-
-
-case "Manager":
-
-location.href="admin.html";
-
-break;
-
-
-case "Teacher":
-
-location.href="teacher.html";
-
-break;
-
-
-case "Head":
-
-location.href="head.html";
-
-break;
-
-
-case "Coordinator":
-
-location.href="coordinator.html";
-
-break;
-
-
-case "StageManager":
-
-location.href="stage.html";
-
-break;
-
-
-default:
-
-location.href="viewer.html";
+throw error;
 
 
 }
+
 
 
 }
@@ -326,9 +295,11 @@ location.href="viewer.html";
 
 
 
-// =================================
+
+
+// =============================
 // LOGOUT
-// =================================
+// =============================
 
 
 export async function logout(){
@@ -354,9 +325,81 @@ window.logout=logout;
 
 
 
-// =================================
+
+
+// =============================
+// ROLE REDIRECT
+// =============================
+
+
+function redirectByRole(role){
+
+
+switch(role){
+
+
+case "Manager":
+
+location.href="admin.html";
+
+break;
+
+
+
+case "Teacher":
+
+location.href="teacher.html";
+
+break;
+
+
+
+case "Head":
+
+location.href="head.html";
+
+break;
+
+
+
+case "Coordinator":
+
+location.href="coordinator.html";
+
+break;
+
+
+
+case "StageManager":
+
+location.href="stage.html";
+
+break;
+
+
+
+default:
+
+location.href="viewer.html";
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =============================
 // CURRENT USER
-// =================================
+// =============================
 
 
 export function currentUser(){
@@ -382,9 +425,10 @@ null;
 
 
 
-// =================================
-// PROTECT PAGE
-// =================================
+
+// =============================
+// PROTECTION
+// =============================
 
 
 export function protectPage(roles=[]){
@@ -407,8 +451,7 @@ return;
 
 
 
-const data =
-currentUser();
+const data=currentUser();
 
 
 
@@ -424,7 +467,7 @@ return;
 
 if(
 
-roles.length > 0 &&
+roles.length>0 &&
 
 !roles.includes(data.role)
 
@@ -442,59 +485,9 @@ location.href="index.html";
 }
 
 
-
 }
-
 
 );
-
-
-}
-
-
-
-
-
-
-
-
-// =================================
-// ERRORS
-// =================================
-
-
-function firebaseError(code){
-
-
-switch(code){
-
-
-case "auth/email-already-in-use":
-
-return "البريد مستخدم مسبقاً";
-
-
-case "auth/invalid-email":
-
-return "البريد غير صحيح";
-
-
-case "auth/weak-password":
-
-return "كلمة المرور ضعيفة";
-
-
-case "auth/invalid-credential":
-
-return "بيانات الدخول غير صحيحة";
-
-
-default:
-
-return "حدث خطأ";
-
-
-}
 
 
 }

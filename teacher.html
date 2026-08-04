@@ -1,135 +1,57 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
+
 
 <head>
 
+
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>خطة المعلم الأسبوعية</title>
-
-
-<style>
-
-body{
-font-family:Tahoma,Arial;
-background:#f3f4f6;
-margin:0;
-}
-
-header{
-background:#2563eb;
-color:white;
-padding:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-.container{
-padding:20px;
-}
-
-.card{
-background:white;
-padding:20px;
-margin-bottom:20px;
-border-radius:10px;
-box-shadow:0 3px 10px #ddd;
-}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-button{
-
-background:#2563eb;
-color:white;
-border:0;
-padding:10px 15px;
-border-radius:6px;
-cursor:pointer;
-
-}
+<title>
+UCA Teacher Dashboard
+</title>
 
 
-table{
 
-width:100%;
-border-collapse:collapse;
-
-}
+<link rel="stylesheet" href="style.css">
 
 
-th,td{
-
-border:1px solid #ddd;
-padding:10px;
-text-align:center;
-
-}
-
-
-th{
-
-background:#1d4ed8;
-color:white;
-
-}
-
-
-.done{
-
-color:green;
-font-weight:bold;
-
-}
-
-
-.pending{
-
-color:red;
-font-weight:bold;
-
-}
-
-
-</style>
 
 </head>
+
+
 
 
 
 <body>
 
 
-<header>
+
+<div class="app">
+
+
+
+
+
+<!-- SIDEBAR -->
+
+
+<aside class="sidebar">
+
+
+<div class="logo">
 
 <h2>
-خطة المعلم
+🏫 UCA
 </h2>
 
-
-<button id="logout">
-تسجيل خروج
-</button>
-
-
-</header>
-
-
-
-
-<div class="container">
-
-
-<div class="card">
-
-<h3 id="teacherName">
--
-</h3>
-
-<p id="info">
--
+<p>
+Teacher Portal
 </p>
 
 </div>
@@ -137,375 +59,126 @@ font-weight:bold;
 
 
 
-<div class="card">
 
+<button onclick="loadTeacherModule('home')">
 
-<h3>
-الخطة الأسبوعية
-</h3>
-
-
-<div id="plans">
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-<script type="module">
-
-
-import {
-
-protectPage,
-logout,
-currentUser
-
-}
-
-from "./auth.js";
-
-
-
-import {
-
-getDatabase,
-ref,
-get,
-update,
-child
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-
-
-
-
-protectPage([
-"Teacher"
-]);
-
-
-
-
-document
-.getElementById("logout")
-.onclick=logout;
-
-
-
-
-
-const db=getDatabase();
-
-
-const user=currentUser();
-
-
-
-
-
-document
-.getElementById("teacherName")
-.innerHTML=
-
-`
-المعلم:
-${user.name}
-`;
-
-
-
-
-
-
-
-
-async function loadPlan(){
-
-
-
-const snap=
-await get(
-child(ref(db),"plans")
-);
-
-
-
-const area=
-document.getElementById("plans");
-
-
-
-
-if(!snap.exists()){
-
-area.innerHTML=
-"لا توجد خطة";
-
-return;
-
-}
-
-
-
-
-let html="";
-
-
-
-Object.keys(snap.val())
-.forEach(id=>{
-
-
-let plan=
-snap.val()[id];
-
-
-
-
-// ربط الخطة بالمعلم
-
-if(
-plan.teacherId !== user.uid
-)
-
-return;
-
-
-
-
-
-html+=`
-
-<h3>
-
-${plan.subject}
--
-${plan.grade}
-
-</h3>
-
-
-<table>
-
-
-<tr>
-
-<th>
-الأسبوع
-</th>
-
-
-<th>
-Chapter
-</th>
-
-
-<th>
-Lesson
-</th>
-
-
-<th>
-Outcome Code
-</th>
-
-
-<th>
-Outcome Description
-</th>
-
-
-<th>
-الحالة
-</th>
-
-
-<th>
-إجراء
-</th>
-
-
-</tr>
-
-`;
-
-
-
-
-
-
-Object.keys(plan.distributedWeeks || {})
-.forEach(week=>{
-
-
-let items=
-plan.distributedWeeks[week];
-
-
-
-items.forEach((item,index)=>{
-
-
-let verified=
-item.verified || false;
-
-
-
-html+=`
-
-<tr>
-
-
-<td>
-${week}
-</td>
-
-
-<td>
-${item.chapter || ""}
-</td>
-
-
-<td>
-${item.lesson || ""}
-</td>
-
-
-<td>
-${item.outcomeCode || ""}
-</td>
-
-
-<td>
-${item.description || ""}
-</td>
-
-
-<td class="${verified?'done':'pending'}">
-
-${verified?'تم التنفيذ':'غير مؤكد'}
-
-</td>
-
-
-
-<td>
-
-
-<button
-
-onclick="verify('${id}','${week}')"
-
->
-
-تأكيد الأسبوع
+🏠 الرئيسية
 
 </button>
 
 
-</td>
-
-
-</tr>
-
-`;
-
-
-});
 
 
 
-});
+<button onclick="loadTeacherModule('plans')">
 
+📂 خططي
 
-
-html+="</table><br>";
-
-
-
-});
-
-
-
-
-area.innerHTML=html;
-
-
-
-}
+</button>
 
 
 
 
 
+<button onclick="loadTeacherModule('weeks')">
+
+📅 الأسابيع
+
+</button>
 
 
 
 
-window.verify=
-async function(planId,week){
 
+<button onclick="loadTeacherModule('reports')">
 
+📊 تقاريري
 
-await update(
-
-ref(
-db,
-`plans/${planId}/weekStatus/${week}`
-),
-
-{
-
-verified:true,
-
-teacherId:user.uid,
-
-date:new Date().toISOString()
-
-}
-
-);
+</button>
 
 
 
 
-alert(
-"تم تأكيد تنفيذ الأسبوع"
-);
+
+<button id="logoutBtn" class="logout">
+
+🚪 تسجيل الخروج
+
+</button>
 
 
 
-loadPlan();
-
-
-
-}
+</aside>
 
 
 
 
 
 
-loadPlan();
 
 
 
-</script>
+<main class="main">
+
+
+<header class="header">
+
+
+<div>
+
+
+<h2>
+لوحة المعلم
+</h2>
+
+
+<p id="teacherInfo">
+
+</p>
+
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+
+
+<section id="content" class="content">
+
+
+</section>
+
+
+
+
+
+</main>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<script type="module" src="teacher.js"></script>
+
 
 
 </body>
+
 
 </html>

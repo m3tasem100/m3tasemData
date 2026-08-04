@@ -16,26 +16,22 @@ UCA School Management System
 
 *{
 box-sizing:border-box;
-font-family:"Tahoma",Arial;
+font-family:"Tahoma",Arial,sans-serif;
 }
 
-<script type="module">
-import "./auth.js";
 
-document.getElementById("loginBtn").onclick = login;
-</script>
 body{
 
 margin:0;
 
-height:100vh;
+min-height:100vh;
 
 background:
 linear-gradient(
 135deg,
-#1e3a8a,
-#2563eb,
-#60a5fa
+#0f172a,
+#1d4ed8,
+#38bdf8
 );
 
 display:flex;
@@ -47,9 +43,7 @@ justify-content:center;
 }
 
 
-
 .login-container{
-
 
 width:400px;
 
@@ -60,7 +54,7 @@ border-radius:20px;
 padding:35px;
 
 box-shadow:
-0 20px 50px rgba(0,0,0,.25);
+0 20px 50px rgba(0,0,0,.3);
 
 }
 
@@ -70,7 +64,15 @@ box-shadow:
 
 text-align:center;
 
-margin-bottom:25px;
+margin-bottom:30px;
+
+}
+
+
+
+.logo .icon{
+
+font-size:55px;
 
 }
 
@@ -78,11 +80,11 @@ margin-bottom:25px;
 
 .logo h1{
 
+margin:5px;
+
 color:#1e3a8a;
 
-font-size:26px;
-
-margin:10px 0;
+font-size:25px;
 
 }
 
@@ -90,7 +92,7 @@ margin:10px 0;
 
 .logo p{
 
-color:#666;
+color:#64748b;
 
 }
 
@@ -99,7 +101,7 @@ color:#666;
 
 .input-group{
 
-margin-bottom:18px;
+margin-bottom:20px;
 
 }
 
@@ -109,11 +111,11 @@ label{
 
 display:block;
 
-margin-bottom:6px;
+margin-bottom:8px;
 
 font-weight:bold;
 
-color:#333;
+color:#334155;
 
 }
 
@@ -121,12 +123,11 @@ color:#333;
 
 input{
 
-
 width:100%;
 
-padding:13px;
+padding:14px;
 
-border:1px solid #ccc;
+border:1px solid #cbd5e1;
 
 border-radius:10px;
 
@@ -142,11 +143,7 @@ input:focus{
 
 border-color:#2563eb;
 
-box-shadow:
-0 0 5px #93c5fd;
-
 }
-
 
 
 
@@ -160,7 +157,6 @@ position:relative;
 
 .password-box span{
 
-
 position:absolute;
 
 left:15px;
@@ -169,26 +165,24 @@ top:13px;
 
 cursor:pointer;
 
-color:#2563eb;
+font-size:20px;
 
 }
 
 
 
 
-
 button{
-
 
 width:100%;
 
 padding:14px;
 
-border:0;
+background:#2563eb;
+
+border:none;
 
 border-radius:10px;
-
-background:#2563eb;
 
 color:white;
 
@@ -197,8 +191,6 @@ font-size:17px;
 font-weight:bold;
 
 cursor:pointer;
-
-transition:.3s;
 
 }
 
@@ -212,32 +204,41 @@ background:#1d4ed8;
 
 
 
+button:disabled{
 
-#message{
+background:#94a3b8;
 
-
-margin-top:15px;
-
-text-align:center;
-
-color:red;
-
-font-size:14px;
+cursor:not-allowed;
 
 }
 
 
 
 
+#message{
+
+margin-top:15px;
+
+text-align:center;
+
+font-size:14px;
+
+color:#dc2626;
+
+min-height:20px;
+
+}
+
+
+
 
 .footer{
-
 
 text-align:center;
 
 margin-top:25px;
 
-color:#777;
+color:#64748b;
 
 font-size:13px;
 
@@ -245,14 +246,15 @@ font-size:13px;
 
 
 
-.loader{
-
+.loading{
 
 display:none;
 
-margin:auto;
+text-align:center;
 
 margin-top:15px;
+
+color:#2563eb;
 
 }
 
@@ -260,8 +262,8 @@ margin-top:15px;
 
 </style>
 
-
 </head>
+
 
 
 <body>
@@ -275,8 +277,13 @@ margin-top:15px;
 <div class="logo">
 
 
+<div class="icon">
+🏫
+</div>
+
+
 <h1>
-🏫 UCA
+UCA
 </h1>
 
 
@@ -296,6 +303,7 @@ School Management System
 
 
 
+
 <div class="input-group">
 
 
@@ -310,11 +318,15 @@ id="email"
 
 type="email"
 
-placeholder="example@school.com"
+placeholder="name@school.com"
+
+autocomplete="email"
 
 >
 
+
 </div>
+
 
 
 
@@ -341,13 +353,16 @@ type="password"
 
 placeholder="********"
 
+autocomplete="current-password"
+
 >
 
 
 
-<span id="showPassword">
+<span id="togglePassword">
 👁
 </span>
+
 
 
 </div>
@@ -370,9 +385,9 @@ placeholder="********"
 
 
 
-<div class="loader" id="loader">
+<div class="loading" id="loading">
 
-جاري الدخول ...
+جاري تسجيل الدخول ...
 
 </div>
 
@@ -380,6 +395,8 @@ placeholder="********"
 
 
 <div id="message"></div>
+
+
 
 
 
@@ -400,37 +417,88 @@ UCA School Management System © 2026
 
 
 
+
 <script type="module">
 
 
-import "./auth.js";
+import {
+
+login
+
+}
+
+from "./auth.js";
 
 
 
-const btn =
+
+
+const loginButton =
 document.getElementById(
 "loginBtn"
 );
 
 
 
-btn.onclick=()=>{
+const message =
+document.getElementById(
+"message"
+);
 
 
-if(window.login){
 
-window.login();
+const loading =
+document.getElementById(
+"loading"
+);
+
+
+
+
+
+
+
+loginButton.onclick =
+async function(){
+
+
+
+message.innerHTML="";
+
+loading.style.display="block";
+
+
+loginButton.disabled=true;
+
+
+
+try{
+
+
+await login();
+
+
 
 }
 
-else{
+catch(error){
 
 
-document.getElementById(
-"message"
-).innerHTML=
 
-"لم يتم تحميل نظام الدخول";
+message.innerHTML =
+error.message;
+
+
+}
+
+
+
+finally{
+
+
+loading.style.display="none";
+
+loginButton.disabled=false;
 
 
 }
@@ -445,39 +513,75 @@ document.getElementById(
 
 
 
-// اظهار كلمة المرور
+
+
+// Enter key login
+
+
+document.addEventListener(
+"keydown",
+function(e){
+
+
+if(e.key==="Enter"){
+
+
+loginButton.click();
+
+
+}
+
+
+});
+
+
+
+
+
+
+
+
+
+// show password
 
 
 document
-.getElementById("showPassword")
+.getElementById("togglePassword")
 .onclick=function(){
 
 
-let pass =
+const password =
 document.getElementById(
 "password"
 );
 
 
 
-if(pass.type==="password"){
+if(password.type==="password"){
 
-pass.type="text";
+
+password.type="text";
+
 
 this.innerHTML="🙈";
+
 
 }
 
 else{
 
-pass.type="password";
+
+password.type="password";
+
 
 this.innerHTML="👁";
+
 
 }
 
 
 };
+
 
 
 

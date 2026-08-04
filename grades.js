@@ -1,7 +1,17 @@
 ////////////////////////////////////////////////////
-// UCA SCHOOL MANAGEMENT SYSTEM
-// GRADES MANAGEMENT MODULE
+// GRADES MANAGEMENT
 ////////////////////////////////////////////////////
+
+
+import {
+
+protectPage,
+logout
+
+}
+
+from "./auth.js";
+
 
 
 import {
@@ -11,6 +21,7 @@ db
 }
 
 from "./firebase-config.js";
+
 
 
 import {
@@ -30,9 +41,49 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
-const content =
 
-document.getElementById("content");
+
+
+protectPage([
+
+"Manager"
+
+]);
+
+
+
+
+
+
+
+logoutBtn.onclick=logout;
+
+
+
+
+
+
+
+window.backAdmin=function(){
+
+location.href="admin.html";
+
+};
+
+
+
+
+
+
+
+
+const table=
+
+document.getElementById(
+"gradeTable"
+);
+
+
 
 
 
@@ -47,307 +98,37 @@ loadGrades();
 
 
 
-// =======================================
-// واجهة الصفوف
-// =======================================
 
-
-async function loadGrades(){
-
-
-
-content.innerHTML = `
-
-
-<h2>
-🎓 إدارة الصفوف والشعب
-</h2>
-
-
-
-
-
-<div class="card">
-
-
-<h3>
-إضافة صف جديد
-</h3>
-
-
-
-
-<div class="form-group">
-
-
-<label>
-اسم الصف
-</label>
-
-
-<input
-
-id="gradeName"
-
-placeholder="مثال: Grade 9"
-
->
-
-
-</div>
-
-
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-البرنامج
-</label>
-
-
-
-<select id="gradeProgram">
-
-
-<option value="American">
-
-American
-
-</option>
-
-
-
-<option value="British">
-
-British
-
-</option>
-
-
-</select>
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-الشعب
-
-</label>
-
-
-<input
-
-id="gradeClasses"
-
-placeholder="مثال: A,B,C"
-
->
-
-
-</div>
-
-
-
-
-
-
-
-<button
-
-class="btn btn-primary"
-
-id="addGradeBtn">
-
-إضافة الصف
-
-</button>
-
-
-
-
-<p id="gradeMessage"></p>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h3>
-قائمة الصفوف
-</h3>
-
-
-
-
-<div class="table-container">
-
-
-<table>
-
-
-<thead>
-
-
-<tr>
-
-
-<th>
-الصف
-</th>
-
-
-
-<th>
-البرنامج
-</th>
-
-
-
-<th>
-الشعب
-</th>
-
-
-
-<th>
-الإجراءات
-</th>
-
-
-
-</tr>
-
-
-</thead>
-
-
-
-
-<tbody id="gradesTable">
-
-
-</tbody>
-
-
-</table>
-
-
-
-</div>
-
-
-</div>
-
-
-
-`;
-
-
-
-
-
-document
-
-.getElementById(
-"addGradeBtn"
-)
-
-.onclick=createGrade;
-
-
-
-
-getGrades();
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// =======================================
+// ===============================
 // إضافة صف
-// =======================================
+// ===============================
 
 
-async function createGrade(){
+addGrade.onclick=
 
-
-
-const name =
-
-document
-
-.getElementById(
-"gradeName"
-)
-
-.value
-
-.trim();
+async function(){
 
 
 
+const name=
 
-const program =
-
-document
-
-.getElementById(
-"gradeProgram"
-)
-
-.value;
+gradeName.value.trim();
 
 
 
+const level=
+
+Number(
+
+gradeLevel.value
+
+);
 
 
 
-const classesText =
+const programValue=
 
-document
-
-.getElementById(
-"gradeClasses"
-)
-
-.value
-
-.trim();
+program.value;
 
 
 
@@ -355,12 +136,14 @@ document
 
 
 
-if(!name){
+if(!name || !level){
 
 
-gradeMessage.innerHTML=
 
-"أدخل اسم الصف";
+alert(
+"أدخل بيانات الصف"
+);
+
 
 
 return;
@@ -375,31 +158,14 @@ return;
 
 
 
-const classes =
 
-classesText
-
-.split(",")
-
-.map(x=>x.trim())
-
-.filter(x=>x);
-
-
-
-
-
-
-
-
-
-const newRef =
+const id=
 
 push(
 
 ref(db,"grades")
 
-);
+).key;
 
 
 
@@ -410,7 +176,13 @@ ref(db,"grades")
 
 await set(
 
-newRef,
+ref(
+
+db,
+
+"grades/"+id
+
+),
 
 {
 
@@ -418,10 +190,10 @@ newRef,
 name:name,
 
 
-program:program,
+level:level,
 
 
-classes:classes,
+program:programValue,
 
 
 createdAt:
@@ -439,10 +211,10 @@ Date.now()
 
 
 
-gradeMessage.innerHTML=
 
-"تم إضافة الصف";
+gradeName.value="";
 
+gradeLevel.value="";
 
 
 
@@ -450,7 +222,7 @@ loadGrades();
 
 
 
-}
+};
 
 
 
@@ -462,24 +234,13 @@ loadGrades();
 
 
 
-// =======================================
-// قراءة الصفوف
-// =======================================
+
+// ===============================
+// عرض الصفوف
+// ===============================
 
 
-async function getGrades(){
-
-
-
-const table =
-
-document
-
-.getElementById(
-"gradesTable"
-);
-
-
+async function loadGrades(){
 
 
 
@@ -489,7 +250,7 @@ table.innerHTML="";
 
 
 
-const snapshot =
+const snap=
 
 await get(
 
@@ -502,7 +263,7 @@ ref(db,"grades")
 
 
 
-if(!snapshot.exists()){
+if(!snap.exists()){
 
 
 table.innerHTML=
@@ -532,20 +293,15 @@ return;
 
 
 
-const grades =
+Object.entries(
 
-snapshot.val();
+snap.val()
 
+)
 
-
-
-
-
+.forEach(([id,g])=>{
 
 
-Object.entries(grades)
-
-.forEach(([id,grade])=>{
 
 
 
@@ -557,39 +313,26 @@ table.innerHTML +=
 <tr>
 
 
+
 <td>
 
-${grade.name}
+${g.name}
 
 </td>
 
 
 
-
 <td>
 
-${grade.program}
+${g.level}
 
 </td>
 
 
 
-
 <td>
 
-${
-
-grade.classes
-
-?
-
-grade.classes.join(" , ")
-
-:
-
-""
-
-}
+${g.program}
 
 </td>
 
@@ -597,8 +340,8 @@ grade.classes.join(" , ")
 
 
 
-
 <td>
+
 
 
 
@@ -606,12 +349,11 @@ grade.classes.join(" , ")
 
 class="btn btn-warning"
 
-onclick="editGrade('${id}','${grade.name}')">
+onclick="editGrade('${id}','${g.name}')">
 
 تعديل
 
 </button>
-
 
 
 
@@ -638,7 +380,6 @@ onclick="deleteGrade('${id}')">
 </tr>
 
 
-
 `;
 
 
@@ -657,24 +398,24 @@ onclick="deleteGrade('${id}')">
 
 
 
-// =======================================
-// تعديل الصف
-// =======================================
+// ===============================
+// تعديل
+// ===============================
 
 
 window.editGrade=
 
-async function(id,oldName){
+async function(id,name){
 
 
 
-const name =
+const newName=
 
 prompt(
 
-"اسم الصف الجديد",
+"اسم الصف",
 
-oldName
+name
 
 );
 
@@ -682,8 +423,7 @@ oldName
 
 
 
-
-if(!name)
+if(!newName)
 
 return;
 
@@ -693,14 +433,21 @@ return;
 
 
 
+
 await update(
 
-ref(db,"grades/"+id),
+ref(
+
+db,
+
+"grades/"+id
+
+),
 
 {
 
 
-name:name
+name:newName
 
 
 }
@@ -726,9 +473,11 @@ loadGrades();
 
 
 
-// =======================================
-// حذف الصف
-// =======================================
+
+
+// ===============================
+// حذف
+// ===============================
 
 
 window.deleteGrade=
@@ -738,7 +487,9 @@ async function(id){
 
 
 if(!confirm(
+
 "حذف الصف؟"
+
 ))
 
 return;
@@ -749,13 +500,18 @@ return;
 
 
 
+
 await remove(
 
-ref(db,"grades/"+id)
+ref(
+
+db,
+
+"grades/"+id
+
+)
 
 );
-
-
 
 
 

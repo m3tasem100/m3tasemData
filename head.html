@@ -1,114 +1,152 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
+
 
 <head>
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
 <title>
-لوحة رئيس القسم
+UCA Head Dashboard
 </title>
 
 
-<style>
-
-body{
-
-font-family:Tahoma;
-background:#f3f4f6;
-margin:0;
-
-}
-
-
-header{
-
-background:#065f46;
-color:white;
-padding:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-
-}
-
-
-.container{
-
-padding:20px;
-
-}
-
-
-.card{
-
-background:white;
-padding:20px;
-margin-bottom:20px;
-border-radius:10px;
-box-shadow:0 3px 10px #ddd;
-
-}
-
-
-button{
-
-background:#059669;
-color:white;
-border:0;
-padding:10px 15px;
-border-radius:6px;
-cursor:pointer;
-
-}
-
-
-table{
-
-width:100%;
-border-collapse:collapse;
-
-}
-
-
-th,td{
-
-border:1px solid #ddd;
-padding:10px;
-text-align:center;
-
-}
-
-
-th{
-
-background:#047857;
-color:white;
-
-}
-
-
-</style>
+<link rel="stylesheet" href="style.css">
 
 
 </head>
 
 
+
 <body>
 
 
-<header>
+<div class="app">
+
+
+
+<!-- Sidebar -->
+
+<aside class="sidebar">
+
+
+<div class="logo">
 
 <h2>
-رئيس القسم
+🏫 UCA
+</h2>
+
+<p>
+Head Department
+</p>
+
+</div>
+
+
+
+
+<button onclick="loadHeadModule('home')">
+
+🏠 الرئيسية
+
+</button>
+
+
+
+
+<button onclick="loadHeadModule('teachers')">
+
+👨‍🏫 معلمو القسم
+
+</button>
+
+
+
+
+<button onclick="loadHeadModule('plans')">
+
+📂 الخطط
+
+</button>
+
+
+
+
+<button onclick="loadHeadModule('weeks')">
+
+📅 متابعة الأسابيع
+
+</button>
+
+
+
+
+<button onclick="loadHeadModule('evaluation')">
+
+⭐ تقييم المعلمين
+
+</button>
+
+
+
+
+<button onclick="loadHeadModule('reports')">
+
+📊 التقارير
+
+</button>
+
+
+
+
+
+<button id="logoutBtn" class="logout">
+
+🚪 تسجيل الخروج
+
+</button>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+<!-- Main -->
+
+<main class="main">
+
+
+<header class="header">
+
+
+<div>
+
+
+<h2>
+لوحة رئيس القسم
 </h2>
 
 
-<button id="logout">
-تسجيل خروج
-</button>
+
+<p id="headInfo">
+
+</p>
+
+
+
+</div>
+
 
 
 </header>
@@ -117,56 +155,19 @@ color:white;
 
 
 
-<div class="container">
 
 
-<div class="card">
+<section id="content" class="content">
 
-<h3 id="headName">
-جاري التحميل...
-</h3>
 
-<p id="sectionInfo"></p>
-
-</div>
+</section>
 
 
 
 
 
-<div class="card">
+</main>
 
-
-<h3>
-معلمو القسم
-</h3>
-
-
-<div id="teachers">
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="card">
-
-
-<h3>
-التقييمات
-</h3>
-
-
-<div id="evaluations">
-
-</div>
-
-
-</div>
 
 
 </div>
@@ -176,332 +177,12 @@ color:white;
 
 
 
-<script type="module">
 
+<script type="module" src="head.js"></script>
 
-import {
-
-protectPage,
-logout,
-currentUser
-
-}
-
-from "./auth.js";
-
-
-
-import {
-
-getDatabase,
-ref,
-get,
-set,
-push,
-child
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-
-
-
-
-protectPage([
-"Head"
-]);
-
-
-
-
-
-document
-.getElementById("logout")
-.onclick=logout;
-
-
-
-
-
-const user=currentUser();
-
-
-const db=getDatabase();
-
-
-
-
-
-if(user){
-
-
-document
-.getElementById("headName")
-.innerHTML=
-
-`
-رئيس القسم:
-${user.name}
-
-`;
-
-
-
-document
-.getElementById("sectionInfo")
-.innerHTML=
-
-`
-القسم:
-${user.section || "غير محدد"}
-
-`;
-
-}
-
-
-
-
-// تحميل المعلمين
-
-
-async function loadTeachers(){
-
-
-
-const snap=
-await get(
-child(ref(db),"users")
-);
-
-
-
-const area=
-document.getElementById("teachers");
-
-
-
-if(!snap.exists()){
-
-area.innerHTML=
-"لا يوجد معلمون";
-
-return;
-
-}
-
-
-
-
-let html=
-
-`
-
-<table>
-
-<tr>
-
-<th>
-المعلم
-</th>
-
-<th>
-المادة
-</th>
-
-<th>
-التقييم
-</th>
-
-</tr>
-
-`;
-
-
-
-
-
-
-Object.keys(snap.val())
-.forEach(id=>{
-
-
-let t=snap.val()[id];
-
-
-
-if(
-t.role==="Teacher"
-&&
-t.section===user.section
-){
-
-
-
-html+=`
-
-<tr>
-
-<td>
-${t.name}
-</td>
-
-
-<td>
-${t.subjects ? t.subjects.join(","):""}
-</td>
-
-
-<td>
-
-
-<button onclick="evaluateTeacher('${id}','${t.name}')">
-
-تقييم
-
-</button>
-
-
-</td>
-
-
-</tr>
-
-
-`;
-
-
-
-}
-
-
-
-});
-
-
-
-html+="</table>";
-
-
-
-area.innerHTML=html;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// إنشاء تقييم رئيس القسم
-
-
-window.evaluateTeacher =
-async function(teacherId,name){
-
-
-
-let score =
-prompt(
-
-`
-تقييم ${name}
-
-أدخل الدرجة من 100
-
-`
-
-);
-
-
-
-if(!score)
-return;
-
-
-
-
-const id =
-push(
-ref(db,"evaluations")
-)
-.key;
-
-
-
-
-await set(
-
-ref(
-db,
-"evaluations/"+id
-),
-
-{
-
-
-teacherId:teacherId,
-
-
-year:"2025-2026",
-
-
-semester:"Semester 1",
-
-
-
-evaluator:user.uid,
-
-
-evaluatorRole:"Head",
-
-
-
-score:Number(score),
-
-
-
-weight:25,
-
-
-createdAt:
-new Date().toISOString()
-
-
-
-}
-
-);
-
-
-
-
-
-alert(
-"تم حفظ التقييم"
-);
-
-
-
-}
-
-
-
-
-loadTeachers();
-
-
-
-</script>
 
 
 </body>
+
 
 </html>

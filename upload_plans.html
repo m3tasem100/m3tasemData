@@ -11,7 +11,7 @@
 
 
 <title>
-رفع الخطط
+توزيع الخطط
 </title>
 
 
@@ -28,12 +28,14 @@
 <div class="app">
 
 
+
 <aside class="sidebar">
 
 
 <h2>
 🏫 UCA
 </h2>
+
 
 
 <button onclick="backAdmin()">
@@ -44,11 +46,13 @@
 
 
 
+
 <button id="logoutBtn">
 
 🚪 تسجيل الخروج
 
 </button>
+
 
 
 </aside>
@@ -66,11 +70,14 @@
 
 <header class="header">
 
+
 <h2>
-رفع الخطط الدراسية
+توزيع الخطة الأسبوعية
 </h2>
 
+
 </header>
+
 
 
 
@@ -84,14 +91,11 @@
 <div class="card">
 
 
-
 <select id="year">
-
 
 <option>
 2025-2026
 </option>
-
 
 </select>
 
@@ -103,37 +107,16 @@
 
 
 <option value="semester1">
+
 الفصل الأول
+
 </option>
 
 
 
 <option value="semester2">
+
 الفصل الثاني
-</option>
-
-
-</select>
-
-
-
-
-
-
-<select id="program">
-
-
-<option value="American">
-
-American
-
-</option>
-
-
-
-<option value="British">
-
-British
 
 </option>
 
@@ -148,12 +131,11 @@ British
 
 <select id="grade">
 
-
 <option>
+
 اختر الصف
 
 </option>
-
 
 </select>
 
@@ -162,11 +144,10 @@ British
 
 
 
-
 <select id="subject">
 
-
 <option>
+
 اختر المادة
 
 </option>
@@ -179,28 +160,11 @@ British
 
 
 
-
-
-<input
-
-type="file"
-
-id="excelFile"
-
-accept=".xlsx,.xls">
-
-
-<br><br>
-
-
-<button
-
-id="uploadBtn"
+<button id="loadBtn"
 
 class="btn btn-primary">
 
-رفع الخطة
-
+تحميل الأهداف
 
 </button>
 
@@ -214,21 +178,84 @@ class="btn btn-primary">
 
 
 
+
+
 <div class="card">
 
 
 <h3>
-نتيجة الرفع
+
+الأهداف
 
 </h3>
 
 
-<div id="result">
+
+<table>
+
+
+<thead>
+
+<tr>
+
+
+<th>
+الهدف
+
+</th>
+
+
+<th>
+عدد الحصص
+
+</th>
+
+
+<th>
+الأسبوع
+
+</th>
+
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+
+<tbody id="objectivesTable">
+
+
+</tbody>
+
+
+
+</table>
+
+
+
+<br>
+
+
+<button
+
+id="saveBtn"
+
+class="btn btn-success">
+
+حفظ التوزيع
+
+
+</button>
+
+
 
 </div>
 
-
-</div>
 
 
 
@@ -237,9 +264,7 @@ class="btn btn-primary">
 </section>
 
 
-
 </main>
-
 
 
 
@@ -252,10 +277,9 @@ class="btn btn-primary">
 
 
 
-<script type="module" src="upload_plans.js"></script>
+<script type="module" src="plan_distribution.js"></script>
 
 
 </body>
-
 
 </html>

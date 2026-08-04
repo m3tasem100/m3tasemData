@@ -1,57 +1,215 @@
-<!DOCTYPE html>
-
-<html lang="ar" dir="rtl">
-
-
-<head>
+////////////////////////////////////////////////////
+// UCA SCHOOL MANAGEMENT SYSTEM
+// TEACHER DASHBOARD
+////////////////////////////////////////////////////
 
 
-<meta charset="UTF-8">
+import {
 
+protectPage,
+currentUser,
+logout
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+}
 
-
-<title>
-UCA Teacher Dashboard
-</title>
+from "./auth.js";
 
 
 
-<link rel="stylesheet" href="style.css">
+import {
+
+db
+
+}
+
+from "./firebase-config.js";
 
 
 
-</head>
+import {
+
+ref,
+get,
+set,
+update
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
 
 
-<body>
+
+// =======================================
+// حماية الصفحة
+// =======================================
+
+
+protectPage([
+
+"Teacher"
+
+]);
 
 
 
-<div class="app">
+
+
+
+
+const user = currentUser();
 
 
 
 
 
-<!-- SIDEBAR -->
+if(user){
 
 
-<aside class="sidebar">
+document
+
+.getElementById("teacherInfo")
+
+.innerHTML =
+
+`
+
+${user.name || ""}
+
+<br>
+
+${user.email || ""}
+
+`;
 
 
-<div class="logo">
+
+}
+
+
+
+
+
+
+
+// تسجيل خروج
+
+
+document
+
+.getElementById("logoutBtn")
+
+.onclick=function(){
+
+
+logout();
+
+
+};
+
+
+
+
+
+
+
+
+
+// =======================================
+// تحميل الوحدات
+// =======================================
+
+
+window.loadTeacherModule=function(module){
+
+
+
+switch(module){
+
+
+
+case "home":
+
+loadHome();
+
+break;
+
+
+
+
+case "plans":
+
+loadPlans();
+
+break;
+
+
+
+
+case "weeks":
+
+loadWeeks();
+
+break;
+
+
+
+
+case "reports":
+
+loadReports();
+
+break;
+
+
+}
+
+
+
+};
+
+
+
+
+
+
+
+
+// =======================================
+// الرئيسية
+// =======================================
+
+
+function loadHome(){
+
+
+
+content.innerHTML =
+
+
+`
+
 
 <h2>
-🏫 UCA
+مرحبا بك ${user.name || ""}
 </h2>
 
+
+
+<div class="cards">
+
+
+
+<div class="card">
+
+<h3>
+📚 المواد
+</h3>
+
 <p>
-Teacher Portal
+عرض المواد المرتبطة بك
 </p>
 
 </div>
@@ -60,125 +218,485 @@ Teacher Portal
 
 
 
-<button onclick="loadTeacherModule('home')">
+<div class="card">
 
-🏠 الرئيسية
-
-</button>
-
-
-
-
-
-<button onclick="loadTeacherModule('plans')">
-
-📂 خططي
-
-</button>
-
-
-
-
-
-<button onclick="loadTeacherModule('weeks')">
-
+<h3>
 📅 الأسابيع
+</h3>
+
+<p>
+متابعة تنفيذ الخطة
+</p>
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<h3>
+📊 التقارير
+</h3>
+
+<p>
+متابعة الأداء
+</p>
+
+</div>
+
+
+
+</div>
+
+
+`;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =======================================
+// الخطط
+// =======================================
+
+
+async function loadPlans(){
+
+
+
+content.innerHTML =
+
+
+`
+
+<h2>
+📂 خططي الدراسية
+</h2>
+
+
+<div class="card">
+
+
+<div id="plansContainer">
+
+جاري التحميل...
+
+</div>
+
+
+</div>
+
+
+`;
+
+
+
+
+
+
+const snapshot =
+
+await get(
+
+ref(
+
+db,
+
+`users/${user.uid}`
+
+)
+
+);
+
+
+
+
+
+
+
+if(!snapshot.exists())
+
+return;
+
+
+
+
+
+
+const data =
+
+snapshot.val();
+
+
+
+
+
+
+
+let html="";
+
+
+
+
+
+
+
+if(!data.subjectIds){
+
+
+
+html=
+
+`
+
+لا يوجد مواد مرتبطة بك
+
+`;
+
+
+
+}
+
+else{
+
+
+Object.values(data.subjectIds)
+
+.forEach(subject=>{
+
+
+html +=
+
+
+`
+
+<div class="card">
+
+
+<h3>
+
+${subject}
+
+</h3>
+
+
+<p>
+
+عرض الخطة الدراسية
+
+</p>
+
+
+</div>
+
+
+`;
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+document
+
+.getElementById(
+"plansContainer"
+)
+
+.innerHTML=html;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =======================================
+// الأسابيع
+// =======================================
+
+
+async function loadWeeks(){
+
+
+
+content.innerHTML=
+
+
+`
+
+<h2>
+📅 اعتماد الأسابيع
+</h2>
+
+
+
+<div id="weeksContainer">
+
+جاري التحميل...
+
+</div>
+
+`;
+
+
+
+
+
+
+
+const snapshot =
+
+await get(
+
+ref(
+
+db,
+
+"plans"
+
+)
+
+);
+
+
+
+
+
+
+const container =
+
+document
+
+.getElementById(
+"weeksContainer"
+);
+
+
+
+
+
+
+
+if(!snapshot.exists()){
+
+
+container.innerHTML=
+
+"لا توجد خطط";
+
+return;
+
+
+}
+
+
+
+
+
+
+
+let html="";
+
+
+
+
+
+Object.entries(snapshot.val())
+
+.forEach(([year,data])=>{
+
+
+html +=
+
+
+`
+
+<div class="card">
+
+
+<h3>
+
+السنة:
+${year}
+
+</h3>
+
+
+<button
+
+class="btn btn-success"
+
+onclick="verifyWeek('${year}')">
+
+
+اعتماد الأسبوع الحالي
 
 </button>
 
 
+</div>
+
+
+`;
 
 
 
-<button onclick="loadTeacherModule('reports')">
+});
+
+
+
+
+
+
+
+container.innerHTML=html;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =======================================
+// اعتماد الأسبوع
+// =======================================
+
+
+window.verifyWeek=
+
+async function(year){
+
+
+
+await set(
+
+ref(
+
+db,
+
+`teacherVerification/${user.uid}/${year}`
+
+),
+
+{
+
+
+verified:true,
+
+
+date:
+
+Date.now()
+
+
+}
+
+);
+
+
+
+
+
+alert(
+
+"تم اعتماد الأسبوع"
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =======================================
+// التقارير
+// =======================================
+
+
+function loadReports(){
+
+
+
+content.innerHTML=
+
+
+`
+
+<h2>
 
 📊 تقاريري
 
-</button>
-
-
-
-
-
-<button id="logoutBtn" class="logout">
-
-🚪 تسجيل الخروج
-
-</button>
-
-
-
-</aside>
-
-
-
-
-
-
-
-
-
-<main class="main">
-
-
-<header class="header">
-
-
-<div>
-
-
-<h2>
-لوحة المعلم
 </h2>
 
 
-<p id="teacherInfo">
 
-</p>
-
-
-</div>
+<div class="card">
 
 
-
-</header>
-
-
-
-
-
-
-
-<section id="content" class="content">
-
-
-</section>
-
-
-
-
-
-</main>
-
-
-
-
-
+سيتم عرض تقارير الإنجاز هنا
 
 </div>
 
 
+`;
+
+
+
+}
 
 
 
 
 
 
-<script type="module" src="teacher.js"></script>
 
 
 
-</body>
+// تشغيل الصفحة الرئيسية
 
 
-</html>
+loadTeacherModule("home");

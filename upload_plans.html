@@ -2,16 +2,12 @@
 
 <html lang="ar" dir="rtl">
 
-
 <head>
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
 <title>
-توزيع الخطط
+رفع الخطط الدراسية
 </title>
 
 
@@ -21,12 +17,10 @@
 </head>
 
 
-
 <body>
 
 
 <div class="app">
-
 
 
 <aside class="sidebar">
@@ -37,28 +31,17 @@
 </h2>
 
 
-
 <button onclick="backAdmin()">
-
 ⬅ لوحة المدير
-
 </button>
-
-
 
 
 <button id="logoutBtn">
-
-🚪 تسجيل الخروج
-
+🚪 خروج
 </button>
 
 
-
 </aside>
-
-
-
 
 
 
@@ -70,11 +53,9 @@
 
 <header class="header">
 
-
 <h2>
-توزيع الخطة الأسبوعية
+رفع الخطط السنوية
 </h2>
-
 
 </header>
 
@@ -94,10 +75,18 @@
 <select id="year">
 
 <option>
+اختر السنة
+</option>
+
+
+<option value="2025-2026">
 2025-2026
 </option>
 
+
 </select>
+
+
 
 
 
@@ -107,21 +96,40 @@
 
 
 <option value="semester1">
-
 الفصل الأول
-
 </option>
 
 
-
 <option value="semester2">
-
 الفصل الثاني
-
 </option>
 
 
 </select>
+
+
+
+
+
+
+
+
+
+<select id="program">
+
+
+<option value="American">
+American Program
+</option>
+
+
+<option value="British">
+British Program
+</option>
+
+
+</select>
+
 
 
 
@@ -132,24 +140,17 @@
 <select id="grade">
 
 <option>
-
 اختر الصف
-
 </option>
 
-</select>
+
+<option value="grade9">
+Grade 9
+</option>
 
 
-
-
-
-
-<select id="subject">
-
-<option>
-
-اختر المادة
-
+<option value="grade10">
+Grade 10
 </option>
 
 
@@ -160,18 +161,35 @@
 
 
 
-<button id="loadBtn"
+
+
+<input id="subject"
+
+placeholder="المادة">
+
+
+
+
+<input type="file"
+
+id="file"
+
+accept=".xlsx,.xls">
+
+
+
+
+
+<button id="uploadBtn"
 
 class="btn btn-primary">
 
-تحميل الأهداف
+رفع الخطة
 
 </button>
 
 
-
 </div>
-
 
 
 
@@ -184,11 +202,8 @@ class="btn btn-primary">
 
 
 <h3>
-
-الأهداف
-
+معاينة البيانات
 </h3>
-
 
 
 <table>
@@ -196,26 +211,27 @@ class="btn btn-primary">
 
 <thead>
 
+
 <tr>
 
-
 <th>
-الهدف
-
+الوحدة
 </th>
 
 
 <th>
-عدد الحصص
+الهدف
+</th>
 
+
+<th>
+الحصص
 </th>
 
 
 <th>
 الأسبوع
-
 </th>
-
 
 
 </tr>
@@ -225,33 +241,12 @@ class="btn btn-primary">
 
 
 
-
-
-<tbody id="objectivesTable">
-
+<tbody id="preview">
 
 </tbody>
 
 
-
 </table>
-
-
-
-<br>
-
-
-<button
-
-id="saveBtn"
-
-class="btn btn-success">
-
-حفظ التوزيع
-
-
-</button>
-
 
 
 </div>
@@ -260,8 +255,8 @@ class="btn btn-success">
 
 
 
-
 </section>
+
 
 
 </main>
@@ -277,9 +272,13 @@ class="btn btn-success">
 
 
 
-<script type="module" src="plan_distribution.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+
+<script type="module" src="upload_plans.js"></script>
 
 
 </body>
+
 
 </html>

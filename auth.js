@@ -1,14 +1,20 @@
-import { 
-    initializeApp 
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+// auth.js
 
 
-import { 
-    getAuth,
-    signInWithEmailAndPassword,
-    signOut,
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+
+
+import {
+
+getAuth,
+signInWithEmailAndPassword,
+signOut,
+onAuthStateChanged
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
 
 import {
@@ -17,61 +23,74 @@ getDatabase,
 ref,
 get
 
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+}
+
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
 
-// Firebase Config
+// ===============================
+// Firebase Configuration
+// ===============================
+
 
 const firebaseConfig = {
 
-  apiKey: "ضع_apiKey",
 
-  authDomain: "ضع_authDomain",
+apiKey: "ضع_apiKey",
 
-  databaseURL: "ضع_databaseURL",
 
-  projectId: "ضع_projectId",
+authDomain: "ضع_authDomain",
 
-  storageBucket: "ضع_storageBucket",
 
-  messagingSenderId: "ضع_senderId",
+databaseURL: "ضع_databaseURL",
 
-  appId: "ضع_appId"
+
+projectId: "ضع_projectId",
+
+
+storageBucket: "ضع_storageBucket",
+
+
+messagingSenderId: "ضع_senderId",
+
+
+appId: "ضع_appId"
+
 
 };
 
 
 
-const app =
-initializeApp(firebaseConfig);
+
+// Initialize Firebase
 
 
-
-const auth =
-getAuth(app);
+const app = initializeApp(firebaseConfig);
 
 
+const auth = getAuth(app);
 
-const db =
-getDatabase(app);
 
+const db = getDatabase(app);
 
 
 
 
+// ===============================
+// LOGIN
+// ===============================
 
-// تسجيل الدخول
 
-window.login =
-async function(){
+export async function login(){
 
 
 const email =
 document
 .getElementById("email")
-.value;
+.value
+.trim();
 
 
 
@@ -83,15 +102,42 @@ document
 
 
 
+const message =
+document.getElementById("message");
+
+
+
+if(!email || !password){
+
+
+if(message){
+
+message.innerHTML =
+"أدخل البريد الإلكتروني وكلمة المرور";
+
+}
+
+return;
+
+}
+
+
+
+
 try{
 
 
 const result =
 await signInWithEmailAndPassword(
+
 auth,
+
 email,
+
 password
+
 );
+
 
 
 
@@ -100,18 +146,33 @@ result.user.uid;
 
 
 
-const snapshot =
+
+// قراءة بيانات المستخدم
+
+
+const userSnapshot =
 await get(
-ref(db,"users/"+uid)
+
+ref(
+db,
+"users/"+uid
+)
+
 );
 
 
 
-if(!snapshot.exists()){
 
-alert(
-"لا يوجد ملف مستخدم"
-);
+
+if(!userSnapshot.exists()){
+
+
+message.innerHTML =
+"المستخدم غير موجود في قاعدة البيانات";
+
+
+await signOut(auth);
+
 
 return;
 
@@ -119,86 +180,41 @@ return;
 
 
 
+
+
 const user =
-snapshot.val();
+userSnapshot.val();
 
 
 
 
-// حفظ بيانات المستخدم
+
+// تخزين بيانات المستخدم
+
 
 localStorage.setItem(
+
 "user",
+
 JSON.stringify({
+
 uid:uid,
+
 ...user
+
 })
+
 );
 
 
 
 
 
-// التوجيه حسب الدور
+
+// تحويل حسب الدور
 
 
-switch(user.role){
-
-
-case "Manager":
-
-window.location.href=
-"admin.html";
-
-break;
-
-
-
-case "Teacher":
-
-window.location.href=
-"teacher.html";
-
-break;
-
-
-
-case "Head":
-
-window.location.href=
-"head.html";
-
-break;
-
-
-
-case "Coordinator":
-
-window.location.href=
-"coordinator.html";
-
-break;
-
-
-
-case "StageManager":
-
-window.location.href=
-"stage.html";
-
-break;
-
-
-
-default:
-
-alert(
-"الدور غير معرف"
-);
-
-
-}
-
+redirectByRole(user.role);
 
 
 
@@ -207,16 +223,120 @@ alert(
 catch(error){
 
 
+console.error(error);
+
+
+if(message){
+
+
+message.innerHTML =
+getErrorMessage(error.code);
+
+
+}
+
+
+}
+
+
+}
+
+
+
+
+
+
+// جعلها متاحة للزر القديم
+
+
+window.login = login;
+
+
+
+
+
+
+
+
+
+// ===============================
+// REDIRECT
+// ===============================
+
+
+function redirectByRole(role){
+
+
+
+switch(role){
+
+
+case "Manager":
+
+window.location.href =
+"admin.html";
+
+break;
+
+
+
+case "Teacher":
+
+window.location.href =
+"teacher.html";
+
+break;
+
+
+
+case "Head":
+
+window.location.href =
+"head.html";
+
+break;
+
+
+
+case "Coordinator":
+
+window.location.href =
+"coordinator.html";
+
+break;
+
+
+
+case "StageManager":
+
+window.location.href =
+"stage.html";
+
+break;
+
+
+
+case "Viewer":
+
+window.location.href =
+"viewer.html";
+
+break;
+
+
+
+default:
+
+
 alert(
-"خطأ في تسجيل الدخول: "
-+
-error.message
+"الدور غير معرف: "+role
 );
 
 
 }
 
 
+
 }
 
 
@@ -226,11 +346,13 @@ error.message
 
 
 
+// ===============================
+// LOGOUT
+// ===============================
 
-// تسجيل الخروج
 
-window.logout =
-async function(){
+export async function logout(){
+
 
 
 await signOut(auth);
@@ -241,8 +363,7 @@ localStorage.removeItem(
 );
 
 
-
-window.location.href=
+window.location.href =
 "index.html";
 
 
@@ -250,19 +371,35 @@ window.location.href=
 
 
 
+window.logout = logout;
 
 
 
 
 
 
-// المستخدم الحالي
+
+
+
+
+// ===============================
+// CURRENT USER
+// ===============================
+
 
 export function currentUser(){
 
-return JSON.parse(
-localStorage.getItem("user")
-);
+
+const user =
+localStorage.getItem("user");
+
+
+return user
+?
+JSON.parse(user)
+:
+null;
+
 
 }
 
@@ -274,20 +411,47 @@ localStorage.getItem("user")
 
 
 
-// حماية الصفحات
+// ===============================
+// PAGE PROTECTION
+// ===============================
 
-export function protectPage(roles=[]){
+
+export function protectPage(allowedRoles=[]){
 
 
 
 onAuthStateChanged(
 auth,
-async(user)=>{
+(firebaseUser)=>{
+
+
+if(!firebaseUser){
+
+
+window.location.href =
+"index.html";
+
+
+return;
+
+
+}
+
+
+
+
+
+const user =
+currentUser();
+
 
 
 if(!user){
 
-window.location.href="index.html";
+
+window.location.href =
+"index.html";
+
 
 return;
 
@@ -295,25 +459,26 @@ return;
 
 
 
-const data =
-JSON.parse(
-localStorage.getItem("user")
-);
-
-
 
 if(
-roles.length &&
-!roles.includes(data.role)
+
+allowedRoles.length > 0
+
+&&
+
+!allowedRoles.includes(user.role)
+
 ){
 
 
 alert(
-"ليس لديك صلاحية"
+"ليس لديك صلاحية دخول هذه الصفحة"
 );
 
 
-window.location.href="index.html";
+
+window.location.href =
+"index.html";
 
 
 }
@@ -323,8 +488,61 @@ window.location.href="index.html";
 }
 
 
-
 );
+
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// FIREBASE ERRORS
+// ===============================
+
+
+function getErrorMessage(code){
+
+
+
+switch(code){
+
+
+case "auth/invalid-email":
+
+return "البريد الإلكتروني غير صحيح";
+
+
+
+case "auth/user-not-found":
+
+return "المستخدم غير موجود";
+
+
+
+case "auth/wrong-password":
+
+return "كلمة المرور غير صحيحة";
+
+
+
+case "auth/invalid-credential":
+
+return "بيانات الدخول غير صحيحة";
+
+
+
+default:
+
+return "حدث خطأ أثناء تسجيل الدخول";
+
+
+}
 
 
 

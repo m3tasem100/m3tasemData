@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>
+تسجيل الدخول - نظام إدارة المدرسة
+</title>
+
+
+<style>
+
+
+*{
+
+box-sizing:border-box;
+font-family:Tahoma,Arial;
+
+}
+
+
+
+body{
+
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#f1f5f9;
+
+}
+
+
+
+.login-box{
+
+width:380px;
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 20px #ccc;
+
+}
+
+
+
+h2{
+
+text-align:center;
+color:#1e3a8a;
+
+}
+
+
+
+input{
+
+width:100%;
+padding:12px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:15px;
+
+}
+
+
+
+button{
+
+width:100%;
+padding:12px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+
+}
+
+
+
+button:hover{
+
+background:#1d4ed8;
+
+}
+
+
+
+#message{
+
+text-align:center;
+margin-top:15px;
+color:red;
+
+}
+
+
+.logo{
+
+text-align:center;
+font-size:45px;
+
+}
+
+
+</style>
+
+
+</head>
+
+
+
+<body>
+
+
+<div class="login-box">
+
+
+<div class="logo">
+🏫
+</div>
+
+
+<h2>
+نظام إدارة المدرسة
+</h2>
+
+
+<input
+
+id="email"
+
+type="email"
+
+placeholder="البريد الإلكتروني"
+
+>
+
+
+<input
+
+id="password"
+
+type="password"
+
+placeholder="كلمة المرور"
+
+>
+
+
+
+<button id="loginBtn">
+
+دخول
+
+</button>
+
+
+
+<div id="message">
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<script type="module">
+
+
+import {
+login
+}
+from "./auth.js";
+
+
+
+
+const btn =
+document.getElementById(
+"loginBtn"
+);
+
+
+
+const message =
+document.getElementById(
+"message"
+);
+
+
+
+
+
+btn.onclick =
+async()=>{
+
+
+
+const email =
+document
+.getElementById("email")
+.value
+.trim();
+
+
+
+const password =
+document
+.getElementById("password")
+.value;
+
+
+
+
+
+if(!email || !password){
+
+
+message.innerHTML =
+"أدخل البريد وكلمة المرور";
+
+
+return;
+
+
+}
+
+
+
+
+btn.disabled=true;
+
+
+btn.innerHTML=
+"جاري الدخول...";
+
+
+
+
+try{
+
+
+await login(
+email,
+password
+);
+
+
+
+}
+
+catch(error){
+
+
+console.log(error);
+
+
+
+message.innerHTML =
+getErrorMessage(
+error.code
+);
+
+
+
+btn.disabled=false;
+
+
+btn.innerHTML=
+"دخول";
+
+
+}
+
+
+
+};
+
+
+
+
+
+
+
+
+
+function getErrorMessage(code){
+
+
+
+switch(code){
+
+
+case
+"auth/user-not-found":
+
+return "المستخدم غير موجود";
+
+
+
+case
+"auth/wrong-password":
+
+return "كلمة المرور غير صحيحة";
+
+
+
+case
+"auth/invalid-email":
+
+return "البريد الإلكتروني غير صحيح";
+
+
+
+case
+"auth/too-many-requests":
+
+return "تم إيقاف المحاولة مؤقتاً";
+
+
+
+default:
+
+return "حدث خطأ أثناء تسجيل الدخول";
+
+
+}
+
+
+
+}
+
+
+
+</script>
+
+
+
+</body>
+
+
+</html>

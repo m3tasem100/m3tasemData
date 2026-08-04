@@ -1,0 +1,2085 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>لوحة إدارة النظام</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    font-family:"Tahoma",Arial,sans-serif;
+}
+
+body{
+    margin:0;
+    background:#f4f6f9;
+    color:#333;
+}
+
+header{
+    background:#1e3a8a;
+    color:white;
+    padding:15px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+header h1{
+    margin:0;
+    font-size:22px;
+}
+
+button{
+    border:none;
+    padding:10px 18px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.logout{
+    background:#dc2626;
+    color:white;
+}
+
+.container{
+    display:flex;
+    min-height:calc(100vh - 70px);
+}
+
+
+/* القائمة */
+
+.sidebar{
+
+    width:250px;
+    background:#111827;
+    color:white;
+    padding:20px;
+
+}
+
+
+.sidebar h3{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+
+.menu-item{
+
+    padding:12px;
+    margin-bottom:8px;
+    background:#1f2937;
+    border-radius:6px;
+    cursor:pointer;
+
+}
+
+
+.menu-item:hover{
+
+    background:#2563eb;
+
+}
+
+
+
+/* المحتوى */
+
+.content{
+
+    flex:1;
+    padding:25px;
+
+}
+
+
+
+.card{
+
+    background:white;
+    border-radius:10px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 3px 10px #ddd;
+
+}
+
+
+
+.stats{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+
+}
+
+
+
+.stat{
+
+background:white;
+padding:20px;
+border-radius:10px;
+text-align:center;
+box-shadow:0 3px 10px #ddd;
+
+}
+
+
+.stat h2{
+
+color:#2563eb;
+
+}
+
+
+
+.hidden{
+
+display:none;
+
+}
+
+
+table{
+
+width:100%;
+border-collapse:collapse;
+
+}
+
+
+th,td{
+
+border:1px solid #ddd;
+padding:10px;
+text-align:center;
+
+}
+
+
+th{
+
+background:#2563eb;
+color:white;
+
+}
+
+
+</style>
+
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>
+نظام إدارة المدرسة
+</h1>
+
+
+<button class="logout" id="logoutBtn">
+تسجيل الخروج
+</button>
+
+
+</header>
+
+
+
+<div class="container">
+
+
+<aside class="sidebar">
+
+
+<h3>
+لوحة الإدارة
+</h3>
+
+
+<div class="menu-item" onclick="showPage('dashboard')">
+الرئيسية
+</div>
+
+
+<div class="menu-item" onclick="showPage('years')">
+السنوات والفصول
+</div>
+
+
+<div class="menu-item" onclick="showPage('structure')">
+الصفوف والمواد
+</div>
+
+
+<div class="menu-item" onclick="showPage('users')">
+المستخدمون والصلاحيات
+</div>
+
+
+<div class="menu-item" onclick="showPage('plans')">
+الخطط السنوية
+</div>
+
+
+<div class="menu-item" onclick="showPage('evaluation')">
+التقييم
+</div>
+
+
+<div class="menu-item" onclick="showPage('reports')">
+التقارير
+</div>
+
+
+</aside>
+
+
+
+<main class="content">
+
+
+
+<section id="dashboard">
+
+
+<div class="card">
+
+<h2>
+الرئيسية
+</h2>
+
+
+<p id="welcome">
+جاري تحميل بيانات المستخدم...
+</p>
+
+
+</div>
+
+
+
+<div class="stats">
+
+
+<div class="stat">
+
+<h2 id="yearCount">
+0
+</h2>
+
+<p>
+السنوات
+</p>
+
+</div>
+
+
+
+<div class="stat">
+
+<h2 id="userCount">
+0
+</h2>
+
+<p>
+المستخدمون
+</p>
+
+</div>
+
+
+
+<div class="stat">
+
+<h2 id="planCount">
+0
+</h2>
+
+<p>
+الخطط المرفوعة
+</p>
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+<section id="years" class="hidden">
+
+
+<div class="card">
+
+<h2>
+إدارة السنوات والفصول
+</h2>
+
+
+<div id="yearArea">
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<section id="structure" class="hidden">
+
+<div class="card">
+
+<h2>
+الهيكل الأكاديمي
+</h2>
+
+<div id="structureArea">
+
+</div>
+
+
+</div>
+
+</section>
+
+
+
+
+
+
+<section id="users" class="hidden">
+
+
+<div class="card">
+
+<h2>
+إدارة المستخدمين والصلاحيات
+</h2>
+
+
+<div id="usersArea">
+
+</div>
+
+
+</div>
+
+</section>
+
+
+
+
+
+
+<section id="plans" class="hidden">
+
+<div class="card">
+
+<h2>
+إدارة الخطط السنوية
+</h2>
+
+
+<div id="plansArea">
+
+</div>
+
+
+</div>
+
+</section>
+
+
+
+
+
+
+<section id="evaluation" class="hidden">
+
+<div class="card">
+
+<h2>
+نظام التقييم
+</h2>
+
+
+<div id="evaluationArea">
+
+</div>
+
+
+</div>
+
+</section>
+
+
+
+
+
+
+
+<section id="reports" class="hidden">
+
+<div class="card">
+
+<h2>
+التقارير
+</h2>
+
+
+<div id="reportsArea">
+
+</div>
+
+
+</div>
+
+</section>
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+<script>
+
+function showPage(id){
+
+document.querySelectorAll("main section")
+.forEach(x=>x.classList.add("hidden"));
+
+
+document.getElementById(id)
+.classList.remove("hidden");
+
+}
+
+
+</script>
+
+<!-- Firebase SDK -->
+<script type="module">
+
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+
+
+import { 
+getAuth,
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+
+import {
+getDatabase,
+ref,
+get,
+child
+}
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+
+
+// إعدادات Firebase الخاصة بك
+// استبدلها بإعدادات مشروعك
+
+const firebaseConfig = {
+
+apiKey: "YOUR_API_KEY",
+
+authDomain: "YOUR_PROJECT.firebaseapp.com",
+
+databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+
+projectId: "YOUR_PROJECT",
+
+storageBucket: "YOUR_PROJECT.appspot.com",
+
+messagingSenderId: "YOUR_ID",
+
+appId: "YOUR_APP_ID"
+
+};
+
+
+
+// تشغيل Firebase
+
+const app = initializeApp(firebaseConfig);
+
+
+const auth = getAuth(app);
+
+
+const db = getDatabase(app);
+
+
+
+
+
+// ===============================
+// حماية صفحة الإدارة
+// ===============================
+
+
+onAuthStateChanged(auth, async(user)=>{
+
+
+if(!user){
+
+window.location.href="login.html";
+
+return;
+
+}
+
+
+
+try{
+
+
+const snapshot = await get(
+child(
+ref(db),
+"users/"+user.uid
+)
+);
+
+
+
+if(!snapshot.exists()){
+
+
+alert("لا يوجد ملف مستخدم");
+
+await signOut(auth);
+
+window.location.href="login.html";
+
+return;
+
+}
+
+
+
+
+const userData=snapshot.val();
+
+
+
+
+document.getElementById("welcome").innerHTML=
+
+`
+مرحباً ${userData.name || user.email}
+<br>
+الدور: ${userData.role}
+`;
+
+
+
+
+
+// السماح للمدير فقط
+
+if(
+userData.role !== "Manager" &&
+userData.role !== "Admin"
+){
+
+
+alert(
+"ليس لديك صلاحية دخول لوحة الإدارة"
+);
+
+
+window.location.href="home.html";
+
+
+return;
+
+}
+
+
+
+
+loadDashboard();
+
+
+
+}
+
+catch(error){
+
+
+console.error(error);
+
+
+alert(
+"حدث خطأ أثناء التحقق من الصلاحيات"
+);
+
+
+}
+
+
+
+});
+
+
+
+
+
+
+// ===============================
+// تسجيل الخروج
+// ===============================
+
+
+document
+.getElementById("logoutBtn")
+.addEventListener(
+"click",
+async()=>{
+
+
+await signOut(auth);
+
+
+window.location.href="login.html";
+
+
+});
+
+
+
+
+
+
+
+// ===============================
+// تحميل إحصائيات لوحة التحكم
+// ===============================
+
+
+async function loadDashboard(){
+
+
+
+try{
+
+
+const dbRef=ref(db);
+
+
+
+
+// عدد السنوات
+
+const yearsSnap =
+await get(
+child(dbRef,"years")
+);
+
+
+if(yearsSnap.exists()){
+
+
+document.getElementById("yearCount")
+.innerText=
+Object.keys(yearsSnap.val()).length;
+
+
+}
+
+
+
+
+// عدد المستخدمين
+
+
+const usersSnap =
+await get(
+child(dbRef,"users")
+);
+
+
+
+if(usersSnap.exists()){
+
+
+document.getElementById("userCount")
+.innerText=
+Object.keys(usersSnap.val()).length;
+
+
+}
+
+
+
+
+
+// عدد الخطط
+
+
+const plansSnap =
+await get(
+child(dbRef,"plans")
+);
+
+
+
+if(plansSnap.exists()){
+
+
+document.getElementById("planCount")
+.innerText=
+Object.keys(plansSnap.val()).length;
+
+
+}
+
+
+
+}
+
+catch(e){
+
+
+console.log(e);
+
+
+}
+
+
+}
+
+
+
+
+</script>
+<script type="module">
+
+import {
+getDatabase,
+ref,
+set,
+push,
+get,
+update,
+child
+}
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+
+// استخدام نفس db الموجود في الجزء السابق
+
+
+const yearArea =
+document.getElementById("yearArea");
+
+
+
+
+// تحميل السنوات
+
+async function loadYears(){
+
+
+const snapshot =
+await get(
+child(ref(db),"years")
+);
+
+
+yearArea.innerHTML="";
+
+
+
+if(!snapshot.exists()){
+
+
+yearArea.innerHTML=
+`
+<p>
+لا توجد سنوات مضافة
+</p>
+`;
+
+return;
+
+}
+
+
+
+
+const years=snapshot.val();
+
+
+
+let html=`
+
+<button onclick="addYear()">
++ إضافة سنة
+</button>
+
+<br><br>
+
+
+<table>
+
+<tr>
+
+<th>
+السنة
+</th>
+
+<th>
+الفصل النشط
+</th>
+
+<th>
+الحالة
+</th>
+
+<th>
+إجراء
+</th>
+
+</tr>
+
+`;
+
+
+
+
+Object.keys(years)
+.forEach(id=>{
+
+
+let y=years[id];
+
+
+html+=`
+
+<tr>
+
+
+<td>
+${y.name}
+</td>
+
+
+
+<td>
+
+${y.activeSemester || "غير محدد"}
+
+</td>
+
+
+
+<td>
+
+${
+y.active
+?
+"نشطة"
+:
+"غير نشطة"
+}
+
+</td>
+
+
+
+<td>
+
+
+<button
+onclick="activateYear('${id}')">
+
+تفعيل
+
+</button>
+
+
+
+</td>
+
+
+</tr>
+
+
+`;
+
+
+
+});
+
+
+
+html+=`</table>`;
+
+
+yearArea.innerHTML=html;
+
+
+}
+
+
+
+
+
+
+
+
+// إضافة سنة
+
+window.addYear =
+async function(){
+
+
+
+let year =
+prompt(
+"اكتب السنة الدراسية مثال 2025-2026"
+);
+
+
+
+if(!year)
+return;
+
+
+
+
+const newRef=
+push(
+ref(db,"years")
+);
+
+
+
+await set(
+newRef,
+{
+
+name:year,
+
+active:false,
+
+activeSemester:"Semester 1",
+
+semesters:{
+
+
+semester1:true,
+
+semester2:true
+
+
+},
+
+
+createdAt:
+new Date().toISOString()
+
+
+
+}
+
+);
+
+
+
+alert(
+"تمت إضافة السنة"
+);
+
+
+
+loadYears();
+
+
+}
+
+
+
+
+
+
+
+
+// تفعيل سنة
+
+window.activateYear =
+async function(id){
+
+
+
+const yearsSnap=
+await get(
+child(ref(db),"years")
+);
+
+
+
+if(!yearsSnap.exists())
+return;
+
+
+
+const years=
+yearsSnap.val();
+
+
+
+
+let updates={};
+
+
+
+// إلغاء تفعيل الجميع
+
+Object.keys(years)
+.forEach(key=>{
+
+
+updates[
+"years/"+key+"/active"
+]=false;
+
+
+});
+
+
+
+// تفعيل المختارة
+
+updates[
+"years/"+id+"/active"
+]=true;
+
+
+
+await update(
+ref(db),
+updates
+);
+
+
+
+alert(
+"تم تفعيل السنة"
+);
+
+
+
+loadYears();
+
+
+}
+
+
+
+
+
+
+
+// اختيار الفصل النشط
+
+window.changeSemester =
+async function(id){
+
+
+
+let semester=
+prompt(
+"اكتب الفصل: Semester 1 أو Semester 2"
+);
+
+
+
+if(
+semester!=="Semester 1"
+&&
+semester!=="Semester 2"
+){
+
+
+alert(
+"الفصل غير صحيح"
+);
+
+
+return;
+
+}
+
+
+
+
+await update(
+ref(db,"years/"+id),
+{
+
+activeSemester:semester
+
+}
+
+);
+
+
+
+loadYears();
+
+
+}
+
+
+
+
+
+
+loadYears();
+
+
+</script>
+
+<script type="module">
+
+import {
+get,
+set,
+push,
+child,
+ref
+}
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+
+
+const structureArea =
+document.getElementById("structureArea");
+
+
+
+
+
+async function loadStructure(){
+
+
+const snapshot =
+await get(
+child(ref(db),"structure")
+);
+
+
+
+let data =
+snapshot.exists()
+?
+snapshot.val()
+:
+{};
+
+
+
+
+structureArea.innerHTML=
+
+`
+
+<button onclick="addGrade()">
++ إضافة صف
+</button>
+
+<button onclick="addSubject()">
++ إضافة مادة
+</button>
+
+
+<button onclick="addSection()">
++ إضافة قسم
+</button>
+
+
+<br><br>
+
+
+<h3>
+الصفوف
+</h3>
+
+
+<div id="gradesList"></div>
+
+
+<hr>
+
+
+<h3>
+المواد
+</h3>
+
+
+<div id="subjectsList"></div>
+
+
+<hr>
+
+
+<h3>
+الأقسام
+</h3>
+
+
+<div id="sectionsList"></div>
+
+
+`;
+
+
+
+
+renderGrades(data.grades || {});
+
+renderSubjects(data.subjects || {});
+
+renderSections(data.sections || {});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+function renderGrades(grades){
+
+
+let html="<table><tr><th>الصف</th></tr>";
+
+
+
+Object.values(grades)
+.forEach(g=>{
+
+
+html+=`
+
+<tr>
+<td>
+${g.name}
+</td>
+</tr>
+
+`;
+
+
+
+});
+
+
+html+="</table>";
+
+
+
+document.getElementById("gradesList")
+.innerHTML=html;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+function renderSubjects(subjects){
+
+
+let html="<table><tr><th>المادة</th></tr>";
+
+
+
+Object.values(subjects)
+.forEach(s=>{
+
+
+html+=`
+
+<tr>
+<td>
+${s.name}
+</td>
+</tr>
+
+`;
+
+
+
+});
+
+
+html+="</table>";
+
+
+
+document.getElementById("subjectsList")
+.innerHTML=html;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+function renderSections(sections){
+
+
+let html=
+`
+
+<table>
+
+<tr>
+
+<th>
+القسم
+</th>
+
+<th>
+البرنامج
+</th>
+
+</tr>
+
+`;
+
+
+
+Object.values(sections)
+.forEach(s=>{
+
+
+html+=`
+
+<tr>
+
+<td>
+${s.name}
+</td>
+
+
+<td>
+${s.program}
+</td>
+
+
+</tr>
+
+`;
+
+
+
+});
+
+
+
+html+="</table>";
+
+
+
+document
+.getElementById("sectionsList")
+.innerHTML=html;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// إضافة صف
+
+window.addGrade=
+async function(){
+
+
+
+let name=
+prompt(
+"اسم الصف مثال Grade 9"
+);
+
+
+
+if(!name)return;
+
+
+
+let id=
+push(ref(db,"structure/grades"))
+.key;
+
+
+
+await set(
+ref(db,"structure/grades/"+id),
+{
+
+name:name,
+
+createdAt:
+Date.now()
+
+}
+
+);
+
+
+
+loadStructure();
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// إضافة مادة
+
+window.addSubject=
+async function(){
+
+
+let name=
+prompt(
+"اسم المادة"
+);
+
+
+
+if(!name)return;
+
+
+
+let id=
+push(ref(db,"structure/subjects"))
+.key;
+
+
+
+await set(
+ref(db,"structure/subjects/"+id),
+{
+
+name:name,
+
+active:true
+
+}
+
+);
+
+
+
+loadStructure();
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// إضافة قسم
+
+window.addSection=
+async function(){
+
+
+
+let name=
+prompt(
+"اسم القسم"
+);
+
+
+
+if(!name)return;
+
+
+
+
+let program=
+prompt(
+"نوع البرنامج American / British"
+);
+
+
+
+let id=
+push(ref(db,"structure/sections"))
+.key;
+
+
+
+await set(
+ref(db,"structure/sections/"+id),
+{
+
+name:name,
+
+program:
+program || "American",
+
+active:true
+
+
+}
+
+);
+
+
+
+loadStructure();
+
+
+}
+
+
+
+
+
+
+loadStructure();
+
+
+
+</script>
+
+<script type="module">
+
+import {
+get,
+set,
+update,
+ref,
+child
+}
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+
+
+const usersArea =
+document.getElementById("usersArea");
+
+
+
+
+
+// ===============================
+// المستخدمون والصلاحيات
+// ===============================
+
+
+async function loadUsers(){
+
+
+const snap =
+await get(
+child(ref(db),"users")
+);
+
+
+
+if(!snap.exists()){
+
+
+usersArea.innerHTML=
+`
+<p>
+لا يوجد مستخدمون
+</p>
+`;
+
+return;
+
+
+}
+
+
+
+
+let users=snap.val();
+
+
+
+let html=
+
+`
+
+<button onclick="changeUserRole()">
+
+تعديل صلاحية مستخدم
+
+</button>
+
+
+<br><br>
+
+
+<table>
+
+<tr>
+
+<th>
+الاسم
+</th>
+
+<th>
+البريد
+</th>
+
+<th>
+الدور
+</th>
+
+<th>
+القسم
+</th>
+
+</tr>
+
+`;
+
+
+
+
+Object.keys(users)
+.forEach(id=>{
+
+
+let u=users[id];
+
+
+html+=`
+
+<tr>
+
+<td>
+${u.name || ""}
+</td>
+
+
+<td>
+${u.email || ""}
+</td>
+
+
+<td>
+${u.role || ""}
+</td>
+
+
+
+<td>
+${u.section || "-"}
+</td>
+
+
+
+</tr>
+
+
+`;
+
+
+
+});
+
+
+
+html+="</table>";
+
+
+
+usersArea.innerHTML=html;
+
+
+}
+
+
+
+
+
+
+
+
+
+// تعديل دور مستخدم
+
+window.changeUserRole =
+async function(){
+
+
+
+let uid =
+prompt(
+"أدخل UID المستخدم"
+);
+
+
+
+if(!uid)
+return;
+
+
+
+
+let role =
+prompt(
+
+`
+اختر الدور:
+Manager
+Head
+Coordinator
+StageManager
+Teacher
+Viewer
+
+`
+
+);
+
+
+
+const allowed=[
+
+"Manager",
+"Head",
+"Coordinator",
+"StageManager",
+"Teacher",
+"Viewer"
+
+];
+
+
+
+if(!allowed.includes(role)){
+
+
+alert(
+"الدور غير صحيح"
+);
+
+
+return;
+
+
+}
+
+
+
+
+await update(
+ref(db,"users/"+uid),
+{
+
+role:role
+
+}
+
+);
+
+
+
+alert(
+"تم تحديث الصلاحية"
+);
+
+
+
+loadUsers();
+
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// الخطط
+// ===============================
+
+
+async function loadPlans(){
+
+
+document
+.getElementById("plansArea")
+.innerHTML=
+
+`
+
+<h3>
+إدارة الخطط السنوية
+</h3>
+
+
+<p>
+سيتم ربط رفع Excel هنا:
+السنة → الفصل → البرنامج → الصف → المادة
+</p>
+
+
+<button onclick="uploadPlan()">
+
+رفع خطة
+
+</button>
+
+
+`;
+
+
+
+}
+
+
+
+
+window.uploadPlan =
+function(){
+
+
+alert(
+
+"سيتم إضافة وحدة رفع Excel والتحقق من الأسابيع في النسخة القادمة"
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// التقييم
+// ===============================
+
+
+async function loadEvaluation(){
+
+
+document
+.getElementById("evaluationArea")
+.innerHTML=
+
+`
+
+<h3>
+إعداد التقييم
+</h3>
+
+
+<p>
+
+نظام التقييم يدعم:
+
+</p>
+
+
+<ul>
+
+<li>
+تقييم المعلم 25%
+</li>
+
+<li>
+رئيس القسم 25%
+</li>
+
+<li>
+المنسق 25%
+</li>
+
+<li>
+مدير المرحلة 25%
+</li>
+
+
+</ul>
+
+
+<p>
+
+المقيم يستطيع تقييم معلمي المادة المرتبطة به فقط.
+
+</p>
+
+
+`;
+
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// التقارير
+// ===============================
+
+
+async function loadReports(){
+
+
+document
+.getElementById("reportsArea")
+.innerHTML=
+
+`
+
+<h3>
+التقارير
+</h3>
+
+
+<ul>
+
+<li>
+تقرير الخطط الأسبوعية
+</li>
+
+<li>
+نسبة الإنجاز والتأخير
+</li>
+
+<li>
+تقرير تقييم المعلمين
+</li>
+
+<li>
+التقرير النهائي للطباعة
+
+</li>
+
+
+</ul>
+
+
+`;
+
+
+
+}
+
+
+
+
+
+
+
+loadUsers();
+
+loadPlans();
+
+loadEvaluation();
+
+loadReports();
+
+
+
+</script>
+</body>
+</html>

@@ -1,13 +1,11 @@
 ////////////////////////////////////////////////////
-// UCA SCHOOL MANAGEMENT SYSTEM
-// USERS MANAGEMENT MODULE
+// USER MANAGEMENT
 ////////////////////////////////////////////////////
 
 
 import {
 
-db,
-app
+db
 
 }
 
@@ -17,43 +15,12 @@ from "./firebase-config.js";
 
 import {
 
-currentUser
-
-}
-
-from "./auth.js";
-
-
-
-import {
-
-initializeApp,
-deleteApp
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-
-
-
-import {
-
-getAuth,
-createUserWithEmailAndPassword
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-
-
-
-import {
-
 ref,
 get,
 set,
 update,
-remove
+remove,
+push
 
 }
 
@@ -61,272 +28,74 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
+import {
 
+logout
 
+}
 
+from "./auth.js";
 
-const content =
 
-document.getElementById("content");
 
 
 
 
 
+const table =
 
+document.getElementById(
+"usersTable"
+);
 
-// =======================================
-// تحميل الصفحة
-// =======================================
 
 
-renderUsers();
-
-
-
-
-
-
-
-
-
-async function renderUsers(){
-
-
-
-content.innerHTML = `
-
-
-<h2>
-👥 إدارة المستخدمين
-</h2>
-
-
-
-
-<div class="card">
-
-
-<h3>
-إضافة مستخدم جديد
-</h3>
-
-
-
-<div class="form-group">
-
-<label>
-الاسم
-</label>
-
-<input id="userName">
-
-</div>
-
-
-
-
-
-<div class="form-group">
-
-<label>
-البريد الإلكتروني
-</label>
-
-<input id="userEmail">
-
-</div>
-
-
-
-
-
-<div class="form-group">
-
-<label>
-كلمة المرور
-</label>
-
-<input 
-id="userPassword"
-type="password">
-
-</div>
-
-
-
-
-
-<div class="form-group">
-
-<label>
-الدور
-</label>
-
-
-<select id="userRole">
-
-
-<option value="Teacher">
-معلم
-</option>
-
-
-<option value="Head">
-رئيس قسم
-</option>
-
-
-<option value="Coordinator">
-منسق
-</option>
-
-
-<option value="StageManager">
-مدير مرحلة
-</option>
-
-
-<option value="Viewer">
-مشاهد
-</option>
-
-
-</select>
-
-
-</div>
-
-
-
-
-
-<button class="btn btn-primary"
-id="addUserBtn">
-
-إضافة المستخدم
-
-</button>
-
-
-
-<p id="userMessage"></p>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h3>
-قائمة المستخدمين
-</h3>
-
-
-
-<div class="table-container">
-
-
-<table>
-
-
-<thead>
-
-<tr>
-
-<th>
-الاسم
-</th>
-
-
-<th>
-البريد
-</th>
-
-
-<th>
-الدور
-</th>
-
-
-<th>
-الحالة
-</th>
-
-
-<th>
-إجراءات
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-<tbody id="usersTable">
-
-
-</tbody>
-
-
-</table>
-
-
-</div>
-
-
-</div>
-
-
-
-`;
 
 
 
 
 document
-.getElementById("addUserBtn")
-.onclick=createUser;
 
+.getElementById("logoutBtn")
+
+.onclick=logout;
+
+
+
+
+
+
+
+
+window.goAdmin=function(){
+
+
+location.href="admin.html";
+
+
+};
+
+
+
+
+
+
+
+
+
+// تحميل المستخدمين
 
 
 loadUsers();
 
 
 
-}
 
 
 
-
-
-
-
-
-
-// =======================================
-// قراءة المستخدمين
-// =======================================
 
 
 async function loadUsers(){
-
-
-
-const table =
-
-document.getElementById("usersTable");
 
 
 
@@ -334,7 +103,7 @@ table.innerHTML="";
 
 
 
-const snapshot =
+const snap =
 
 await get(
 
@@ -344,12 +113,15 @@ ref(db,"users")
 
 
 
-if(!snapshot.exists()){
+
+
+if(!snap.exists()){
 
 
 table.innerHTML=
 
 `
+
 <tr>
 
 <td colspan="5">
@@ -371,17 +143,14 @@ return;
 
 
 
-const users =
-
-snapshot.val();
 
 
+Object.entries(
+snap.val()
 
+)
 
-
-Object.entries(users)
-
-.forEach(([uid,user])=>{
+.forEach(([uid,u])=>{
 
 
 
@@ -394,54 +163,44 @@ table.innerHTML +=
 
 
 <td>
-${user.name || ""}
+
+${u.name || ""}
+
 </td>
 
-
-<td>
-${user.email || ""}
-</td>
 
 
 <td>
 
-<select 
-onchange="window.changeRole('${uid}',this.value)">
+${u.email || ""}
 
-
-<option ${user.role==="Manager"?"selected":""}>
-Manager
-</option>
-
-
-<option ${user.role==="Teacher"?"selected":""}>
-Teacher
-</option>
-
-
-<option ${user.role==="Head"?"selected":""}>
-Head
-</option>
-
-
-<option ${user.role==="Coordinator"?"selected":""}>
-Coordinator
-</option>
-
-
-<option ${user.role==="StageManager"?"selected":""}>
-StageManager
-</option>
-
-
-<option ${user.role==="Viewer"?"selected":""}>
-Viewer
-</option>
+</td>
 
 
 
-</select>
+<td>
 
+${u.role}
+
+</td>
+
+
+
+<td>
+
+${
+
+u.active
+
+?
+
+"فعال"
+
+:
+
+"معطل"
+
+}
 
 </td>
 
@@ -450,23 +209,11 @@ Viewer
 <td>
 
 
-<span class="badge ${user.active ? "badge-success":"badge-danger"}">
+<button
 
-${user.active ? "فعال":"موقوف"}
+class="btn btn-warning"
 
-</span>
-
-
-</td>
-
-
-
-<td>
-
-
-<button class="btn btn-warning"
-
-onclick="editUser('${uid}','${user.name || ""}')">
+onclick="editUser('${uid}')">
 
 تعديل
 
@@ -474,21 +221,27 @@ onclick="editUser('${uid}','${user.name || ""}')">
 
 
 
-<button class="btn btn-danger"
+<button
 
-onclick="toggleUser('${uid}',${user.active})">
+class="btn btn-danger"
 
-${user.active ? "تعطيل":"تفعيل"}
+onclick="deleteUser('${uid}')">
+
+حذف
 
 </button>
 
 
 
-<button class="btn btn-danger"
 
-onclick="deleteUser('${uid}')">
+<button
 
-حذف
+class="btn btn-success"
+
+onclick="toggleUser('${uid}',${u.active})">
+
+
+تفعيل/تعطيل
 
 </button>
 
@@ -499,6 +252,7 @@ onclick="deleteUser('${uid}')">
 
 
 </tr>
+
 
 
 `;
@@ -519,92 +273,30 @@ onclick="deleteUser('${uid}')">
 
 
 
-// =======================================
-// إنشاء مستخدم
-// =======================================
+// إضافة مستخدم بيانات فقط
 
 
-async function createUser(){
+document
 
+.getElementById("addBtn")
 
+.onclick=
 
-const name =
-
-userName.value.trim();
-
-
-
-const email =
-
-userEmail.value.trim();
-
-
-
-const password =
-
-userPassword.value;
-
-
-
-const role =
-
-userRole.value;
+async function(){
 
 
 
 
 
+const id =
 
-try{
+push(
 
+ref(db,"users")
 
+)
 
-const secondaryApp =
-
-initializeApp(
-
-app.options,
-
-"Secondary-"+Date.now()
-
-);
-
-
-
-
-
-const secondaryAuth =
-
-getAuth(
-secondaryApp
-);
-
-
-
-
-
-
-const result =
-
-await createUserWithEmailAndPassword(
-
-secondaryAuth,
-
-email,
-
-password
-
-);
-
-
-
-
-
-
-const uid =
-
-result.user.uid;
-
+.key;
 
 
 
@@ -612,18 +304,29 @@ result.user.uid;
 
 await set(
 
-ref(db,"users/"+uid),
+ref(db,"users/"+id),
 
 {
 
 
-name:name,
+name:
 
-email:email,
+name.value,
 
-role:role,
 
-active:true,
+email:
+
+email.value,
+
+
+role:
+
+role.value,
+
+
+active:
+
+active.value==="true",
 
 
 createdAt:
@@ -639,69 +342,8 @@ Date.now()
 
 
 
-
-await deleteApp(
-secondaryApp
-);
-
-
-
-
-
-userMessage.innerHTML=
-
-"تم إنشاء المستخدم بنجاح";
-
-
-
-renderUsers();
-
-
-
-}
-
-catch(error){
-
-
-userMessage.innerHTML=
-
-error.message;
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =======================================
-// تغيير الدور
-// =======================================
-
-
-window.changeRole=
-
-async function(uid,role){
-
-
-await update(
-
-ref(db,"users/"+uid),
-
-{
-
-role:role
-
-}
-
+alert(
+"تم إضافة المستخدم"
 );
 
 
@@ -709,7 +351,8 @@ role:role
 loadUsers();
 
 
-}
+
+};
 
 
 
@@ -719,30 +362,29 @@ loadUsers();
 
 
 
-// =======================================
-// تعديل الاسم
-// =======================================
+// تعديل
 
 
 window.editUser=
 
-async function(uid,oldName){
+async function(uid){
 
 
 
-const name =
+const newRole =
 
 prompt(
 
-"الاسم الجديد",
-
-oldName
+"الدور الجديد"
 
 );
 
 
 
-if(!name)
+
+
+
+if(!newRole)
 
 return;
 
@@ -750,13 +392,16 @@ return;
 
 
 
+
 await update(
 
 ref(db,"users/"+uid),
 
 {
 
-name:name
+
+role:newRole
+
 
 }
 
@@ -778,48 +423,7 @@ loadUsers();
 
 
 
-// =======================================
-// تفعيل وتعطيل
-// =======================================
-
-
-window.toggleUser=
-
-async function(uid,status){
-
-
-
-await update(
-
-ref(db,"users/"+uid),
-
-{
-
-active:!status
-
-}
-
-);
-
-
-
-loadUsers();
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =======================================
 // حذف
-// =======================================
 
 
 window.deleteUser=
@@ -829,10 +433,13 @@ async function(uid){
 
 
 if(!confirm(
-"هل تريد حذف المستخدم؟"
+"حذف المستخدم؟"
 ))
 
 return;
+
+
+
 
 
 
@@ -847,6 +454,45 @@ ref(db,"users/"+uid)
 
 loadUsers();
 
+
+}
+
+
+
+
+
+
+
+
+
+// تعطيل
+
+
+window.toggleUser=
+
+async function(uid,status){
+
+
+
+await update(
+
+ref(db,"users/"+uid),
+
+{
+
+
+active:
+
+!status
+
+
+}
+
+);
+
+
+
+loadUsers();
 
 
 }

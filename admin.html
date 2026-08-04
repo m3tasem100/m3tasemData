@@ -6,10 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>
-UCA Admin Dashboard
-</title>
-
+<title>UCA Admin Dashboard</title>
 
 <style>
 
@@ -18,76 +15,49 @@ box-sizing:border-box;
 font-family:Tahoma,Arial;
 }
 
-
 body{
-
 margin:0;
 background:#f1f5f9;
-
 }
 
-
-/* Layout */
 
 .app{
-
 display:flex;
 min-height:100vh;
-
 }
 
-
-
-/* Sidebar */
 
 .sidebar{
 
 width:260px;
-
 background:#1e3a8a;
-
 color:white;
-
 padding:20px;
 
 }
 
 
-
 .sidebar h2{
 
 text-align:center;
-
 margin-bottom:30px;
 
 }
 
 
-
 .sidebar button{
 
 width:100%;
-
-padding:14px;
-
+padding:13px;
 margin-bottom:10px;
-
-background:transparent;
-
-color:white;
-
 border:0;
-
 border-radius:8px;
-
+background:transparent;
+color:white;
+cursor:pointer;
 text-align:right;
 
-cursor:pointer;
-
-font-size:15px;
-
 }
-
 
 
 .sidebar button:hover{
@@ -95,41 +65,6 @@ font-size:15px;
 background:#2563eb;
 
 }
-
-
-
-/* Main */
-
-.main{
-
-flex:1;
-
-padding:25px;
-
-}
-
-
-
-.header{
-
-background:white;
-
-padding:20px;
-
-border-radius:15px;
-
-margin-bottom:20px;
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-box-shadow:0 5px 15px #ddd;
-
-}
-
 
 
 .logout{
@@ -140,39 +75,21 @@ background:#dc2626!important;
 
 
 
-/* Cards */
+.main{
 
-.cards{
-
-display:grid;
-
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-
-gap:20px;
-
-}
-
-
-
-.card{
-
-background:white;
-
+flex:1;
 padding:25px;
 
-border-radius:15px;
-
-box-shadow:0 5px 15px #ddd;
-
-text-align:center;
-
 }
 
 
 
-.card h3{
+.header{
 
-color:#1e3a8a;
+background:white;
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
 
 }
 
@@ -181,19 +98,89 @@ color:#1e3a8a;
 #content{
 
 background:white;
-
-border-radius:15px;
-
 padding:25px;
-
-min-height:400px;
+border-radius:15px;
 
 }
 
 
 
-</style>
+.grid{
 
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+
+}
+
+
+
+.card{
+
+background:#fff;
+padding:20px;
+border-radius:15px;
+box-shadow:0 5px 15px #ddd;
+margin-bottom:20px;
+
+}
+
+
+
+input,select{
+
+width:100%;
+padding:12px;
+margin-bottom:10px;
+border-radius:8px;
+border:1px solid #ccc;
+
+}
+
+
+
+.action{
+
+background:#2563eb;
+color:white;
+border:0;
+padding:12px;
+border-radius:8px;
+cursor:pointer;
+width:100%;
+
+}
+
+
+
+table{
+
+width:100%;
+border-collapse:collapse;
+
+}
+
+
+
+th{
+
+background:#1e3a8a;
+color:white;
+padding:12px;
+
+}
+
+
+td{
+
+padding:10px;
+border-bottom:1px solid #ddd;
+text-align:center;
+
+}
+
+
+</style>
 
 </head>
 
@@ -201,12 +188,9 @@ min-height:400px;
 <body>
 
 
-
 <div class="app">
 
 
-
-<!-- Sidebar -->
 
 <div class="sidebar">
 
@@ -223,15 +207,13 @@ min-height:400px;
 
 
 <button onclick="loadPage('users')">
-👥 إدارة المستخدمين
+👥 المستخدمون
 </button>
-
 
 
 <button onclick="loadPage('plans')">
-📂 الخطط الدراسية
+📂 الخطط
 </button>
-
 
 
 <button onclick="loadPage('distribution')">
@@ -239,11 +221,9 @@ min-height:400px;
 </button>
 
 
-
 <button onclick="loadPage('reports')">
 📊 التقارير
 </button>
-
 
 
 <button onclick="loadPage('settings')">
@@ -251,13 +231,9 @@ min-height:400px;
 </button>
 
 
-
 <button class="logout" id="logoutBtn">
-
 🚪 تسجيل الخروج
-
 </button>
-
 
 
 </div>
@@ -266,33 +242,22 @@ min-height:400px;
 
 
 
-
-<!-- Main -->
-
 <div class="main">
 
 
-
 <div class="header">
-
-
-<div>
 
 <h2>
 لوحة المدير
 </h2>
 
-<span id="adminInfo"></span>
+<div id="adminInfo"></div>
 
 </div>
 
 
-</div>
 
-
-
-
-<div id="content">
+<div id="content"></div>
 
 
 </div>
@@ -300,13 +265,6 @@ min-height:400px;
 
 
 </div>
-
-
-
-</div>
-
-
-
 
 
 
@@ -329,13 +287,33 @@ from "./auth.js";
 
 
 
-// حماية المدير فقط
+import {
 
-protectPage([
+db
 
-"Manager"
+}
 
-]);
+from "./firebase-config.js";
+
+
+
+import {
+
+ref,
+
+get,
+
+update
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+
+
+
+
+protectPage(["Manager"]);
 
 
 
@@ -344,13 +322,14 @@ protectPage([
 const user=currentUser();
 
 
-if(user){
 
+if(user){
 
 adminInfo.innerHTML=
 
 `
-${user.name || ""}<br>
+${user.name || ""}
+<br>
 ${user.email}
 `;
 
@@ -372,17 +351,11 @@ logout();
 
 
 
+
 window.loadPage=function(page){
 
 
-
-const content=
-document.getElementById("content");
-
-
-
 switch(page){
-
 
 
 case "dashboard":
@@ -394,47 +367,23 @@ content.innerHTML=`
 الرئيسية
 </h2>
 
-
-<div class="cards">
-
+<div class="grid">
 
 <div class="card">
-
-<h3>
-المستخدمون
-</h3>
-
-<p>
-إدارة المستخدمين والصلاحيات
-</p>
-
+<h3>المستخدمون</h3>
+<p>إدارة الحسابات والصلاحيات</p>
 </div>
 
 
 <div class="card">
-
-<h3>
-الخطط
-</h3>
-
-<p>
-رفع وتوزيع الخطط
-</p>
-
+<h3>الخطط</h3>
+<p>إدارة الخطط الدراسية</p>
 </div>
 
 
-
 <div class="card">
-
-<h3>
-التقارير
-</h3>
-
-<p>
-تقارير النظام
-</p>
-
+<h3>التقارير</h3>
+<p>تقارير الأداء</p>
 </div>
 
 
@@ -443,6 +392,8 @@ content.innerHTML=`
 `;
 
 break;
+
+
 
 
 
@@ -454,28 +405,141 @@ case "users":
 content.innerHTML=`
 
 <h2>
-إدارة المستخدمين
+👥 إدارة المستخدمين
 </h2>
 
-<p>
-سيتم إضافة إدارة المستخدمين هنا:
-</p>
 
-<ul>
 
-<li>إضافة مستخدم</li>
+<div class="card">
 
-<li>تعديل مستخدم</li>
 
-<li>تغيير الدور</li>
+<h3>
+إضافة مستخدم
+</h3>
 
-<li>تعطيل المستخدم</li>
 
-</ul>
+<input id="newName"
+placeholder="الاسم">
+
+
+<input id="newEmail"
+placeholder="البريد الإلكتروني">
+
+
+<input id="newPassword"
+type="password"
+placeholder="كلمة المرور">
+
+
+<select id="newRole">
+
+
+<option value="Teacher">
+Teacher
+</option>
+
+
+<option value="Head">
+Head
+</option>
+
+
+<option value="Coordinator">
+Coordinator
+</option>
+
+
+<option value="StageManager">
+StageManager
+</option>
+
+
+<option value="Viewer">
+Viewer
+</option>
+
+
+<option value="Manager">
+Manager
+</option>
+
+
+</select>
+
+
+<button class="action"
+onclick="createNewUser()">
+
+إنشاء المستخدم
+
+</button>
+
+
+<p id="userMessage"></p>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<h3>
+المستخدمون الحاليون
+</h3>
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+الاسم
+</th>
+
+<th>
+البريد
+</th>
+
+<th>
+الدور
+</th>
+
+<th>
+الحالة
+</th>
+
+
+</tr>
+
+</thead>
+
+
+<tbody id="usersTable">
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
 
 `;
 
+
+loadUsers();
+
+
 break;
+
 
 
 
@@ -485,20 +549,20 @@ break;
 case "plans":
 
 
-content.innerHTML=`
+content.innerHTML=
 
+`
 <h2>
-إدارة الخطط
+الخطط الدراسية
 </h2>
 
 <p>
-رفع ملفات الخطط وتعديلها
+رفع وتعديل الخطط
 </p>
 
 `;
 
 break;
-
 
 
 
@@ -507,20 +571,15 @@ break;
 case "distribution":
 
 
-content.innerHTML=`
+content.innerHTML=
 
+`
 <h2>
 توزيع الأسابيع
 </h2>
-
-<p>
-توزيع الأهداف على الأسابيع والفصول
-</p>
-
 `;
 
 break;
-
 
 
 
@@ -530,21 +589,15 @@ break;
 case "reports":
 
 
-content.innerHTML=`
+content.innerHTML=
 
+`
 <h2>
 التقارير
 </h2>
-
-<p>
-تقارير الأداء والإنجاز
-</p>
-
 `;
 
 break;
-
-
 
 
 
@@ -553,35 +606,169 @@ break;
 case "settings":
 
 
-content.innerHTML=`
+content.innerHTML=
 
+`
 <h2>
 الإعدادات
 </h2>
-
-<p>
-إعدادات السنة الدراسية والفصول
-</p>
-
 `;
 
 break;
 
 
-}
-
-
 
 }
 
 
+}
 
 
 
-// الصفحة الافتراضية
+
+
+
+
+
+window.loadUsers=async function(){
+
+
+
+const snap =
+await get(
+ref(db,"users")
+);
+
+
+
+usersTable.innerHTML="";
+
+
+
+if(!snap.exists()) return;
+
+
+
+const data=snap.val();
+
+
+
+Object.keys(data).forEach(uid=>{
+
+
+let u=data[uid];
+
+
+usersTable.innerHTML +=
+
+`
+
+<tr>
+
+
+<td>${u.name || ""}</td>
+
+
+<td>${u.email || ""}</td>
+
+
+<td>
+
+<select onchange="changeRole('${uid}',this.value)">
+
+<option ${u.role=="Manager"?"selected":""}>
+Manager
+</option>
+
+<option ${u.role=="Teacher"?"selected":""}>
+Teacher
+</option>
+
+<option ${u.role=="Head"?"selected":""}>
+Head
+</option>
+
+<option ${u.role=="Coordinator"?"selected":""}>
+Coordinator
+</option>
+
+<option ${u.role=="StageManager"?"selected":""}>
+StageManager
+</option>
+
+<option ${u.role=="Viewer"?"selected":""}>
+Viewer
+</option>
+
+
+</select>
+
+
+</td>
+
+
+
+<td>
+
+${u.active ? "فعال":"موقوف"}
+
+</td>
+
+
+</tr>
+
+`;
+
+});
+
+
+}
+
+
+
+
+
+
+
+window.changeRole=async function(uid,role){
+
+
+await update(
+
+ref(db,"users/"+uid),
+
+{
+
+role:role
+
+}
+
+);
+
+
+alert("تم تعديل الدور");
+
+
+}
+
+
+
+
+
+
+window.createNewUser=function(){
+
+
+userMessage.innerHTML=
+
+"سيتم تفعيل إنشاء المستخدم بعد تعديل auth.js";
+
+}
+
+
+
 
 loadPage("dashboard");
-
 
 
 </script>

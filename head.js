@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////
-// UCA SCHOOL MANAGEMENT SYSTEM
 // HEAD OF DEPARTMENT DASHBOARD
 ////////////////////////////////////////////////////
+
 
 
 import {
@@ -29,8 +29,7 @@ from "./firebase-config.js";
 import {
 
 ref,
-get,
-set
+get
 
 }
 
@@ -40,9 +39,7 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
-// =======================================
-// حماية الصفحة
-// =======================================
+
 
 
 protectPage([
@@ -57,30 +54,138 @@ protectPage([
 
 
 
-const user = currentUser();
-
-
-
-
-
-if(user){
-
 
 document
 
-.getElementById("headInfo")
+.getElementById(
 
-.innerHTML =
+"logoutBtn"
+
+)
+
+.onclick=
+
+logout;
+
+
+
+
+
+
+
+
+const user =
+
+currentUser();
+
+
+
+
+
+
+const content =
+
+document.getElementById(
+
+"content"
+
+);
+
+
+
+
+
+
+const info =
+
+document.getElementById(
+
+"headInfo"
+
+);
+
+
+
+
+
+
+
+
+
+let headData={};
+
+
+
+
+
+
+
+
+
+async function loadHead(){
+
+
+
+const snap=
+
+await get(
+
+ref(
+
+db,
+
+"users/"+user.uid
+
+)
+
+);
+
+
+
+
+
+if(!snap.exists())
+
+return;
+
+
+
+
+
+
+headData=snap.val();
+
+
+
+
+
+
+info.innerHTML=
 
 `
 
-${user.name || ""}
+<strong>
+
+${headData.name}
+
+</strong>
 
 <br>
 
-${user.email || ""}
+${headData.email}
+
+<br>
+
+رئيس قسم
 
 `;
+
+
+
+
+
+
+loadHeadHome();
 
 
 
@@ -93,47 +198,23 @@ ${user.email || ""}
 
 
 
-// =======================================
-// تسجيل الخروج
-// =======================================
+
+// ===============================
+// MENU
+// ===============================
 
 
-document
-
-.getElementById("logoutBtn")
-
-.onclick=function(){
-
-
-logout();
-
-
-};
+window.loadHeadModule=function(page){
 
 
 
-
-
-
-
-
-
-// =======================================
-// تحميل الوحدات
-// =======================================
-
-
-window.loadHeadModule=function(module){
-
-
-
-switch(module){
+switch(page){
 
 
 
 case "home":
 
-loadHome();
+loadHeadHome();
 
 break;
 
@@ -155,22 +236,6 @@ break;
 
 
 
-case "weeks":
-
-loadWeeks();
-
-break;
-
-
-
-case "evaluation":
-
-loadEvaluation();
-
-break;
-
-
-
 case "reports":
 
 loadReports();
@@ -178,50 +243,37 @@ loadReports();
 break;
 
 
+}
+
+
 
 }
 
 
 
-};
 
 
 
 
 
 
+// ===============================
+// HOME
+// ===============================
 
 
-
-
-
-// =======================================
-// الصفحة الرئيسية
-// =======================================
-
-
-function loadHome(){
+function loadHeadHome(){
 
 
 
 content.innerHTML=
 
-
 `
-
-<h2>
-
-مرحبا بك رئيس القسم
-
-</h2>
-
-
 
 <div class="cards">
 
 
 <div class="card">
-
 
 <h3>
 👨‍🏫 المعلمون
@@ -241,14 +293,13 @@ content.innerHTML=
 
 <div class="card">
 
-
 <h3>
-📂 الخطط
+📚 الخطط
 </h3>
 
 
 <p>
-مراجعة الخطط الدراسية
+مراجعة تنفيذ الخطط
 </p>
 
 
@@ -256,26 +307,7 @@ content.innerHTML=
 
 
 
-
-
-<div class="card">
-
-
-<h3>
-⭐ التقييم
-</h3>
-
-
-<p>
-تقييم أداء المعلمين
-</p>
-
-
 </div>
-
-
-</div>
-
 
 `;
 
@@ -291,9 +323,9 @@ content.innerHTML=
 
 
 
-// =======================================
-// معلمو القسم
-// =======================================
+// ===============================
+// TEACHERS
+// ===============================
 
 
 async function loadTeachers(){
@@ -305,15 +337,39 @@ content.innerHTML=
 `
 
 <h2>
-👨‍🏫 معلمو القسم
+معلمو القسم
 </h2>
 
 
-<div id="teachersList">
+<table>
 
-جاري التحميل...
 
-</div>
+<thead>
+
+<tr>
+
+<th>
+الاسم
+</th>
+
+
+<th>
+البريد
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="teacherTable">
+
+</tbody>
+
+
+</table>
 
 `;
 
@@ -322,17 +378,12 @@ content.innerHTML=
 
 
 
-const headSnap =
 
-await get(
+const table=
 
-ref(
+document.getElementById(
 
-db,
-
-`users/${user.uid}`
-
-)
+"teacherTable"
 
 );
 
@@ -341,36 +392,9 @@ db,
 
 
 
-if(!headSnap.exists())
-
-return;
 
 
-
-
-
-
-const headData =
-
-headSnap.val();
-
-
-
-
-
-
-
-const departmentId =
-
-headData.departmentId;
-
-
-
-
-
-
-
-const usersSnap =
+const snap=
 
 await get(
 
@@ -385,13 +409,9 @@ ref(db,"users")
 
 
 
-const container =
+if(!snap.exists())
 
-document
-
-.getElementById(
-"teachersList"
-);
+return;
 
 
 
@@ -399,29 +419,14 @@ document
 
 
 
-let html="";
 
+Object.values(
 
+snap.val()
 
+)
 
-
-
-
-if(usersSnap.exists()){
-
-
-const users =
-
-usersSnap.val();
-
-
-
-
-
-
-Object.entries(users)
-
-.forEach(([uid,u])=>{
+.forEach(u=>{
 
 
 
@@ -433,49 +438,37 @@ u.role==="Teacher"
 
 &&
 
-u.departmentId===departmentId
+u.departmentId===headData.departmentId
 
 ){
 
 
 
-html +=
+
+
+table.innerHTML+=
 
 
 `
 
-<div class="card">
+<tr>
 
 
-<h3>
+<td>
 
 ${u.name}
 
-</h3>
+</td>
 
 
-<p>
+<td>
 
 ${u.email}
 
-</p>
+</td>
 
 
-
-<button
-
-class="btn btn-primary"
-
-onclick="viewTeacher('${uid}')">
-
-عرض التفاصيل
-
-</button>
-
-
-
-</div>
-
+</tr>
 
 
 `;
@@ -498,69 +491,14 @@ onclick="viewTeacher('${uid}')">
 
 
 
-if(html==="")
-
-html="لا يوجد معلمون";
 
 
+// ===============================
+// PLANS
+// ===============================
 
 
-
-
-container.innerHTML=html;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// =======================================
-// عرض معلم
-// =======================================
-
-
-window.viewTeacher=function(uid){
-
-
-
-alert(
-
-"سيتم فتح ملف المعلم: "
-
-+uid
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-// =======================================
-// الخطط
-// =======================================
-
-
-async function loadPlans(){
+function loadPlans(){
 
 
 
@@ -569,63 +507,13 @@ content.innerHTML=
 `
 
 <h2>
-
-📂 خطط القسم
-
+خطط القسم
 </h2>
-
 
 
 <div class="card">
 
-
-سيتم عرض خطط معلمي القسم هنا
-
-
-</div>
-
-`;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// =======================================
-// متابعة الأسابيع
-// =======================================
-
-
-async function loadWeeks(){
-
-
-
-content.innerHTML=
-
-`
-
-<h2>
-
-📅 متابعة الأسابيع
-
-</h2>
-
-
-
-<div class="card">
-
-
-عرض الأسابيع غير المعتمدة من المعلمين
-
+متابعة الخطط المرفوعة للمعلمين
 
 </div>
 
@@ -644,54 +532,9 @@ content.innerHTML=
 
 
 
-
-
-// =======================================
-// التقييم
-// =======================================
-
-
-function loadEvaluation(){
-
-
-
-content.innerHTML=
-
-`
-
-<h2>
-
-⭐ تقييم المعلمين
-
-</h2>
-
-
-<div class="card">
-
-
-سيتم إضافة نموذج تقييم رئيس القسم هنا
-
-
-</div>
-
-
-`;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =======================================
-// التقارير
-// =======================================
+// ===============================
+// REPORTS
+// ===============================
 
 
 function loadReports(){
@@ -703,17 +546,14 @@ content.innerHTML=
 `
 
 <h2>
-
-📊 التقارير
+تقارير القسم
 
 </h2>
 
 
 <div class="card">
 
-
-تقارير القسم
-
+نسبة الإنجاز والتأخير
 
 </div>
 
@@ -732,6 +572,4 @@ content.innerHTML=
 
 
 
-// تشغيل الصفحة
-
-loadHeadModule("home");
+loadHead();

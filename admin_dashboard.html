@@ -1,154 +1,93 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 
 <head>
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>
-Dashboard المدير
+Admin Dashboard
 </title>
 
 
-<style>
-
-body{
-
-font-family:Tahoma,Arial;
-background:#f3f4f6;
-margin:0;
-
-}
-
-
-
-header{
-
-background:#1e3a8a;
-color:white;
-padding:15px;
-
-display:flex;
-justify-content:space-between;
-
-}
-
-
-
-.container{
-
-padding:20px;
-
-}
-
-
-
-.cards{
-
-display:grid;
-
-grid-template-columns:
-repeat(auto-fit,minmax(200px,1fr));
-
-gap:20px;
-
-}
-
-
-
-.card{
-
-background:white;
-padding:20px;
-border-radius:10px;
-box-shadow:0 3px 10px #ddd;
-
-text-align:center;
-
-}
-
-
-
-.card h2{
-
-color:#2563eb;
-
-}
-
-
-
-.section{
-
-background:white;
-
-padding:20px;
-
-margin-top:20px;
-
-border-radius:10px;
-
-}
-
-
-
-table{
-
-width:100%;
-
-border-collapse:collapse;
-
-}
-
-
-
-th,td{
-
-border:1px solid #ddd;
-
-padding:10px;
-
-text-align:center;
-
-}
-
-
-
-th{
-
-background:#2563eb;
-
-color:white;
-
-}
-
-
-
-.warning{
-
-color:red;
-font-weight:bold;
-
-}
-
-
-</style>
-
+<link rel="stylesheet" href="style.css">
 
 </head>
-
 
 
 <body>
 
 
-<header>
+<div class="app">
+
+
+<aside class="sidebar">
+
+
+<div class="logo">
+
+<h2>
+🏫 UCA
+</h2>
+
+<p>
+لوحة المدير
+</p>
+
+</div>
+
+
+
+
+
+<button onclick="go('admin.html')">
+⬅ القائمة الرئيسية
+</button>
+
+
+
+<button onclick="go('users.html')">
+👥 المستخدمون
+</button>
+
+
+
+<button onclick="go('upload_plans.html')">
+📂 الخطط
+</button>
+
+
+
+
+<button id="logoutBtn" class="logout">
+🚪 تسجيل الخروج
+</button>
+
+
+
+</aside>
+
+
+
+
+
+
+<main class="main">
+
+
+
+<header class="header">
 
 
 <h2>
-لوحة مدير النظام
+Dashboard
 </h2>
+
+
+<p id="adminInfo"></p>
 
 
 </header>
@@ -157,7 +96,8 @@ font-weight:bold;
 
 
 
-<div class="container">
+
+<section class="content">
 
 
 
@@ -167,28 +107,13 @@ font-weight:bold;
 
 <div class="card">
 
-<h2 id="teachers">
+<h3>
+👥 المستخدمون
+</h3>
+
+<h1 id="usersCount">
 0
-</h2>
-
-<p>
-عدد المعلمين
-</p>
-
-</div>
-
-
-
-
-<div class="card">
-
-<h2 id="plans">
-0
-</h2>
-
-<p>
-عدد الخطط
-</p>
+</h1>
 
 </div>
 
@@ -198,13 +123,13 @@ font-weight:bold;
 
 <div class="card">
 
-<h2 id="completed">
-0
-</h2>
+<h3>
+👨‍🏫 المعلمون
+</h3>
 
-<p>
-الأسابيع المكتملة
-</p>
+<h1 id="teachersCount">
+0
+</h1>
 
 </div>
 
@@ -214,13 +139,61 @@ font-weight:bold;
 
 <div class="card">
 
-<h2 id="pending">
+<h3>
+🏢 الأقسام
+</h3>
+
+<h1 id="departmentsCount">
 0
-</h2>
+</h1>
 
-<p>
-أسابيع غير مؤكدة
-</p>
+</div>
+
+
+
+
+
+<div class="card">
+
+<h3>
+📚 المواد
+</h3>
+
+<h1 id="subjectsCount">
+0
+</h1>
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<h3>
+🎓 الصفوف
+</h3>
+
+<h1 id="gradesCount">
+0
+</h1>
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<h3>
+📂 الخطط
+</h3>
+
+<h1 id="plansCount">
+0
+</h1>
 
 </div>
 
@@ -236,407 +209,24 @@ font-weight:bold;
 
 
 
-
-<div class="section">
+<div class="card">
 
 
 <h3>
-⚠️ الأسابيع غير المؤكدة
+⚠️ أسابيع غير معتمدة
 </h3>
 
 
-<div id="pendingArea">
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div class="section">
-
-
-<h3>
-نسبة الإنجاز حسب القسم
-</h3>
-
-
-<div id="sectionReport">
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div class="section">
-
-
-<h3>
-نسبة الإنجاز حسب المادة
-</h3>
-
-
-<div id="subjectReport">
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<script type="module">
-
-
-import {
-
-protectPage
-
-}
-
-from "./auth.js";
-
-
-
-import {
-
-getDatabase,
-get,
-ref,
-child
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-
-
-
-
-protectPage([
-"Manager",
-"Admin"
-]);
-
-
-
-
-
-const db=getDatabase();
-
-
-
-
-
-
-async function loadDashboard(){
-
-
-
-const usersSnap=
-await get(
-child(ref(db),"users")
-);
-
-
-
-const plansSnap=
-await get(
-child(ref(db),"plans")
-);
-
-
-
-
-let users=
-usersSnap.exists()
-?
-usersSnap.val()
-:
-{};
-
-
-
-
-let plans=
-plansSnap.exists()
-?
-plansSnap.val()
-:
-{};
-
-
-
-
-
-
-
-let teachers=0;
-
-
-
-Object.values(users)
-.forEach(u=>{
-
-
-if(u.role==="Teacher")
-teachers++;
-
-
-});
-
-
-
-
-document
-.getElementById("teachers")
-.innerHTML=teachers;
-
-
-
-
-document
-.getElementById("plans")
-.innerHTML=
-Object.keys(plans).length;
-
-
-
-
-
-
-
-
-let completed=0;
-
-let pending=0;
-
-
-
-let pendingRows="";
-
-
-
-let sections={};
-
-let subjects={};
-
-
-
-
-
-
-
-Object.keys(plans)
-.forEach(id=>{
-
-
-
-let p=plans[id];
-
-
-
-Object.keys(
-p.distributedWeeks || {}
-)
-.forEach(w=>{
-
-
-
-let status=
-p.weekStatus &&
-p.weekStatus[w];
-
-
-
-
-
-if(status && status.verified){
-
-
-completed++;
-
-
-}
-else{
-
-
-pending++;
-
-
-
-pendingRows+=`
-
-<tr>
-
-
-<td>
-${p.grade}
-</td>
-
-
-<td>
-${p.subject}
-</td>
-
-
-
-<td>
-الأسبوع ${w}
-</td>
-
-
-
-<td class="warning">
-
-غير مؤكد
-
-</td>
-
-
-
-</tr>
-
-`;
-
-
-
-}
-
-
-
-
-
-
-// القسم
-
-
-let sec=
-p.section || "غير محدد";
-
-
-
-if(!sections[sec])
-
-sections[sec]={
-total:0,
-done:0
-};
-
-
-
-sections[sec].total++;
-
-
-
-if(status && status.verified)
-
-sections[sec].done++;
-
-
-
-
-
-// المادة
-
-
-let sub=
-p.subject || "غير محدد";
-
-
-
-if(!subjects[sub])
-
-subjects[sub]={
-total:0,
-done:0
-};
-
-
-
-subjects[sub].total++;
-
-
-
-if(status && status.verified)
-
-subjects[sub].done++;
-
-
-
-
-
-});
-
-
-
-});
-
-
-
-
-
-
-document
-.getElementById("completed")
-.innerHTML=completed;
-
-
-
-document
-.getElementById("pending")
-.innerHTML=pending;
-
-
-
-
-
-
-document
-.getElementById("pendingArea")
-.innerHTML=
-
-`
 
 <table>
 
+
+<thead>
+
 <tr>
 
 <th>
-الصف
-</th>
-
-<th>
-المادة
+المعلم
 </th>
 
 <th>
@@ -644,141 +234,52 @@ document
 </th>
 
 <th>
-الحالة
+التاريخ
 </th>
+
 
 </tr>
 
-${pendingRows}
+</thead>
+
+
+
+<tbody id="pendingWeeks">
+
+</tbody>
+
+
 
 </table>
 
-`;
 
+</div>
 
 
 
 
 
 
-showReport(
-"sectionReport",
-sections
-);
 
+</section>
 
 
-showReport(
-"subjectReport",
-subjects
-);
 
 
+</main>
 
-}
 
 
 
+</div>
 
 
 
 
 
 
-function showReport(element,data){
 
-
-
-let html=
-
-`
-
-<table>
-
-<tr>
-
-<th>
-الاسم
-</th>
-
-
-<th>
-نسبة الإنجاز
-</th>
-
-
-</tr>
-
-`;
-
-
-
-Object.keys(data)
-.forEach(x=>{
-
-
-let percent=
-data[x].total
-?
-(
-data[x].done /
-data[x].total
-*100
-).toFixed(1)
-:
-0;
-
-
-
-html+=`
-
-<tr>
-
-<td>
-${x}
-</td>
-
-
-<td>
-${percent}%
-
-</td>
-
-
-</tr>
-
-
-`;
-
-
-
-});
-
-
-
-html+="</table>";
-
-
-
-document
-.getElementById(element)
-.innerHTML=html;
-
-
-
-}
-
-
-
-
-
-
-
-loadDashboard();
-
-
-
-</script>
+<script type="module" src="admin_dashboard.js"></script>
 
 
 </body>

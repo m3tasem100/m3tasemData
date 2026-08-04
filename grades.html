@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>
+إدارة الصفوف
+</title>
+
+
+<link rel="stylesheet" href="style.css">
+
+
+</head>
+
+
+
+
+<body>
+
+
+<div class="app">
+
+
+
+<aside class="sidebar">
+
+
+<h2>
+🏫 UCA
+</h2>
+
+
+
+<button onclick="backAdmin()">
+
+⬅ لوحة المدير
+
+</button>
+
+
+
+
+<button id="logoutBtn">
+
+🚪 تسجيل الخروج
+
+</button>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+<main class="main">
+
+
+<header class="header">
+
+
+<h2>
+إدارة الصفوف
+</h2>
+
+
+</header>
+
+
+
+
+
+
+<section class="content">
+
+
+
+<div class="card">
+
+
+<h3>
+إضافة صف
+
+</h3>
+
+
+
+
+<input
+
+id="gradeName"
+
+placeholder="مثال: Grade 9">
+
+
+
+
+
+<input
+
+id="gradeLevel"
+
+type="number"
+
+placeholder="رقم الصف">
+
+
+
+
+
+
+<select id="program">
+
+
+<option value="American">
+
+American
+
+</option>
+
+
+<option value="British">
+
+British
+
+</option>
+
+
+</select>
+
+
+
+
+
+
+
+<button
+
+id="addGrade"
+
+class="btn btn-primary">
+
+
+إضافة الصف
+
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h3>
+الصفوف الحالية
+
+</h3>
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+الصف
+
+</th>
+
+
+<th>
+المستوى
+
+</th>
+
+
+<th>
+البرنامج
+
+</th>
+
+
+<th>
+إجراءات
+
+</th>
+
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+
+<tbody id="gradeTable">
+
+
+</tbody>
+
+
+
+</table>
+
+
+
+</div>
+
+
+
+
+
+
+</section>
+
+
+
+
+</main>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<script type="module" src="grades.js"></script>
+
+
+
+</body>
+
+
+</html>

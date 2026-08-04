@@ -1,8 +1,3 @@
-////////////////////////////////////////////////////
-// UPLOAD PLANS MODULE
-////////////////////////////////////////////////////
-
-
 import {
 
 protectPage,
@@ -13,7 +8,6 @@ logout
 from "./auth.js";
 
 
-
 import {
 
 db
@@ -21,7 +15,6 @@ db
 }
 
 from "./firebase-config.js";
-
 
 
 import {
@@ -38,31 +31,14 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
-import * as XLSX
-
-from "https://cdn.sheetjs.com/xlsx-latest/package/xlsx.mjs";
-
-
-
-
-
-
-
 protectPage([
-
 "Manager"
-
 ]);
 
 
 
 
-
-
 logoutBtn.onclick=logout;
-
-
-
 
 
 
@@ -76,100 +52,37 @@ location.href="admin.html";
 
 
 
-
-
-
-// ===============================
-// رفع الملف
-// ===============================
-
-
-uploadBtn.onclick=
-
-async function(){
-
-
-
-const file =
-
-excelFile.files[0];
+let excelData=[];
 
 
 
 
 
 
-if(!file){
+file.onchange=function(e){
 
 
-alert(
-"اختر ملف Excel"
-);
+let reader=new FileReader();
 
 
-return;
+reader.onload=function(event){
 
 
-}
+let data=new Uint8Array(
 
-
-
-
-
-
-
-const reader=
-
-new FileReader();
-
-
-
-
-
-
-reader.onload=
-
-async function(e){
-
-
-
-
-
-const data=
-
-new Uint8Array(
-
-e.target.result
+event.target.result
 
 );
 
 
 
+let workbook=
+
+XLSX.read(data,{type:"array"});
 
 
 
-const workbook=
-
-XLSX.read(
-
-data,
-
-{
-
-type:"array"
-
-}
-
-);
-
-
-
-
-
-
-
-
-const sheet=
+let sheet=
 
 workbook.Sheets[
 
@@ -179,66 +92,106 @@ workbook.SheetNames[0]
 
 
 
+excelData=
+
+XLSX.utils.sheet_to_json(sheet);
 
 
 
 
-const rows=
+showPreview();
 
-XLSX.utils.sheet_to_json(
 
-sheet
+};
 
+
+
+reader.readAsArrayBuffer(e.target.files[0]);
+
+};
+
+
+
+
+
+
+
+
+
+function showPreview(){
+
+
+preview.innerHTML="";
+
+
+excelData.forEach(row=>{
+
+
+preview.innerHTML +=
+
+`
+
+<tr>
+
+<td>
+${row.Unit || ""}
+</td>
+
+
+<td>
+${row.Objective || ""}
+</td>
+
+
+<td>
+${row.Lessons || 0}
+</td>
+
+
+<td>
+${row.Week || ""}
+</td>
+
+
+</tr>
+
+`;
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+uploadBtn.onclick=
+
+async function(){
+
+
+
+if(excelData.length===0){
+
+alert(
+"اختر ملف Excel"
 );
 
+return;
+
+}
 
 
 
 
 
 
-
-
-await savePlans(rows);
-
-
-
-};
-
-
-
-
-
-
-
-
-reader.readAsArrayBuffer(file);
-
-
-
-};
-
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// حفظ Firebase
-// ===============================
-
-
-async function savePlans(rows){
-
-
-
-const path =
-
+const path=
 
 `plans/${year.value}/${semester.value}/${grade.value}/${subject.value}/objectives`;
 
@@ -247,30 +200,13 @@ const path =
 
 
 
-let count=0;
+
+
+let counter=1;
 
 
 
-
-
-
-
-for(const row of rows){
-
-
-
-const id=
-
-push(
-
-ref(db,path)
-
-).key;
-
-
-
-
-
+for(let row of excelData){
 
 
 
@@ -280,7 +216,7 @@ ref(
 
 db,
 
-`${path}/${id}`
+`${path}/${counter}`
 
 ),
 
@@ -299,21 +235,22 @@ row.Objective || "",
 
 
 
-week:
-
-Number(row.Week || 0),
-
-
-
 lessons:
 
-Number(row.Lessons || 0),
+Number(row.Lessons)||0,
 
 
 
-createdAt:
+week:
 
-Date.now()
+Number(row.Week)||0,
+
+
+
+program:
+
+program.value
+
 
 
 }
@@ -322,29 +259,24 @@ Date.now()
 
 
 
-
-count++;
-
-
-
-}
-
-
-
-
-
-
-
-
-result.innerHTML=
-
-
-`
-
-تم رفع ${count} هدف بنجاح
-
-`;
+counter++;
 
 
 
 }
+
+
+
+
+
+
+
+alert(
+
+"تم رفع الخطة بنجاح"
+
+);
+
+
+
+};

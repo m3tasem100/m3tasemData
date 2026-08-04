@@ -1,93 +1,30 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
+
 
 <head>
 
+
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
 <title>
-رفع الخطط السنوية
+Upload Plans
 </title>
 
 
-<style>
 
-body{
+<link rel="stylesheet" href="style.css">
 
-font-family:Tahoma;
-background:#f3f4f6;
-padding:20px;
-
-}
-
-
-.card{
-
-background:white;
-padding:25px;
-border-radius:10px;
-box-shadow:0 3px 10px #ddd;
-
-max-width:800px;
-margin:auto;
-
-}
-
-
-input,select{
-
-width:100%;
-padding:10px;
-margin:8px 0;
-
-}
-
-
-
-button{
-
-background:#2563eb;
-color:white;
-padding:12px 20px;
-border:0;
-border-radius:6px;
-cursor:pointer;
-
-}
-
-
-
-table{
-
-width:100%;
-border-collapse:collapse;
-margin-top:20px;
-
-}
-
-
-td,th{
-
-border:1px solid #ddd;
-padding:8px;
-
-}
-
-
-th{
-
-background:#2563eb;
-color:white;
-
-}
-
-
-</style>
 
 
 </head>
+
+
 
 
 
@@ -95,134 +32,17 @@ color:white;
 
 
 
-<div class="card">
+<div class="main">
+
+
+<div class="header">
 
 
 <h2>
-رفع الخطة السنوية
+
+📂 رفع الخطط السنوية
+
 </h2>
-
-
-
-<label>
-السنة
-</label>
-
-<select id="year">
-
-<option>
-2025-2026
-</option>
-
-</select>
-
-
-
-
-<label>
-الفصل
-</label>
-
-<select id="semester">
-
-<option>
-Semester 1
-</option>
-
-<option>
-Semester 2
-</option>
-
-</select>
-
-
-
-
-
-<label>
-البرنامج
-</label>
-
-<select id="program">
-
-<option>
-American
-</option>
-
-
-<option>
-British
-</option>
-
-
-</select>
-
-
-
-
-
-<label>
-القسم
-</label>
-
-
-<input id="section"
-placeholder="Secondary">
-
-
-
-
-
-<label>
-الصف
-</label>
-
-
-<input id="grade"
-placeholder="Grade 9">
-
-
-
-
-
-<label>
-المادة
-</label>
-
-
-<input id="subject"
-placeholder="Computer Science">
-
-
-
-
-
-<hr>
-
-
-
-<input 
-type="file"
-id="excelFile"
-accept=".xlsx,.xls">
-
-
-
-
-
-<button id="upload">
-
-رفع الملف
-
-</button>
-
-
-
-<p id="message"></p>
-
-
-
-<div id="preview"></div>
 
 
 </div>
@@ -232,252 +52,231 @@ accept=".xlsx,.xls">
 
 
 
-<script type="module">
 
+<div class="content">
 
-import {
 
-getDatabase,
-ref,
-push,
-set
 
-}
 
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
+<div class="card">
 
-import {
 
-protectPage
+<h3>
+بيانات الخطة
+</h3>
 
-}
 
-from "./auth.js";
 
 
 
-protectPage([
-"Manager"
-]);
+<div class="form-group">
 
 
+<label>
+السنة الدراسية
+</label>
 
 
+<select id="year">
 
 
-// مكتبة Excel
+<option>
+2025-2026
+</option>
 
-import * as XLSX
 
-from
+</select>
 
-"https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs";
 
+</div>
 
 
 
 
-const db=getDatabase();
 
 
 
 
+<div class="form-group">
 
 
-document
-.getElementById("upload")
-.onclick=uploadPlan;
+<label>
+الفصل الدراسي
+</label>
 
 
 
+<select id="semester">
 
 
+<option value="semester1">
 
+الفصل الأول
 
+</option>
 
-async function uploadPlan(){
 
+<option value="semester2">
 
+الفصل الثاني
 
-const file=
+</option>
 
-document
-.getElementById("excelFile")
-.files[0];
 
+</select>
 
 
+</div>
 
-if(!file){
 
-alert(
-"اختر ملف Excel"
-);
 
-return;
 
-}
 
 
 
+<div class="form-group">
 
-const requiredColumns=[
 
-"Section",
+<label>
+البرنامج
+</label>
 
-"Grade level",
 
-"Subject",
 
-"Chapter",
+<select id="program">
 
-"Lesson",
 
-"Outcome code",
+<option>
 
-"Outcome description",
+American
 
-"Semester",
+</option>
 
-"Week"
 
-];
 
+<option>
 
+British
 
+</option>
 
 
+</select>
 
-const buffer=
-await file.arrayBuffer();
 
+</div>
 
 
 
 
-const workbook=
-XLSX.read(
-buffer
-);
 
 
 
-const sheet=
-workbook.Sheets[
-workbook.SheetNames[0]
-];
 
 
+<div class="form-group">
 
-const data=
-XLSX.utils.sheet_to_json(sheet);
 
+<label>
+الصف
+</label>
 
 
+<select id="grade">
 
 
-if(data.length===0){
+<option>
+اختر الصف
+</option>
 
-alert(
-"الملف فارغ"
-);
 
-return;
+</select>
 
-}
 
+</div>
 
 
 
 
 
-// التحقق من الأعمدة
 
 
-let columns=
-Object.keys(data[0]);
 
+<div class="form-group">
 
 
-let missing=
-requiredColumns.filter(
-c=>!columns.includes(c)
-);
+<label>
+المادة
+</label>
 
 
+<select id="subject">
 
 
+<option>
+اختر المادة
+</option>
 
-if(missing.length){
 
+</select>
 
-document
-.getElementById("message")
-.innerHTML=
 
-"الأعمدة الناقصة: "
-+
-missing.join(",");
+</div>
 
 
-return;
 
 
-}
 
 
 
 
 
+<div class="form-group">
 
 
+<label>
 
-let planId=
-push(
-ref(db,"plans")
-).key;
+ملف Excel
 
+</label>
 
 
 
+<input
 
+type="file"
 
-let plan={
+id="excelFile"
 
+accept=".xlsx,.xls"
 
 
-year:
-document.getElementById("year").value,
+>
 
 
-semester:
-document.getElementById("semester").value,
+</div>
 
 
-program:
-document.getElementById("program").value,
 
 
-section:
-document.getElementById("section").value,
 
 
-grade:
-document.getElementById("grade").value,
+<button
 
+class="btn btn-primary"
 
-subject:
-document.getElementById("subject").value,
+id="readExcelBtn">
 
+قراءة الملف
 
+</button>
 
-weeks:{}
 
 
+</div>
 
-};
 
 
 
@@ -486,199 +285,104 @@ weeks:{}
 
 
 
-data.forEach(row=>{
+<div class="card">
 
 
-let week=
-row["Week"];
+<h3>
+معاينة البيانات
 
+</h3>
 
 
 
-if(!plan.weeks[week]){
+<div class="table-container">
 
-
-plan.weeks[week]={
-
-lessons:[]
-
-};
-
-
-}
-
-
-
-
-
-
-
-plan.weeks[week]
-.lessons
-.push({
-
-chapter:
-row["Chapter"],
-
-
-lesson:
-row["Lesson"],
-
-
-outcomeCode:
-row["Outcome code"],
-
-
-description:
-row["Outcome description"],
-
-
-verified:false
-
-
-});
-
-
-
-});
-
-
-
-
-
-
-
-
-await set(
-
-ref(
-db,
-"plans/"+planId
-),
-
-plan
-
-
-);
-
-
-
-
-
-
-document
-.getElementById("message")
-.innerHTML=
-
-`
-تم رفع الخطة بنجاح
-
-عدد الصفوف:
-${data.length}
-
-`;
-
-
-
-
-
-showPreview(data);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-function showPreview(data){
-
-
-
-let html=
-
-`
 
 <table>
 
-<tr>
 
-<th>
-الأسبوع
-</th>
+<thead>
 
 
-<th>
-المادة
-</th>
-
-
-<th>
-الهدف
-</th>
+<tr id="excelHeader">
 
 
 </tr>
 
-`;
+
+</thead>
 
 
 
-data.slice(0,10)
-.forEach(r=>{
+<tbody id="excelBody">
 
 
-html+=`
-
-<tr>
-
-<td>
-${r["Week"]}
-</td>
+</tbody>
 
 
-<td>
-${r["Subject"]}
-</td>
-
-
-<td>
-${r["Outcome description"]}
-</td>
-
-
-</tr>
-
-`;
-
-
-});
+</table>
 
 
 
-html+="</table>";
+</div>
 
 
 
-document
-.getElementById("preview")
-.innerHTML=html;
+</div>
 
 
 
-}
 
 
 
-</script>
+
+<button
+
+class="btn btn-success"
+
+id="savePlanBtn"
+
+style="display:none">
+
+
+حفظ الخطة
+
+</button>
+
+
+
+
+
+
+<p id="message"></p>
+
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+
+
+<script type="module" src="plans.js"></script>
 
 
 
 </body>
+
 
 </html>

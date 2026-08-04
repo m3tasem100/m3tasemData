@@ -19,7 +19,6 @@ box-sizing:border-box;
 font-family:Tahoma,Arial;
 }
 
-
 body{
 
 margin:0;
@@ -27,7 +26,6 @@ margin:0;
 background:#f1f5f9;
 
 }
-
 
 
 .header{
@@ -47,37 +45,13 @@ align-items:center;
 }
 
 
-
 .header h1{
 
 margin:0;
 
-}
-
-
-
-button{
-
-border:0;
-
-padding:10px 18px;
-
-border-radius:8px;
-
-cursor:pointer;
+font-size:24px;
 
 }
-
-
-
-.logout{
-
-background:#dc2626;
-
-color:white;
-
-}
-
 
 
 .container{
@@ -92,13 +66,13 @@ padding:25px;
 
 background:white;
 
-padding:20px;
-
 border-radius:15px;
+
+padding:25px;
 
 margin-bottom:20px;
 
-box-shadow:0 5px 20px rgba(0,0,0,.1);
+box-shadow:0 5px 20px rgba(0,0,0,.12);
 
 }
 
@@ -107,6 +81,8 @@ box-shadow:0 5px 20px rgba(0,0,0,.1);
 h2{
 
 color:#1e3a8a;
+
+margin-top:0;
 
 }
 
@@ -124,6 +100,18 @@ gap:15px;
 
 
 
+label{
+
+font-weight:bold;
+
+display:block;
+
+margin-bottom:6px;
+
+}
+
+
+
 input,select{
 
 width:100%;
@@ -134,13 +122,29 @@ border:1px solid #cbd5e1;
 
 border-radius:8px;
 
-margin-bottom:12px;
+font-size:15px;
 
 }
 
 
 
-.add{
+button{
+
+border:0;
+
+padding:12px 20px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+
+
+.primary{
 
 background:#2563eb;
 
@@ -152,11 +156,23 @@ width:100%;
 
 
 
+.logout{
+
+background:#dc2626;
+
+color:white;
+
+}
+
+
+
 table{
 
 width:100%;
 
 border-collapse:collapse;
+
+margin-top:15px;
 
 }
 
@@ -186,10 +202,35 @@ border-bottom:1px solid #ddd;
 
 
 
+.message{
+
+margin-top:15px;
+
+font-weight:bold;
+
+}
+
+
+
+.success{
+
+color:green;
+
+}
+
+
+
+.error{
+
+color:red;
+
+}
+
+
+
 </style>
 
 </head>
-
 
 
 <body>
@@ -200,16 +241,19 @@ border-bottom:1px solid #ddd;
 
 
 <h1>
-🏫 لوحة المدير - UCA
+🏫 UCA School Management System
 </h1>
 
 
 <button class="logout" id="logoutBtn">
+
 تسجيل الخروج
+
 </button>
 
 
 </div>
+
 
 
 
@@ -259,7 +303,6 @@ border-bottom:1px solid #ddd;
 
 
 
-
 <div class="card">
 
 
@@ -280,7 +323,6 @@ border-bottom:1px solid #ddd;
 
 <input id="newName">
 
-
 </div>
 
 
@@ -293,9 +335,7 @@ border-bottom:1px solid #ddd;
 
 <input id="newEmail" type="email">
 
-
 </div>
-
 
 
 
@@ -307,9 +347,7 @@ border-bottom:1px solid #ddd;
 
 <input id="newPassword" type="password">
 
-
 </div>
-
 
 
 
@@ -324,32 +362,32 @@ border-bottom:1px solid #ddd;
 
 
 <option value="Teacher">
-Teacher
+معلم
 </option>
 
 
 <option value="Head">
-Head
+رئيس قسم
 </option>
 
 
 <option value="Coordinator">
-Coordinator
+منسق
 </option>
 
 
 <option value="StageManager">
-StageManager
+مدير مرحلة
 </option>
 
 
 <option value="Viewer">
-Viewer
+مشاهد
 </option>
 
 
 <option value="Manager">
-Manager
+مدير
 </option>
 
 
@@ -363,7 +401,10 @@ Manager
 
 
 
-<button class="add" id="createUserBtn">
+<br>
+
+
+<button class="primary" id="createUserBtn">
 
 إنشاء المستخدم
 
@@ -371,8 +412,7 @@ Manager
 
 
 
-<p id="message"></p>
-
+<div id="message" class="message"></div>
 
 
 </div>
@@ -388,9 +428,8 @@ Manager
 
 
 <h2>
-المستخدمون
+قائمة المستخدمين
 </h2>
-
 
 
 <table>
@@ -404,16 +443,23 @@ Manager
 الاسم
 </th>
 
+
 <th>
 البريد
 </th>
+
 
 <th>
 الدور
 </th>
 
-</tr>
 
+<th>
+الحالة
+</th>
+
+
+</tr>
 
 </thead>
 
@@ -427,7 +473,6 @@ Manager
 </table>
 
 
-
 </div>
 
 
@@ -436,6 +481,8 @@ Manager
 
 
 </div>
+
+
 
 
 
@@ -452,7 +499,9 @@ protectPage,
 
 currentUser,
 
-logout
+logout,
+
+createUser
 
 }
 
@@ -485,6 +534,9 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
+// حماية الصفحة
+
+
 protectPage([
 
 "Manager"
@@ -497,27 +549,28 @@ protectPage([
 
 
 
-const user =
+const admin =
 currentUser();
 
 
 
-if(user){
+if(admin){
 
 
-adminName.innerHTML =
-user.name || "-";
+adminName.textContent =
+admin.name || "-";
 
 
-adminEmail.innerHTML =
-user.email || "-";
+adminEmail.textContent =
+admin.email || "-";
 
 
-adminRole.innerHTML =
-user.role || "-";
+adminRole.textContent =
+admin.role || "-";
 
 
 }
+
 
 
 
@@ -536,11 +589,13 @@ logout();
 
 
 
+
+
+
 async function loadUsers(){
 
 
-
-const snap =
+const snapshot =
 await get(
 ref(db,"users")
 );
@@ -551,34 +606,66 @@ usersTable.innerHTML="";
 
 
 
-if(!snap.exists())
+if(!snapshot.exists()){
+
+
+usersTable.innerHTML=
+
+`
+<tr>
+<td colspan="4">
+لا يوجد مستخدمون
+</td>
+</tr>
+`;
 
 return;
+
+}
 
 
 
 const users =
-snap.val();
+snapshot.val();
 
 
 
 
-Object.values(users)
-.forEach(u=>{
+
+Object.keys(users).forEach(uid=>{
+
+
+const u =
+users[uid];
 
 
 
 usersTable.innerHTML +=
 
+
 `
 
 <tr>
 
-<td>${u.name || ""}</td>
+<td>
+${u.name || ""}
+</td>
 
-<td>${u.email || ""}</td>
 
-<td>${u.role || ""}</td>
+<td>
+${u.email || ""}
+</td>
+
+
+<td>
+${u.role || ""}
+</td>
+
+
+<td>
+${u.active ? "فعال":"موقوف"}
+</td>
+
 
 </tr>
 
@@ -594,21 +681,75 @@ usersTable.innerHTML +=
 
 
 
+
 loadUsers();
 
 
 
 
 
-createUserBtn.onclick=()=>{
 
 
-alert(
-"سيتم تفعيل إنشاء المستخدم بعد تحديث auth.js"
-);
+
+
+createUserBtn.onclick =
+async()=>{
+
+
+message.className="message";
+
+
+try{
+
+
+await createUser({
+
+name:newName.value.trim(),
+
+email:newEmail.value.trim(),
+
+password:newPassword.value,
+
+role:newRole.value
+
+
+});
+
+
+
+message.className="message success";
+
+message.innerHTML =
+"تم إنشاء المستخدم بنجاح";
+
+
+
+newName.value="";
+newEmail.value="";
+newPassword.value="";
+
+
+
+loadUsers();
+
+
+}
+
+catch(error){
+
+
+message.className="message error";
+
+message.innerHTML =
+error.message;
+
+
+}
+
 
 
 };
+
 
 
 

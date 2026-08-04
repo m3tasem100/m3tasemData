@@ -5,47 +5,53 @@
 
 <head>
 
-
 <meta charset="UTF-8">
-
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
 <title>
-Upload Plans
+رفع الخطط
 </title>
 
 
-
 <link rel="stylesheet" href="style.css">
-
 
 
 </head>
 
 
 
-
-
 <body>
 
 
+<div class="app">
 
-<div class="main">
 
-
-<div class="header">
+<aside class="sidebar">
 
 
 <h2>
-
-📂 رفع الخطط السنوية
-
+🏫 UCA
 </h2>
 
 
-</div>
+<button onclick="backAdmin()">
+
+⬅ لوحة المدير
+
+</button>
+
+
+
+<button id="logoutBtn">
+
+🚪 تسجيل الخروج
+
+</button>
+
+
+</aside>
 
 
 
@@ -53,30 +59,30 @@ Upload Plans
 
 
 
-<div class="content">
+
+
+<main class="main">
+
+
+<header class="header">
+
+<h2>
+رفع الخطط الدراسية
+</h2>
+
+</header>
 
 
 
+
+
+
+<section class="content">
 
 
 
 <div class="card">
 
-
-<h3>
-بيانات الخطة
-</h3>
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-السنة الدراسية
-</label>
 
 
 <select id="year">
@@ -90,21 +96,6 @@ Upload Plans
 </select>
 
 
-</div>
-
-
-
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-الفصل الدراسي
-</label>
 
 
 
@@ -112,43 +103,27 @@ Upload Plans
 
 
 <option value="semester1">
-
 الفصل الأول
-
 </option>
 
 
+
 <option value="semester2">
-
 الفصل الثاني
-
 </option>
 
 
 </select>
 
 
-</div>
 
-
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-البرنامج
-</label>
 
 
 
 <select id="program">
 
 
-<option>
+<option value="American">
 
 American
 
@@ -156,7 +131,7 @@ American
 
 
 
-<option>
+<option value="British">
 
 British
 
@@ -166,22 +141,9 @@ British
 </select>
 
 
-</div>
 
 
 
-
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-الصف
-</label>
 
 
 <select id="grade">
@@ -189,27 +151,16 @@ British
 
 <option>
 اختر الصف
+
 </option>
 
 
 </select>
 
 
-</div>
 
 
 
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-المادة
-</label>
 
 
 <select id="subject">
@@ -217,30 +168,16 @@ British
 
 <option>
 اختر المادة
+
 </option>
 
 
 </select>
 
 
-</div>
 
 
 
-
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-
-ملف Excel
-
-</label>
 
 
 
@@ -250,34 +187,26 @@ type="file"
 
 id="excelFile"
 
-accept=".xlsx,.xls"
+accept=".xlsx,.xls">
 
 
->
-
-
-</div>
-
-
-
-
+<br><br>
 
 
 <button
 
-class="btn btn-primary"
+id="uploadBtn"
 
-id="readExcelBtn">
+class="btn btn-primary">
 
-قراءة الملف
+رفع الخطة
+
 
 </button>
 
 
 
 </div>
-
-
 
 
 
@@ -289,42 +218,28 @@ id="readExcelBtn">
 
 
 <h3>
-معاينة البيانات
+نتيجة الرفع
 
 </h3>
 
 
+<div id="result">
 
-<div class="table-container">
-
-
-<table>
-
-
-<thead>
-
-
-<tr id="excelHeader">
-
-
-</tr>
-
-
-</thead>
-
-
-
-<tbody id="excelBody">
-
-
-</tbody>
-
-
-</table>
-
+</div>
 
 
 </div>
+
+
+
+
+
+</section>
+
+
+
+</main>
+
 
 
 
@@ -336,50 +251,8 @@ id="readExcelBtn">
 
 
 
-<button
 
-class="btn btn-success"
-
-id="savePlanBtn"
-
-style="display:none">
-
-
-حفظ الخطة
-
-</button>
-
-
-
-
-
-
-<p id="message"></p>
-
-
-
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
-
-
-<script type="module" src="plans.js"></script>
-
+<script type="module" src="upload_plans.js"></script>
 
 
 </body>

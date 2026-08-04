@@ -14,7 +14,7 @@ logout
 
 from "./auth.js";
 
-window.loadHeadModule=function(page){
+
 
 import {
 
@@ -206,7 +206,11 @@ loadHeadHome();
 
 window.loadHeadModule=function(page){
 
+case "execution":
 
+loadExecution();
+
+break;
 
 switch(page){
 

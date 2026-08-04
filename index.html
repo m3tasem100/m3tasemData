@@ -14,17 +14,37 @@ UCA School Management System
 
 <style>
 
+
 *{
+
 box-sizing:border-box;
-font-family:Tahoma,Arial,sans-serif;
+
+font-family:"Tahoma",Arial,sans-serif;
+
 }
+
 
 
 body{
 
 margin:0;
 
-min-height:100vh;
+height:100vh;
+
+background:
+
+linear-gradient(
+
+135deg,
+
+#0f172a,
+
+#1d4ed8,
+
+#60a5fa
+
+);
+
 
 display:flex;
 
@@ -32,41 +52,59 @@ justify-content:center;
 
 align-items:center;
 
-background:
-linear-gradient(135deg,#0f172a,#1d4ed8,#38bdf8);
 
 }
+
+
+
 
 
 .login-box{
 
-width:390px;
+
+width:420px;
+
 
 background:white;
 
-padding:35px;
 
 border-radius:20px;
 
-box-shadow:0 20px 50px rgba(0,0,0,.3);
+
+padding:35px;
+
+
+box-shadow:
+
+0 20px 50px rgba(0,0,0,.25);
+
 
 }
+
+
 
 
 
 .logo{
 
+
 text-align:center;
 
-margin-bottom:25px;
+
+margin-bottom:30px;
+
 
 }
 
 
 
+
+
 .logo .icon{
 
+
 font-size:55px;
+
 
 }
 
@@ -74,11 +112,15 @@ font-size:55px;
 
 .logo h1{
 
-margin:5px;
+
+margin:10px 0;
+
 
 color:#1e3a8a;
 
-font-size:25px;
+
+font-size:28px;
+
 
 }
 
@@ -86,7 +128,21 @@ font-size:25px;
 
 .logo p{
 
+
 color:#64748b;
+
+
+}
+
+
+
+
+
+.form-group{
+
+
+margin-bottom:20px;
+
 
 }
 
@@ -94,149 +150,228 @@ color:#64748b;
 
 label{
 
+
 display:block;
 
-font-weight:bold;
 
 margin-bottom:7px;
 
+
+font-weight:bold;
+
+
 color:#334155;
+
 
 }
 
 
 
-.input{
+
+
+input{
+
 
 width:100%;
 
-padding:13px;
 
-margin-bottom:18px;
+padding:14px;
+
 
 border-radius:10px;
 
+
 border:1px solid #cbd5e1;
 
-font-size:15px;
+
+font-size:16px;
+
 
 outline:none;
 
+
 }
 
 
 
-.input:focus{
+
+
+input:focus{
+
 
 border-color:#2563eb;
 
+
+box-shadow:0 0 5px #93c5fd;
+
+
 }
+
+
+
+
 
 
 
 .password-container{
 
+
 position:relative;
 
+
 }
+
+
 
 
 
 .password-container span{
 
+
 position:absolute;
+
 
 left:15px;
 
-top:12px;
+
+top:14px;
+
 
 cursor:pointer;
 
-font-size:20px;
 
 }
+
+
 
 
 
 button{
 
+
 width:100%;
+
 
 padding:14px;
 
+
 border:0;
 
-border-radius:10px;
+
+border-radius:12px;
+
 
 background:#2563eb;
 
+
 color:white;
+
 
 font-size:17px;
 
+
 font-weight:bold;
+
 
 cursor:pointer;
 
+
+transition:.3s;
+
+
 }
+
+
 
 
 
 button:hover{
 
+
 background:#1d4ed8;
 
+
 }
+
+
+
 
 
 
 button:disabled{
 
+
 background:#94a3b8;
 
+
+cursor:not-allowed;
+
+
 }
+
+
+
+
+
+#loader{
+
+
+display:none;
+
+
+text-align:center;
+
+
+margin-top:15px;
+
+
+color:#2563eb;
+
+
+}
+
+
 
 
 
 #message{
 
+
 margin-top:15px;
+
 
 text-align:center;
 
-font-size:14px;
 
 color:#dc2626;
 
+
+font-weight:bold;
+
+
 }
 
 
-
-.loading{
-
-display:none;
-
-text-align:center;
-
-margin-top:15px;
-
-color:#2563eb;
-
-}
 
 
 
 .footer{
 
-margin-top:25px;
 
 text-align:center;
 
-color:#64748b;
+
+margin-top:25px;
+
 
 font-size:13px;
 
+
+color:#64748b;
+
+
 }
+
 
 
 </style>
@@ -246,7 +381,11 @@ font-size:13px;
 
 
 
+
+
+
 <body>
+
 
 
 
@@ -254,38 +393,64 @@ font-size:13px;
 
 
 
+
+
 <div class="logo">
 
+
 <div class="icon">
+
 🏫
+
 </div>
 
-<h1>
-UCA
-</h1>
+
 
 <h1>
-School Management System
+
+UCA
+
 </h1>
+
+
+
+<h1>
+
+School Management System
+
+</h1>
+
+
 
 <p>
+
 تسجيل الدخول إلى النظام
+
 </p>
+
 
 </div>
 
 
 
+
+
+
+
+
+
+<div class="form-group">
 
 
 <label>
+
 البريد الإلكتروني
+
 </label>
 
 
-<input
 
-class="input"
+<input
 
 id="email"
 
@@ -293,13 +458,29 @@ type="email"
 
 placeholder="example@school.com"
 
+autocomplete="email"
+
 >
 
 
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="form-group">
 
 
 <label>
+
 كلمة المرور
+
 </label>
 
 
@@ -309,20 +490,22 @@ placeholder="example@school.com"
 
 <input
 
-class="input"
-
 id="password"
 
 type="password"
 
 placeholder="********"
 
+autocomplete="current-password"
+
 >
 
 
 
 <span id="showPassword">
+
 👁
+
 </span>
 
 
@@ -331,38 +514,63 @@ placeholder="********"
 
 
 
+</div>
+
+
+
+
+
+
 
 
 
 <button id="loginBtn">
 
+
 تسجيل الدخول
+
 
 </button>
 
 
 
-<div class="loading" id="loading">
 
-جاري تسجيل الدخول...
+
+
+<div id="loader">
+
+جاري التحقق...
 
 </div>
 
 
 
-<div id="message"></div>
+
+
+<div id="message">
+
+</div>
+
+
 
 
 
 
 <div class="footer">
 
+
 UCA School Management System © 2026
 
+
 </div>
 
 
+
+
+
+
 </div>
+
 
 
 
@@ -374,75 +582,24 @@ UCA School Management System © 2026
 <script type="module">
 
 
-import { login }
-
-from "./auth.js";
+import "./auth.js";
 
 
 
 
 
-const btn =
-document.getElementById("loginBtn");
+const loginBtn =
 
-const msg =
-document.getElementById("message");
-
-const loading =
-document.getElementById("loading");
+document.getElementById(
+"loginBtn"
+);
 
 
 
+const loader =
 
-
-
-btn.addEventListener(
-"click",
-async()=>{
-
-
-msg.innerHTML="";
-
-
-btn.disabled=true;
-
-loading.style.display="block";
-
-
-
-try{
-
-
-await login();
-
-
-
-}
-
-catch(error){
-
-
-msg.innerHTML =
-error.message;
-
-
-}
-
-
-
-finally{
-
-
-btn.disabled=false;
-
-loading.style.display="none";
-
-
-}
-
-
-}
-
+document.getElementById(
+"loader"
 );
 
 
@@ -451,57 +608,76 @@ loading.style.display="none";
 
 
 
-
-// Enter key
-
-
-document.addEventListener(
-"keydown",
-(e)=>{
-
-
-if(e.key==="Enter"){
-
-btn.click();
-
-}
-
-
-});
+loginBtn.onclick = async()=>{
 
 
 
+loader.style.display="block";
+
+
+loginBtn.disabled=true;
+
+
+
+await window.login();
+
+
+
+loader.style.display="none";
+
+
+loginBtn.disabled=false;
+
+
+
+};
 
 
 
 
 
-// Show password
+
+
+
+// إظهار كلمة المرور
 
 
 document
+
 .getElementById("showPassword")
+
 .onclick=function(){
 
 
+
 const pass =
-document.getElementById("password");
+
+document.getElementById(
+"password"
+);
 
 
 
 if(pass.type==="password"){
 
+
+
 pass.type="text";
 
+
 this.innerHTML="🙈";
+
 
 }
 
 else{
 
+
 pass.type="password";
 
+
 this.innerHTML="👁";
+
 
 }
 
@@ -510,7 +686,10 @@ this.innerHTML="👁";
 
 
 
+
+
 </script>
+
 
 
 

@@ -8,6 +8,7 @@
 
 <title>UCA Admin Dashboard</title>
 
+
 <style>
 
 *{
@@ -15,15 +16,20 @@ box-sizing:border-box;
 font-family:Tahoma,Arial;
 }
 
+
 body{
+
 margin:0;
 background:#f1f5f9;
+
 }
 
 
 .app{
+
 display:flex;
 min-height:100vh;
+
 }
 
 
@@ -48,16 +54,21 @@ margin-bottom:30px;
 .sidebar button{
 
 width:100%;
-padding:13px;
+padding:14px;
 margin-bottom:10px;
+
+background:transparent;
 border:0;
 border-radius:8px;
-background:transparent;
+
 color:white;
 cursor:pointer;
 text-align:right;
 
+font-size:15px;
+
 }
+
 
 
 .sidebar button:hover{
@@ -65,6 +76,7 @@ text-align:right;
 background:#2563eb;
 
 }
+
 
 
 .logout{
@@ -89,6 +101,10 @@ padding:25px;
 background:white;
 padding:20px;
 border-radius:15px;
+
+display:flex;
+justify-content:space-between;
+
 margin-bottom:20px;
 
 }
@@ -105,23 +121,27 @@ border-radius:15px;
 
 
 
-.grid{
+.card{
 
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:15px;
+background:white;
+padding:20px;
+
+border-radius:15px;
+
+box-shadow:0 5px 15px #ddd;
+
+margin-bottom:20px;
 
 }
 
 
 
-.card{
+.grid{
 
-background:#fff;
-padding:20px;
-border-radius:15px;
-box-shadow:0 5px 15px #ddd;
-margin-bottom:20px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+gap:15px;
 
 }
 
@@ -130,24 +150,31 @@ margin-bottom:20px;
 input,select{
 
 width:100%;
+
 padding:12px;
-margin-bottom:10px;
+
 border-radius:8px;
+
 border:1px solid #ccc;
+
+margin-bottom:10px;
 
 }
 
 
 
-.action{
+button.action{
 
 background:#2563eb;
 color:white;
-border:0;
+
 padding:12px;
+
+border:0;
+
 border-radius:8px;
+
 cursor:pointer;
-width:100%;
 
 }
 
@@ -166,6 +193,7 @@ th{
 
 background:#1e3a8a;
 color:white;
+
 padding:12px;
 
 }
@@ -174,22 +202,64 @@ padding:12px;
 td{
 
 padding:10px;
+
 border-bottom:1px solid #ddd;
+
 text-align:center;
 
 }
 
 
+
+.small{
+
+padding:6px 10px;
+border:0;
+border-radius:6px;
+cursor:pointer;
+
+}
+
+
+
+.edit{
+
+background:#f59e0b;
+color:white;
+
+}
+
+
+
+.delete{
+
+background:#dc2626;
+color:white;
+
+}
+
+
+
+.active{
+
+background:#16a34a;
+color:white;
+
+}
+
+
+
 </style>
 
+
 </head>
+
 
 
 <body>
 
 
 <div class="app">
-
 
 
 <div class="sidebar">
@@ -206,9 +276,11 @@ text-align:center;
 </button>
 
 
+
 <button onclick="loadPage('users')">
 👥 المستخدمون
 </button>
+
 
 
 <button onclick="loadPage('plans')">
@@ -216,9 +288,11 @@ text-align:center;
 </button>
 
 
+
 <button onclick="loadPage('distribution')">
 📅 توزيع الأسابيع
 </button>
+
 
 
 <button onclick="loadPage('reports')">
@@ -226,17 +300,22 @@ text-align:center;
 </button>
 
 
+
 <button onclick="loadPage('settings')">
 ⚙ الإعدادات
 </button>
 
 
-<button class="logout" id="logoutBtn">
+
+<button id="logoutBtn" class="logout">
+
 🚪 تسجيل الخروج
+
 </button>
 
 
 </div>
+
 
 
 
@@ -247,11 +326,19 @@ text-align:center;
 
 <div class="header">
 
+
+<div>
+
 <h2>
 لوحة المدير
 </h2>
 
+
 <div id="adminInfo"></div>
+
+
+</div>
+
 
 </div>
 
@@ -260,11 +347,16 @@ text-align:center;
 <div id="content"></div>
 
 
+
+</div>
+
+
+
 </div>
 
 
 
-</div>
+
 
 
 
@@ -276,10 +368,9 @@ text-align:center;
 import {
 
 protectPage,
-
 currentUser,
-
-logout
+logout,
+createUser
 
 }
 
@@ -300,10 +391,9 @@ from "./firebase-config.js";
 import {
 
 ref,
-
 get,
-
-update
+update,
+remove
 
 }
 
@@ -319,21 +409,26 @@ protectPage(["Manager"]);
 
 
 
-const user=currentUser();
+
+
+const admin=currentUser();
 
 
 
-if(user){
+if(admin){
+
 
 adminInfo.innerHTML=
 
 `
-${user.name || ""}
+${admin.name || ""}
 <br>
-${user.email}
+${admin.email}
 `;
 
 }
+
+
 
 
 
@@ -352,10 +447,14 @@ logout();
 
 
 
+
+
 window.loadPage=function(page){
 
 
+
 switch(page){
+
 
 
 case "dashboard":
@@ -367,23 +466,46 @@ content.innerHTML=`
 الرئيسية
 </h2>
 
+
 <div class="grid">
 
+
 <div class="card">
-<h3>المستخدمون</h3>
-<p>إدارة الحسابات والصلاحيات</p>
+
+<h3>
+المستخدمون
+</h3>
+
+<p>
+إدارة الصلاحيات والحسابات
+</p>
+
 </div>
 
 
 <div class="card">
-<h3>الخطط</h3>
-<p>إدارة الخطط الدراسية</p>
+
+<h3>
+الخطط
+</h3>
+
+<p>
+إدارة الخطط السنوية
+</p>
+
 </div>
 
 
 <div class="card">
-<h3>التقارير</h3>
-<p>تقارير الأداء</p>
+
+<h3>
+التقارير
+</h3>
+
+<p>
+تقارير النظام
+</p>
+
 </div>
 
 
@@ -418,17 +540,21 @@ content.innerHTML=`
 </h3>
 
 
+
 <input id="newName"
 placeholder="الاسم">
+
 
 
 <input id="newEmail"
 placeholder="البريد الإلكتروني">
 
 
+
 <input id="newPassword"
 type="password"
 placeholder="كلمة المرور">
+
 
 
 <select id="newRole">
@@ -467,6 +593,7 @@ Manager
 </select>
 
 
+
 <button class="action"
 onclick="createNewUser()">
 
@@ -475,10 +602,14 @@ onclick="createNewUser()">
 </button>
 
 
-<p id="userMessage"></p>
+
+<p id="msg"></p>
 
 
 </div>
+
+
+
 
 
 
@@ -488,7 +619,8 @@ onclick="createNewUser()">
 
 
 <h3>
-المستخدمون الحاليون
+المستخدمون
+
 </h3>
 
 
@@ -515,6 +647,10 @@ onclick="createNewUser()">
 الحالة
 </th>
 
+<th>
+الإجراءات
+</th>
+
 
 </tr>
 
@@ -535,6 +671,7 @@ onclick="createNewUser()">
 `;
 
 
+
 loadUsers();
 
 
@@ -552,13 +689,10 @@ case "plans":
 content.innerHTML=
 
 `
-<h2>
-الخطط الدراسية
-</h2>
 
-<p>
-رفع وتعديل الخطط
-</p>
+<h2>
+إدارة الخطط
+</h2>
 
 `;
 
@@ -574,9 +708,12 @@ case "distribution":
 content.innerHTML=
 
 `
+
 <h2>
 توزيع الأسابيع
+
 </h2>
+
 `;
 
 break;
@@ -592,12 +729,16 @@ case "reports":
 content.innerHTML=
 
 `
+
 <h2>
 التقارير
+
 </h2>
+
 `;
 
 break;
+
 
 
 
@@ -609,19 +750,24 @@ case "settings":
 content.innerHTML=
 
 `
+
 <h2>
 الإعدادات
+
 </h2>
+
 `;
 
 break;
 
 
+}
+
+
 
 }
 
 
-}
 
 
 
@@ -645,18 +791,21 @@ usersTable.innerHTML="";
 
 
 
-if(!snap.exists()) return;
+if(!snap.exists())
+return;
 
 
 
-const data=snap.val();
+const users=snap.val();
 
 
 
-Object.keys(data).forEach(uid=>{
+
+Object.keys(users).forEach(uid=>{
 
 
-let u=data[uid];
+let u=users[uid];
+
 
 
 usersTable.innerHTML +=
@@ -666,45 +815,59 @@ usersTable.innerHTML +=
 <tr>
 
 
-<td>${u.name || ""}</td>
+<td>
+${u.name || ""}
+</td>
 
 
-<td>${u.email || ""}</td>
+<td>
+${u.email || ""}
+</td>
+
 
 
 <td>
 
 <select onchange="changeRole('${uid}',this.value)">
 
-<option ${u.role=="Manager"?"selected":""}>
+
+<option value="Manager" ${u.role=="Manager"?"selected":""}>
 Manager
 </option>
 
-<option ${u.role=="Teacher"?"selected":""}>
+
+<option value="Teacher" ${u.role=="Teacher"?"selected":""}>
 Teacher
 </option>
 
-<option ${u.role=="Head"?"selected":""}>
+
+<option value="Head" ${u.role=="Head"?"selected":""}>
 Head
 </option>
 
-<option ${u.role=="Coordinator"?"selected":""}>
+
+<option value="Coordinator" ${u.role=="Coordinator"?"selected":""}>
 Coordinator
 </option>
 
-<option ${u.role=="StageManager"?"selected":""}>
+
+<option value="StageManager" ${u.role=="StageManager"?"selected":""}>
 StageManager
 </option>
 
-<option ${u.role=="Viewer"?"selected":""}>
+
+<option value="Viewer" ${u.role=="Viewer"?"selected":""}>
 Viewer
 </option>
+
 
 
 </select>
 
 
 </td>
+
+
 
 
 
@@ -715,14 +878,55 @@ ${u.active ? "فعال":"موقوف"}
 </td>
 
 
+
+
+
+<td>
+
+
+<button class="small edit"
+onclick="editUser('${uid}')">
+
+تعديل
+
+</button>
+
+
+
+<button class="small active"
+onclick="toggleUser('${uid}',${u.active})">
+
+تفعيل/تعطيل
+
+</button>
+
+
+
+<button class="small delete"
+onclick="deleteUser('${uid}')">
+
+حذف
+
+</button>
+
+
+</td>
+
+
 </tr>
 
+
 `;
+
+
 
 });
 
 
+
 }
+
+
 
 
 
@@ -746,7 +950,7 @@ role:role
 );
 
 
-alert("تم تعديل الدور");
+loadUsers();
 
 
 }
@@ -756,14 +960,161 @@ alert("تم تعديل الدور");
 
 
 
-window.createNewUser=function(){
 
 
-userMessage.innerHTML=
 
-"سيتم تفعيل إنشاء المستخدم بعد تعديل auth.js";
+window.toggleUser=async function(uid,status){
+
+
+
+await update(
+
+ref(db,"users/"+uid),
+
+{
+
+active:!status
 
 }
+
+);
+
+
+
+loadUsers();
+
+
+}
+
+
+
+
+
+
+
+
+
+window.editUser=async function(uid){
+
+
+
+let name =
+prompt(
+"الاسم الجديد"
+);
+
+
+
+if(!name)
+return;
+
+
+
+await update(
+
+ref(db,"users/"+uid),
+
+{
+
+name:name
+
+}
+
+);
+
+
+
+loadUsers();
+
+
+}
+
+
+
+
+
+
+
+
+
+window.deleteUser=async function(uid){
+
+
+
+if(!confirm(
+"حذف المستخدم؟"
+))
+
+return;
+
+
+
+await remove(
+
+ref(db,"users/"+uid)
+
+);
+
+
+
+loadUsers();
+
+
+}
+
+
+
+
+
+
+
+
+
+window.createNewUser=async function(){
+
+
+
+try{
+
+
+await createUser({
+
+name:newName.value,
+
+email:newEmail.value,
+
+password:newPassword.value,
+
+role:newRole.value
+
+
+});
+
+
+
+msg.innerHTML=
+"تم إنشاء المستخدم";
+
+
+loadUsers();
+
+
+}
+
+
+catch(e){
+
+
+msg.innerHTML=e.message;
+
+
+}
+
+
+}
+
+
+
 
 
 
@@ -772,6 +1123,7 @@ loadPage("dashboard");
 
 
 </script>
+
 
 
 </body>

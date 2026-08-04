@@ -2,25 +2,20 @@
 
 <html lang="ar" dir="rtl">
 
-
 <head>
 
 <meta charset="UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
 <title>
-UCA Admin Dashboard
+لوحة المدير
 </title>
 
 
 <link rel="stylesheet" href="style.css">
 
-
 </head>
-
-
 
 
 <body>
@@ -30,15 +25,12 @@ UCA Admin Dashboard
 
 
 
-
-
-<!-- SIDEBAR -->
+<!-- Sidebar -->
 
 <aside class="sidebar">
 
 
 <div class="logo">
-
 
 <h2>
 🏫 UCA
@@ -46,7 +38,7 @@ UCA Admin Dashboard
 
 
 <p>
-مدير النظام
+نظام الإدارة المدرسية
 </p>
 
 
@@ -56,9 +48,7 @@ UCA Admin Dashboard
 
 
 
-
-
-<button onclick="goPage('admin_dashboard.html')">
+<button onclick="openPage('admin_dashboard.html')">
 
 🏠 الرئيسية
 
@@ -68,10 +58,9 @@ UCA Admin Dashboard
 
 
 
+<button onclick="openPage('users.html')">
 
-<button onclick="goPage('users.html')">
-
-👥 المستخدمون
+👥 إدارة المستخدمين
 
 </button>
 
@@ -79,8 +68,7 @@ UCA Admin Dashboard
 
 
 
-
-<button onclick="goPage('departments.html')">
+<button onclick="openPage('departments.html')">
 
 🏢 الأقسام
 
@@ -90,8 +78,7 @@ UCA Admin Dashboard
 
 
 
-
-<button onclick="goPage('subjects.html')">
+<button onclick="openPage('subjects.html')">
 
 📚 المواد
 
@@ -101,8 +88,7 @@ UCA Admin Dashboard
 
 
 
-
-<button onclick="goPage('grades.html')">
+<button onclick="openPage('grades.html')">
 
 🎓 الصفوف
 
@@ -112,8 +98,17 @@ UCA Admin Dashboard
 
 
 
+<button onclick="openPage('teacher_assignment.html')">
 
-<button onclick="goPage('upload_plans.html')">
+👨‍🏫 ربط المعلمين
+
+</button>
+
+
+
+
+
+<button onclick="openPage('upload_plans.html')">
 
 📂 رفع الخطط
 
@@ -123,8 +118,7 @@ UCA Admin Dashboard
 
 
 
-
-<button onclick="goPage('plan_distribution.html')">
+<button onclick="openPage('plan_distribution.html')">
 
 📅 توزيع الأسابيع
 
@@ -134,8 +128,7 @@ UCA Admin Dashboard
 
 
 
-
-<button onclick="goPage('reports.html')">
+<button onclick="openPage('reports.html')">
 
 📊 التقارير
 
@@ -145,8 +138,7 @@ UCA Admin Dashboard
 
 
 
-
-<button onclick="goPage('settings.html')">
+<button onclick="openPage('settings.html')">
 
 ⚙️ الإعدادات
 
@@ -157,13 +149,18 @@ UCA Admin Dashboard
 
 
 
+<hr>
 
-<button id="logoutBtn" class="logout">
+
+
+
+
+<button id="logoutBtn"
+class="logout">
 
 🚪 تسجيل الخروج
 
 </button>
-
 
 
 
@@ -177,18 +174,13 @@ UCA Admin Dashboard
 
 
 
-<!-- MAIN -->
+<!-- Main -->
 
 
 <main class="main">
 
 
-
 <header class="header">
-
-
-
-<div>
 
 
 <h2>
@@ -198,17 +190,14 @@ UCA Admin Dashboard
 </h2>
 
 
-<p id="adminInfo">
 
-</p>
-
+<div id="adminInfo">
 
 </div>
 
 
-
-
 </header>
+
 
 
 
@@ -221,30 +210,23 @@ UCA Admin Dashboard
 
 
 
-
-
 <div class="cards">
 
 
 
 
 
-
 <div class="card"
-onclick="goPage('users.html')">
+onclick="openPage('users.html')">
 
 
 <h3>
-
 👥 المستخدمون
-
 </h3>
 
 
 <p>
-
-إدارة المستخدمين والصلاحيات
-
+إضافة وتعديل الصلاحيات
 </p>
 
 
@@ -257,20 +239,38 @@ onclick="goPage('users.html')">
 
 
 <div class="card"
-onclick="goPage('upload_plans.html')">
+onclick="openPage('teacher_assignment.html')">
 
 
 <h3>
+👨‍🏫 المعلمون
+</h3>
 
+
+<p>
+ربط المواد والصفوف
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card"
+onclick="openPage('upload_plans.html')">
+
+
+<h3>
 📂 الخطط
-
 </h3>
 
 
 <p>
-
-رفع وإدارة الخطط الدراسية
-
+رفع الخطط الدراسية
 </p>
 
 
@@ -283,20 +283,16 @@ onclick="goPage('upload_plans.html')">
 
 
 <div class="card"
-onclick="goPage('plan_distribution.html')">
+onclick="openPage('plan_distribution.html')">
 
 
 <h3>
-
-📅 التوزيع
-
+📅 التوزيع الأسبوعي
 </h3>
 
 
 <p>
-
-توزيع الأهداف على الأسابيع
-
+توزيع الأهداف
 </p>
 
 
@@ -309,20 +305,16 @@ onclick="goPage('plan_distribution.html')">
 
 
 <div class="card"
-onclick="goPage('reports.html')">
+onclick="openPage('admin_dashboard.html')">
 
 
 <h3>
-
 📊 التقارير
-
 </h3>
 
 
 <p>
-
-تقارير النظام
-
+إحصائيات النظام
 </p>
 
 
@@ -333,7 +325,10 @@ onclick="goPage('reports.html')">
 
 
 
+
 </div>
+
+
 
 
 
@@ -344,10 +339,7 @@ onclick="goPage('reports.html')">
 
 
 
-
 </main>
-
-
 
 
 
@@ -380,6 +372,10 @@ from "./auth.js";
 
 
 
+
+// حماية المدير
+
+
 protectPage([
 
 "Manager"
@@ -392,7 +388,9 @@ protectPage([
 
 
 
-const user=currentUser();
+const user = currentUser();
+
+
 
 
 
@@ -401,30 +399,35 @@ const user=currentUser();
 if(user){
 
 
+
 document
 
-.getElementById("adminInfo")
+.getElementById(
+
+"adminInfo"
+
+)
 
 .innerHTML=
 
+
 `
 
-الاسم:
+<strong>
 ${user.name}
-
+</strong>
 
 <br>
 
-
-البريد:
 ${user.email}
 
-
 <br>
 
+<span>
 
-الدور:
 ${user.role}
+
+</span>
 
 `;
 
@@ -438,10 +441,13 @@ ${user.role}
 
 
 
-
 document
 
-.getElementById("logoutBtn")
+.getElementById(
+
+"logoutBtn"
+
+)
 
 .onclick=
 
@@ -453,8 +459,8 @@ logout;
 
 
 
+window.openPage=function(page){
 
-window.goPage=function(page){
 
 
 location.href=page;
@@ -465,12 +471,13 @@ location.href=page;
 
 
 
+
+
 </script>
 
 
 
 
 </body>
-
 
 </html>

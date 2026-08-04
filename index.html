@@ -3,167 +3,483 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>School Management System</title>
+<title>
+UCA School Management System
+</title>
 
-    <link rel="stylesheet"
-          href="css/login.css">
 
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
+<style>
 
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
+*{
+box-sizing:border-box;
+font-family:"Tahoma",Arial;
+}
 
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap"
-          rel="stylesheet">
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+body{
+
+margin:0;
+
+height:100vh;
+
+background:
+linear-gradient(
+135deg,
+#1e3a8a,
+#2563eb,
+#60a5fa
+);
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+}
+
+
+
+.login-container{
+
+
+width:400px;
+
+background:white;
+
+border-radius:20px;
+
+padding:35px;
+
+box-shadow:
+0 20px 50px rgba(0,0,0,.25);
+
+}
+
+
+
+.logo{
+
+text-align:center;
+
+margin-bottom:25px;
+
+}
+
+
+
+.logo h1{
+
+color:#1e3a8a;
+
+font-size:26px;
+
+margin:10px 0;
+
+}
+
+
+
+.logo p{
+
+color:#666;
+
+}
+
+
+
+
+.input-group{
+
+margin-bottom:18px;
+
+}
+
+
+
+label{
+
+display:block;
+
+margin-bottom:6px;
+
+font-weight:bold;
+
+color:#333;
+
+}
+
+
+
+input{
+
+
+width:100%;
+
+padding:13px;
+
+border:1px solid #ccc;
+
+border-radius:10px;
+
+font-size:15px;
+
+outline:none;
+
+}
+
+
+
+input:focus{
+
+border-color:#2563eb;
+
+box-shadow:
+0 0 5px #93c5fd;
+
+}
+
+
+
+
+.password-box{
+
+position:relative;
+
+}
+
+
+
+.password-box span{
+
+
+position:absolute;
+
+left:15px;
+
+top:13px;
+
+cursor:pointer;
+
+color:#2563eb;
+
+}
+
+
+
+
+
+button{
+
+
+width:100%;
+
+padding:14px;
+
+border:0;
+
+border-radius:10px;
+
+background:#2563eb;
+
+color:white;
+
+font-size:17px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+transition:.3s;
+
+}
+
+
+
+button:hover{
+
+background:#1d4ed8;
+
+}
+
+
+
+
+#message{
+
+
+margin-top:15px;
+
+text-align:center;
+
+color:red;
+
+font-size:14px;
+
+}
+
+
+
+
+
+.footer{
+
+
+text-align:center;
+
+margin-top:25px;
+
+color:#777;
+
+font-size:13px;
+
+}
+
+
+
+.loader{
+
+
+display:none;
+
+margin:auto;
+
+margin-top:15px;
+
+}
+
+
+
+</style>
+
 
 </head>
 
+
 <body>
 
-<div class="background"></div>
 
-<div class="login-card">
 
-    <div class="logo">
+<div class="login-container">
 
-        <i class="fa-solid fa-graduation-cap"></i>
 
-    </div>
 
-    <h1>
+<div class="logo">
 
-        School Management System
 
-    </h1>
+<h1>
+🏫 UCA
+</h1>
 
-    <p>
 
-        تسجيل الدخول إلى النظام
+<h1>
+School Management System
+</h1>
 
-    </p>
 
-    <form id="loginForm">
+<p>
+تسجيل الدخول إلى النظام
+</p>
 
-        <div class="input-group">
-
-            <label>
-
-                البريد الإلكتروني
-
-            </label>
-
-            <input
-
-                    id="email"
-
-                    type="email"
-
-                    required
-
-                    autocomplete="username">
-
-        </div>
-
-        <div class="input-group">
-
-            <label>
-
-                كلمة المرور
-
-            </label>
-
-            <input
-
-                    id="password"
-
-                    type="password"
-
-                    required
-
-                    autocomplete="current-password">
-
-        </div>
-
-        <button
-
-                type="submit"
-
-                class="login-btn">
-
-            <i class="fa-solid fa-right-to-bracket"></i>
-
-            تسجيل الدخول
-
-        </button>
-
-    </form>
-
-    <div id="errorMessage"
-         class="error-message">
-
-    </div>
-
-    <div class="footer">
-
-        UCA School Management System
-
-    </div>
 
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-<script src="js/firebase.js"></script>
 
-<script src="js/auth.js"></script>
+<div class="input-group">
 
-<script>
 
-const form = document.getElementById("loginForm");
+<label>
+البريد الإلكتروني
+</label>
 
-const errorMessage = document.getElementById("errorMessage");
 
-form.addEventListener("submit", async function(e){
+<input
 
-    e.preventDefault();
+id="email"
 
-    errorMessage.innerHTML = "";
+type="email"
 
-    try{
+placeholder="example@school.com"
 
-        await login(
+>
 
-            document.getElementById("email").value,
+</div>
 
-            document.getElementById("password").value
 
-        );
 
-    }
 
-    catch(error){
 
-        errorMessage.innerHTML = error.message;
 
-    }
+<div class="input-group">
 
-});
+
+<label>
+كلمة المرور
+</label>
+
+
+
+<div class="password-box">
+
+
+<input
+
+id="password"
+
+type="password"
+
+placeholder="********"
+
+>
+
+
+
+<span id="showPassword">
+👁
+</span>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<button id="loginBtn">
+
+تسجيل الدخول
+
+</button>
+
+
+
+
+
+<div class="loader" id="loader">
+
+جاري الدخول ...
+
+</div>
+
+
+
+
+<div id="message"></div>
+
+
+
+
+<div class="footer">
+
+UCA School Management System © 2026
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<script type="module">
+
+
+import "./auth.js";
+
+
+
+const btn =
+document.getElementById(
+"loginBtn"
+);
+
+
+
+btn.onclick=()=>{
+
+
+if(window.login){
+
+window.login();
+
+}
+
+else{
+
+
+document.getElementById(
+"message"
+).innerHTML=
+
+"لم يتم تحميل نظام الدخول";
+
+
+}
+
+
+
+};
+
+
+
+
+
+
+
+// اظهار كلمة المرور
+
+
+document
+.getElementById("showPassword")
+.onclick=function(){
+
+
+let pass =
+document.getElementById(
+"password"
+);
+
+
+
+if(pass.type==="password"){
+
+pass.type="text";
+
+this.innerHTML="🙈";
+
+}
+
+else{
+
+pass.type="password";
+
+this.innerHTML="👁";
+
+}
+
+
+};
+
+
 
 </script>
+
+
 
 </body>
 

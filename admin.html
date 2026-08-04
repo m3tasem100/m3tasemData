@@ -1,11 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
+
 
 <head>
 
 <meta charset="UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
 <title>
 UCA Admin Dashboard
@@ -19,6 +22,7 @@ UCA Admin Dashboard
 
 
 
+
 <body>
 
 
@@ -26,30 +30,35 @@ UCA Admin Dashboard
 
 
 
-<!-- ======================
-     SIDEBAR
-======================= -->
 
+
+<!-- SIDEBAR -->
 
 <aside class="sidebar">
 
 
 <div class="logo">
 
+
 <h2>
 🏫 UCA
 </h2>
 
+
 <p>
-School Management
+مدير النظام
 </p>
+
 
 </div>
 
 
 
 
-<button onclick="loadModule('dashboard')">
+
+
+
+<button onclick="goPage('admin_dashboard.html')">
 
 🏠 الرئيسية
 
@@ -58,9 +67,11 @@ School Management
 
 
 
-<button onclick="loadModule('users')">
 
-👥 إدارة المستخدمين
+
+<button onclick="goPage('users.html')">
+
+👥 المستخدمون
 
 </button>
 
@@ -68,7 +79,8 @@ School Management
 
 
 
-<button onclick="loadModule('departments')">
+
+<button onclick="goPage('departments.html')">
 
 🏢 الأقسام
 
@@ -78,7 +90,8 @@ School Management
 
 
 
-<button onclick="loadModule('subjects')">
+
+<button onclick="goPage('subjects.html')">
 
 📚 المواد
 
@@ -88,19 +101,10 @@ School Management
 
 
 
-<button onclick="loadModule('grades')">
 
-🎓 الصفوف والشعب
+<button onclick="goPage('grades.html')">
 
-</button>
-
-
-
-
-
-<button onclick="loadModule('plans')">
-
-📂 الخطط الدراسية
+🎓 الصفوف
 
 </button>
 
@@ -108,7 +112,19 @@ School Management
 
 
 
-<button onclick="loadModule('distribution')">
+
+<button onclick="goPage('upload_plans.html')">
+
+📂 رفع الخطط
+
+</button>
+
+
+
+
+
+
+<button onclick="goPage('plan_distribution.html')">
 
 📅 توزيع الأسابيع
 
@@ -118,7 +134,8 @@ School Management
 
 
 
-<button onclick="loadModule('reports')">
+
+<button onclick="goPage('reports.html')">
 
 📊 التقارير
 
@@ -128,11 +145,14 @@ School Management
 
 
 
-<button onclick="loadModule('settings')">
 
-⚙ الإعدادات
+<button onclick="goPage('settings.html')">
+
+⚙️ الإعدادات
 
 </button>
+
+
 
 
 
@@ -146,6 +166,7 @@ School Management
 
 
 
+
 </aside>
 
 
@@ -156,10 +177,7 @@ School Management
 
 
 
-
-<!-- ======================
-       MAIN
-======================= -->
+<!-- MAIN -->
 
 
 <main class="main">
@@ -167,6 +185,7 @@ School Management
 
 
 <header class="header">
+
 
 
 <div>
@@ -179,25 +198,13 @@ School Management
 </h2>
 
 
-<p id="userInfo">
+<p id="adminInfo">
 
 </p>
 
 
 </div>
 
-
-
-
-<div>
-
-
-<span id="date">
-
-</span>
-
-
-</div>
 
 
 
@@ -209,7 +216,127 @@ School Management
 
 
 
-<section id="content" class="content">
+
+<section class="content">
+
+
+
+
+
+<div class="cards">
+
+
+
+
+
+
+<div class="card"
+onclick="goPage('users.html')">
+
+
+<h3>
+
+👥 المستخدمون
+
+</h3>
+
+
+<p>
+
+إدارة المستخدمين والصلاحيات
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card"
+onclick="goPage('upload_plans.html')">
+
+
+<h3>
+
+📂 الخطط
+
+</h3>
+
+
+<p>
+
+رفع وإدارة الخطط الدراسية
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card"
+onclick="goPage('plan_distribution.html')">
+
+
+<h3>
+
+📅 التوزيع
+
+</h3>
+
+
+<p>
+
+توزيع الأهداف على الأسابيع
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card"
+onclick="goPage('reports.html')">
+
+
+<h3>
+
+📊 التقارير
+
+</h3>
+
+
+<p>
+
+تقارير النظام
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
 
 
 </section>
@@ -217,7 +344,9 @@ School Management
 
 
 
+
 </main>
+
 
 
 
@@ -230,7 +359,114 @@ School Management
 
 
 
-<script type="module" src="admin.js"></script>
+
+
+
+<script type="module">
+
+
+import {
+
+protectPage,
+currentUser,
+logout
+
+}
+
+from "./auth.js";
+
+
+
+
+
+
+protectPage([
+
+"Manager"
+
+]);
+
+
+
+
+
+
+
+const user=currentUser();
+
+
+
+
+
+if(user){
+
+
+document
+
+.getElementById("adminInfo")
+
+.innerHTML=
+
+`
+
+الاسم:
+${user.name}
+
+
+<br>
+
+
+البريد:
+${user.email}
+
+
+<br>
+
+
+الدور:
+${user.role}
+
+`;
+
+
+
+}
+
+
+
+
+
+
+
+
+document
+
+.getElementById("logoutBtn")
+
+.onclick=
+
+logout;
+
+
+
+
+
+
+
+
+window.goPage=function(page){
+
+
+location.href=page;
+
+
+};
+
+
+
+
+</script>
+
 
 
 

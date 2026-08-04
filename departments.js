@@ -1,7 +1,17 @@
 ////////////////////////////////////////////////////
-// UCA SCHOOL MANAGEMENT SYSTEM
-// DEPARTMENTS MANAGEMENT MODULE
+// DEPARTMENTS MANAGEMENT
 ////////////////////////////////////////////////////
+
+
+import {
+
+protectPage,
+logout
+
+}
+
+from "./auth.js";
+
 
 
 import {
@@ -31,14 +41,51 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
-const content =
-document.getElementById("content");
+
+protectPage([
+
+"Manager"
+
+]);
 
 
 
 
 
-// تشغيل الوحدة
+
+
+logoutBtn.onclick=logout;
+
+
+
+
+
+
+
+window.backAdmin=function(){
+
+location.href="admin.html";
+
+};
+
+
+
+
+
+
+
+
+const table=
+
+document.getElementById(
+"departmentTable"
+);
+
+
+
+
+
+
 
 loadDepartments();
 
@@ -48,140 +95,32 @@ loadDepartments();
 
 
 
-// =======================================
-// واجهة الأقسام
-// =======================================
 
 
-async function loadDepartments(){
+// إضافة قسم
 
 
+addDepartment.onclick=
 
-content.innerHTML = `
+async function(){
 
 
-<h2>
-🏢 إدارة الأقسام
-</h2>
 
+const name=
 
+departmentName.value.trim();
 
-<div class="card">
 
 
-<h3>
-إضافة قسم جديد
-</h3>
 
 
-<div class="form-group">
+if(!name){
 
-<label>
-اسم القسم
-</label>
+alert(
+"أدخل اسم القسم"
+);
 
-
-<input id="departmentName"
-placeholder="مثال: قسم العلوم">
-
-</div>
-
-
-
-
-<button class="btn btn-primary"
-id="addDepartmentBtn">
-
-إضافة القسم
-
-</button>
-
-
-
-<p id="departmentMessage"></p>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h3>
-قائمة الأقسام
-</h3>
-
-
-
-<div class="table-container">
-
-
-<table>
-
-
-<thead>
-
-<tr>
-
-<th>
-القسم
-</th>
-
-
-<th>
-الإجراءات
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-<tbody id="departmentsTable">
-
-</tbody>
-
-
-
-</table>
-
-
-
-</div>
-
-
-</div>
-
-
-
-`;
-
-
-
-
-document
-
-.getElementById("addDepartmentBtn")
-
-.onclick=createDepartment;
-
-
-
-getDepartments();
-
-
+return;
 
 }
 
@@ -191,22 +130,77 @@ getDepartments();
 
 
 
+const id=
+
+push(
+
+ref(db,"departments")
+
+).key;
 
 
-// =======================================
-// قراءة الأقسام
-// =======================================
-
-
-async function getDepartments(){
 
 
 
-const table =
 
-document.getElementById(
-"departmentsTable"
+
+
+await set(
+
+ref(
+
+db,
+
+"departments/"+id
+
+),
+
+{
+
+
+name:name,
+
+
+headId:"",
+
+
+createdAt:
+
+Date.now()
+
+
+}
+
 );
+
+
+
+
+
+departmentName.value="";
+
+
+
+loadDepartments();
+
+
+
+};
+
+
+
+
+
+
+
+
+
+
+
+// تحميل الأقسام
+
+
+async function loadDepartments(){
 
 
 
@@ -214,7 +208,7 @@ table.innerHTML="";
 
 
 
-const snapshot =
+const snap=
 
 await get(
 
@@ -226,8 +220,7 @@ ref(db,"departments")
 
 
 
-if(!snapshot.exists()){
-
+if(!snap.exists()){
 
 
 table.innerHTML=
@@ -236,7 +229,7 @@ table.innerHTML=
 
 <tr>
 
-<td colspan="2">
+<td colspan="3">
 
 لا توجد أقسام
 
@@ -255,19 +248,17 @@ return;
 
 
 
-const departments =
-
-snapshot.val();
 
 
+Object.entries(
 
+snap.val()
 
-
-
-
-Object.entries(departments)
+)
 
 .forEach(([id,dep])=>{
+
+
 
 
 
@@ -287,8 +278,16 @@ ${dep.name}
 
 
 
+<td>
+
+${dep.headId || "غير محدد"}
+
+</td>
+
+
 
 <td>
+
 
 
 <button
@@ -297,9 +296,13 @@ class="btn btn-warning"
 
 onclick="editDepartment('${id}','${dep.name}')">
 
+
 تعديل
 
+
 </button>
+
+
 
 
 
@@ -311,7 +314,9 @@ class="btn btn-danger"
 
 onclick="deleteDepartment('${id}')">
 
+
 حذف
+
 
 </button>
 
@@ -322,7 +327,6 @@ onclick="deleteDepartment('${id}')">
 
 
 </tr>
-
 
 
 `;
@@ -343,125 +347,22 @@ onclick="deleteDepartment('${id}')">
 
 
 
-// =======================================
-// إضافة قسم
-// =======================================
-
-
-async function createDepartment(){
-
-
-
-const name =
-
-document
-
-.getElementById(
-"departmentName"
-)
-
-.value
-
-.trim();
-
-
-
-
-
-if(!name){
-
-
-departmentMessage.innerHTML=
-
-"أدخل اسم القسم";
-
-
-return;
-
-
-}
-
-
-
-
-
-
-
-const newRef =
-
-push(
-
-ref(db,"departments")
-
-);
-
-
-
-
-
-
-await set(
-
-newRef,
-
-{
-
-
-name:name,
-
-
-createdAt:
-
-Date.now()
-
-
-}
-
-);
-
-
-
-
-
-
-departmentMessage.innerHTML=
-
-"تم إضافة القسم";
-
-
-
-loadDepartments();
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =======================================
 // تعديل
-// =======================================
 
 
 window.editDepartment=
 
-async function(id,oldName){
+async function(id,name){
 
 
 
-const name =
+const newName=
 
 prompt(
 
-"اسم القسم الجديد",
+"اسم القسم",
 
-oldName
+name
 
 );
 
@@ -469,9 +370,12 @@ oldName
 
 
 
-if(!name)
+
+if(!newName)
 
 return;
+
+
 
 
 
@@ -479,17 +383,26 @@ return;
 
 await update(
 
-ref(db,"departments/"+id),
+ref(
+
+db,
+
+"departments/"+id
+
+),
 
 {
 
 
-name:name
+name:newName
 
 
 }
 
 );
+
+
+
 
 
 
@@ -507,9 +420,7 @@ loadDepartments();
 
 
 
-// =======================================
 // حذف
-// =======================================
 
 
 window.deleteDepartment=
@@ -528,9 +439,17 @@ return;
 
 
 
+
+
 await remove(
 
-ref(db,"departments/"+id)
+ref(
+
+db,
+
+"departments/"+id
+
+)
 
 );
 

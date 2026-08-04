@@ -1,74 +1,48 @@
-// ======================================
-// auth.js
-// نظام المصادقة والصلاحيات
-// ======================================
+import { 
+    initializeApp 
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 
 
-import { initializeApp } 
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-
-
-import {
-
-getAuth,
-signInWithEmailAndPassword,
-signOut,
-onAuthStateChanged
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { 
+    getAuth,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
 
 import {
 
 getDatabase,
 ref,
-get,
-child
+get
 
-}
-
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
 
-
-// ======================================
 // Firebase Config
-// ======================================
-
 
 const firebaseConfig = {
 
+  apiKey: "ضع_apiKey",
 
-apiKey: "YOUR_API_KEY",
+  authDomain: "ضع_authDomain",
 
-authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "ضع_databaseURL",
 
-databaseURL:
-"https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+  projectId: "ضع_projectId",
 
-projectId:
-"YOUR_PROJECT",
+  storageBucket: "ضع_storageBucket",
 
-storageBucket:
-"YOUR_PROJECT.appspot.com",
+  messagingSenderId: "ضع_senderId",
 
-messagingSenderId:
-"YOUR_SENDER_ID",
-
-appId:
-"YOUR_APP_ID"
-
+  appId: "ضع_appId"
 
 };
 
 
-
-
-// تشغيل Firebase
 
 const app =
 initializeApp(firebaseConfig);
@@ -86,53 +60,27 @@ getDatabase(app);
 
 
 
-// ======================================
-// الصفحات حسب الدور
-// ======================================
 
 
-const rolePages = {
-
-
-Manager:
-"admin.html",
-
-
-Admin:
-"admin.html",
-
-
-Head:
-"head.html",
-
-
-Coordinator:
-"coordinator.html",
-
-
-StageManager:
-"stage.html",
-
-
-Teacher:
-"teacher.html",
-
-
-Viewer:
-"viewer.html"
-
-
-};
-
-
-
-
-// ======================================
 // تسجيل الدخول
-// ======================================
+
+window.login =
+async function(){
 
 
-export async function login(email,password){
+const email =
+document
+.getElementById("email")
+.value;
+
+
+
+const password =
+document
+.getElementById("password")
+.value;
+
+
 
 
 try{
@@ -147,47 +95,110 @@ password
 
 
 
-const user =
-result.user;
+const uid =
+result.user.uid;
 
 
 
-const userData =
-await getUserData(user.uid);
+const snapshot =
+await get(
+ref(db,"users/"+uid)
+);
 
 
 
-if(!userData){
+if(!snapshot.exists()){
 
-
-throw new Error(
+alert(
 "لا يوجد ملف مستخدم"
 );
 
+return;
 
 }
 
 
 
+const user =
+snapshot.val();
+
+
+
+
+// حفظ بيانات المستخدم
+
 localStorage.setItem(
-
-"currentUser",
-
+"user",
 JSON.stringify({
-
-uid:user.uid,
-
-...userData
-
+uid:uid,
+...user
 })
-
 );
 
 
 
-redirectByRole(
-userData.role
+
+
+// التوجيه حسب الدور
+
+
+switch(user.role){
+
+
+case "Manager":
+
+window.location.href=
+"admin.html";
+
+break;
+
+
+
+case "Teacher":
+
+window.location.href=
+"teacher.html";
+
+break;
+
+
+
+case "Head":
+
+window.location.href=
+"head.html";
+
+break;
+
+
+
+case "Coordinator":
+
+window.location.href=
+"coordinator.html";
+
+break;
+
+
+
+case "StageManager":
+
+window.location.href=
+"stage.html";
+
+break;
+
+
+
+default:
+
+alert(
+"الدور غير معرف"
 );
+
+
+}
+
 
 
 
@@ -196,97 +207,13 @@ userData.role
 catch(error){
 
 
-console.error(error);
-
-
-
-throw error;
-
-
-}
-
-
-}
-
-
-
-
-
-
-
-
-
-// ======================================
-// قراءة بيانات المستخدم
-// ======================================
-
-
-export async function getUserData(uid){
-
-
-const snapshot =
-await get(
-
-child(
-ref(db),
-"users/"+uid
-)
-
-);
-
-
-
-if(snapshot.exists()){
-
-
-return snapshot.val();
-
-
-}
-
-
-return null;
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// ======================================
-// إعادة التوجيه حسب الدور
-// ======================================
-
-
-export function redirectByRole(role){
-
-
-if(rolePages[role]){
-
-
-window.location.href =
-rolePages[role];
-
-
-}
-
-else{
-
-
 alert(
-"لا يوجد صلاحية مرتبطة بهذا الدور"
+"خطأ في تسجيل الدخول: "
++
+error.message
 );
 
 
-signOut(auth);
-
-
 }
 
 
@@ -300,25 +227,23 @@ signOut(auth);
 
 
 
-// ======================================
 // تسجيل الخروج
-// ======================================
 
-
-export async function logout(){
+window.logout =
+async function(){
 
 
 await signOut(auth);
 
 
 localStorage.removeItem(
-"currentUser"
+"user"
 );
 
 
 
-window.location.href =
-"login.html";
+window.location.href=
+"index.html";
 
 
 }
@@ -331,12 +256,27 @@ window.location.href =
 
 
 
-// ======================================
+// المستخدم الحالي
+
+export function currentUser(){
+
+return JSON.parse(
+localStorage.getItem("user")
+);
+
+}
+
+
+
+
+
+
+
+
+
 // حماية الصفحات
-// ======================================
 
-
-export function protectPage(allowedRoles=[]){
+export function protectPage(roles=[]){
 
 
 
@@ -345,161 +285,47 @@ auth,
 async(user)=>{
 
 
-// غير مسجل
-
 if(!user){
 
-
-window.location.href =
-"login.html";
-
+window.location.href="index.html";
 
 return;
-
 
 }
 
 
 
-
-const userData =
-await getUserData(
-user.uid
+const data =
+JSON.parse(
+localStorage.getItem("user")
 );
 
 
 
-if(!userData){
-
-
-await logout();
-
-
-return;
-
-
-}
-
-
-
-
-localStorage.setItem(
-
-"currentUser",
-
-JSON.stringify({
-
-uid:user.uid,
-
-...userData
-
-})
-
-);
-
-
-
-
-
-// إذا لم تحدد أدوار
-// يسمح للجميع المسجلين
-
-
 if(
-allowedRoles.length===0
-)
-return;
-
-
-
-
-
-
-// التحقق من الدور
-
-
-if(
-!allowedRoles.includes(
-userData.role
-)
-
+roles.length &&
+!roles.includes(data.role)
 ){
 
 
 alert(
-"ليس لديك صلاحية دخول هذه الصفحة"
+"ليس لديك صلاحية"
 );
 
 
-
-window.location.href =
-rolePages[userData.role]
-||
-"home.html";
-
-
-
-return;
+window.location.href="index.html";
 
 
 }
 
 
 
-});
-
-
 }
 
 
 
-
-
-
-
-
-
-// ======================================
-// الحصول على المستخدم الحالي
-// ======================================
-
-
-export function currentUser(){
-
-
-let user =
-localStorage.getItem(
-"currentUser"
 );
 
-
-
-return user
-?
-JSON.parse(user)
-:
-null;
-
-
-}
-
-
-
-
-
-
-// ======================================
-// مراقبة حالة الدخول
-// ======================================
-
-
-export function watchAuth(callback){
-
-
-onAuthStateChanged(
-auth,
-callback
-);
 
 
 }

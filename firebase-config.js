@@ -49,48 +49,14 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 const firebaseConfig = {
 
-
-apiKey:
-
-"ضع_apiKey_هنا",
-
-
-
-authDomain:
-
-"ضع_authDomain_هنا",
-
-
-
-databaseURL:
-
-"https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-
-
-
-projectId:
-
-"YOUR_PROJECT_ID",
-
-
-
-storageBucket:
-
-"YOUR_PROJECT_ID.appspot.com",
-
-
-
-messagingSenderId:
-
-"ضع_sender_id_هنا",
-
-
-
-appId:
-
-"ضع_app_id_هنا"
-
-
+ apiKey: "AIzaSyBWpahddzrX3iffUThUQoo5edxGbi0J7yc",
+  authDomain: "uca-pms-8f7b1.firebaseapp.com",
+  databaseURL: "https://uca-pms-8f7b1-default-rtdb.firebaseio.com",
+  projectId: "uca-pms-8f7b1",
+  storageBucket: "uca-pms-8f7b1.firebasestorage.app",
+  messagingSenderId: "559264692532",
+  appId: "1:559264692532:web:14426f15f058db05458d61",
+  measurementId: "G-EDMZHQRGHK"
 
 };
 

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>
+إدارة المواد
+</title>
+
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+
+<aside class="sidebar">
+
+
+<h2>
+🏫 UCA
+</h2>
+
+
+<button onclick="backAdmin()">
+
+⬅ لوحة المدير
+
+</button>
+
+
+<button id="logoutBtn">
+
+🚪 تسجيل الخروج
+
+</button>
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+<main class="main">
+
+
+<header class="header">
+
+<h2>
+إدارة المواد
+</h2>
+
+
+</header>
+
+
+
+
+
+
+
+<section class="content">
+
+
+
+<div class="card">
+
+
+<h3>
+إضافة مادة
+</h3>
+
+
+
+
+
+<input
+
+id="subjectName"
+
+placeholder="اسم المادة">
+
+
+
+
+
+<select id="department">
+
+
+<option>
+
+اختر القسم
+
+</option>
+
+
+</select>
+
+
+
+
+
+
+<select id="program">
+
+
+<option value="American">
+
+American
+
+</option>
+
+
+
+<option value="British">
+
+British
+
+</option>
+
+
+</select>
+
+
+
+
+
+
+<button
+
+id="addSubject"
+
+class="btn btn-primary">
+
+إضافة المادة
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h3>
+قائمة المواد
+</h3>
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+
+<th>
+المادة
+</th>
+
+
+<th>
+القسم
+</th>
+
+
+<th>
+البرنامج
+</th>
+
+
+<th>
+إجراءات
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="subjectTable">
+
+
+</tbody>
+
+
+
+</table>
+
+
+</div>
+
+
+
+
+
+</section>
+
+
+</main>
+
+
+
+</div>
+
+
+
+
+
+
+<script type="module" src="subjects.js"></script>
+
+
+</body>
+
+</html>

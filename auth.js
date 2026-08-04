@@ -19,7 +19,9 @@ signInWithEmailAndPassword,
 
 signOut,
 
-onAuthStateChanged
+onAuthStateChanged,
+
+createUserWithEmailAndPassword
 
 }
 
@@ -33,7 +35,9 @@ ref,
 
 get,
 
-set
+set,
+
+push
 
 }
 
@@ -52,17 +56,11 @@ export async function login(){
 
 
 const email =
-document
-.getElementById("email")
-.value
-.trim();
-
+document.getElementById("email").value.trim();
 
 
 const password =
-document
-.getElementById("password")
-.value;
+document.getElementById("password").value;
 
 
 
@@ -76,41 +74,20 @@ try{
 
 const result =
 await signInWithEmailAndPassword(
-
 auth,
-
 email,
-
 password
-
 );
-
-
-
-const firebaseUser =
-result.user;
 
 
 
 const uid =
-firebaseUser.uid;
-
-
-
-console.log(
-"LOGIN UID:",
-uid
-);
-
-
+result.user.uid;
 
 
 
 const userRef =
-ref(
-db,
-"users/"+uid
-);
+ref(db,"users/"+uid);
 
 
 
@@ -119,62 +96,41 @@ await get(userRef);
 
 
 
-let user;
-
-
-
-
-
-// المستخدم غير موجود في database
-
 if(!snapshot.exists()){
 
 
-
-user={
+await set(
+userRef,
+{
 
 name:
-firebaseUser.displayName || "New User",
+result.user.displayName || "New User",
 
 email:
-firebaseUser.email,
+result.user.email,
 
 role:
 "Viewer",
 
 active:true
 
-};
-
-
-
-
-await set(
-
-userRef,
-
-user
+}
 
 );
 
 
-
-}
-
-else{
-
-
-user =
-snapshot.val();
-
-
 }
 
 
 
+const userSnap =
+await get(userRef);
 
 
-// حفظ بيانات المستخدم
+
+const user =
+userSnap.val();
+
 
 
 localStorage.setItem(
@@ -183,7 +139,7 @@ localStorage.setItem(
 
 JSON.stringify({
 
-uid:uid,
+uid,
 
 ...user
 
@@ -193,11 +149,7 @@ uid:uid,
 
 
 
-
-
-redirectByRole(
-user.role
-);
+redirectByRole(user.role);
 
 
 
@@ -205,36 +157,21 @@ user.role
 
 catch(error){
 
-
-
 console.error(error);
 
 
-
-if(message){
+if(message)
 
 message.innerHTML =
 firebaseError(error.code);
 
-}
-
-
-
-throw error;
-
 
 }
-
 
 
 }
 
 
-
-
-
-
-// دعم الزر القديم
 
 window.login = login;
 
@@ -245,90 +182,143 @@ window.login = login;
 
 
 
+// =================================
+// CREATE USER BY MANAGER
+// =================================
+
+
+export async function createUser(data){
+
+
+
+const current =
+currentUser();
+
+
+
+if(!current || current.role !== "Manager"){
+
+throw new Error(
+"ليس لديك صلاحية إنشاء مستخدم"
+);
+
+}
+
+
+
+const result =
+await createUserWithEmailAndPassword(
+
+auth,
+
+data.email,
+
+data.password
+
+);
+
+
+
+const uid =
+result.user.uid;
+
+
+
+await set(
+
+ref(db,"users/"+uid),
+
+{
+
+
+name:data.name,
+
+
+email:data.email,
+
+
+role:data.role,
+
+
+active:true,
+
+
+createdAt:
+new Date().toISOString()
+
+
+}
+
+);
+
+
+
+return uid;
+
+
+}
+
+
+
+
+
+
 
 // =================================
-// REDIRECT BY ROLE
+// REDIRECT
 // =================================
 
 
 function redirectByRole(role){
 
 
-
 switch(role){
-
 
 
 case "Manager":
 
-location.href =
-"admin.html";
+location.href="admin.html";
 
 break;
-
 
 
 case "Teacher":
 
-location.href =
-"teacher.html";
+location.href="teacher.html";
 
 break;
-
 
 
 case "Head":
 
-location.href =
-"head.html";
+location.href="head.html";
 
 break;
-
 
 
 case "Coordinator":
 
-location.href =
-"coordinator.html";
+location.href="coordinator.html";
 
 break;
-
 
 
 case "StageManager":
 
-location.href =
-"stage.html";
+location.href="stage.html";
 
 break;
-
-
-
-case "Viewer":
-
-location.href =
-"viewer.html";
-
-break;
-
 
 
 default:
 
-
-alert(
-"الدور غير معرف: "+role
-);
-
+location.href="viewer.html";
 
 
 }
 
 
-
 }
-
-
 
 
 
@@ -347,24 +337,16 @@ export async function logout(){
 await signOut(auth);
 
 
-
-localStorage.removeItem(
-"user"
-);
+localStorage.removeItem("user");
 
 
-
-location.href =
-"index.html";
+location.href="index.html";
 
 
 }
 
 
-
-window.logout = logout;
-
-
+window.logout=logout;
 
 
 
@@ -380,12 +362,8 @@ window.logout = logout;
 export function currentUser(){
 
 
-
 const data =
-localStorage.getItem(
-"user"
-);
-
+localStorage.getItem("user");
 
 
 return data
@@ -404,70 +382,51 @@ null;
 
 
 
-
 // =================================
-// PAGE PROTECTION
+// PROTECT PAGE
 // =================================
 
 
-export function protectPage(
-allowedRoles=[]
-){
-
+export function protectPage(roles=[]){
 
 
 onAuthStateChanged(
 
 auth,
 
-(firebaseUser)=>{
-
-
-
-if(!firebaseUser){
-
-
-location.href =
-"index.html";
-
-
-return;
-
-
-}
-
-
-
-
-
-const user =
-currentUser();
-
+async(user)=>{
 
 
 if(!user){
 
-
-location.href =
-"index.html";
-
+location.href="index.html";
 
 return;
-
 
 }
 
 
+
+const data =
+currentUser();
+
+
+
+if(!data){
+
+location.href="index.html";
+
+return;
+
+}
 
 
 
 if(
 
-allowedRoles.length > 0
+roles.length > 0 &&
 
-&&
-
-!allowedRoles.includes(user.role)
+!roles.includes(data.role)
 
 ){
 
@@ -477,9 +436,7 @@ alert(
 );
 
 
-
-location.href =
-"index.html";
+location.href="index.html";
 
 
 }
@@ -492,7 +449,6 @@ location.href =
 );
 
 
-
 }
 
 
@@ -502,35 +458,30 @@ location.href =
 
 
 
-
 // =================================
-// FIREBASE ERRORS
+// ERRORS
 // =================================
 
 
 function firebaseError(code){
 
 
-
 switch(code){
+
+
+case "auth/email-already-in-use":
+
+return "البريد مستخدم مسبقاً";
 
 
 case "auth/invalid-email":
 
-return "البريد الإلكتروني غير صحيح";
+return "البريد غير صحيح";
 
 
+case "auth/weak-password":
 
-case "auth/user-not-found":
-
-return "المستخدم غير موجود في Authentication";
-
-
-
-case "auth/wrong-password":
-
-return "كلمة المرور غير صحيحة";
-
+return "كلمة المرور ضعيفة";
 
 
 case "auth/invalid-credential":
@@ -538,21 +489,12 @@ case "auth/invalid-credential":
 return "بيانات الدخول غير صحيحة";
 
 
-
-case "auth/too-many-requests":
-
-return "تم إيقاف المحاولة مؤقتاً";
-
-
-
 default:
 
-return "حدث خطأ أثناء تسجيل الدخول";
-
+return "حدث خطأ";
 
 
 }
-
 
 
 }

@@ -16,7 +16,7 @@ UCA School Management System
 
 *{
 box-sizing:border-box;
-font-family:"Tahoma",Arial,sans-serif;
+font-family:Tahoma,Arial,sans-serif;
 }
 
 
@@ -26,35 +26,29 @@ margin:0;
 
 min-height:100vh;
 
-background:
-linear-gradient(
-135deg,
-#0f172a,
-#1d4ed8,
-#38bdf8
-);
-
 display:flex;
+
+justify-content:center;
 
 align-items:center;
 
-justify-content:center;
+background:
+linear-gradient(135deg,#0f172a,#1d4ed8,#38bdf8);
 
 }
 
 
-.login-container{
+.login-box{
 
-width:400px;
+width:390px;
 
 background:white;
 
-border-radius:20px;
-
 padding:35px;
 
-box-shadow:
-0 20px 50px rgba(0,0,0,.3);
+border-radius:20px;
+
+box-shadow:0 20px 50px rgba(0,0,0,.3);
 
 }
 
@@ -64,7 +58,7 @@ box-shadow:
 
 text-align:center;
 
-margin-bottom:30px;
+margin-bottom:25px;
 
 }
 
@@ -98,22 +92,13 @@ color:#64748b;
 
 
 
-
-.input-group{
-
-margin-bottom:20px;
-
-}
-
-
-
 label{
 
 display:block;
 
-margin-bottom:8px;
-
 font-weight:bold;
+
+margin-bottom:7px;
 
 color:#334155;
 
@@ -121,15 +106,17 @@ color:#334155;
 
 
 
-input{
+.input{
 
 width:100%;
 
-padding:14px;
+padding:13px;
 
-border:1px solid #cbd5e1;
+margin-bottom:18px;
 
 border-radius:10px;
+
+border:1px solid #cbd5e1;
 
 font-size:15px;
 
@@ -139,7 +126,7 @@ outline:none;
 
 
 
-input:focus{
+.input:focus{
 
 border-color:#2563eb;
 
@@ -147,7 +134,7 @@ border-color:#2563eb;
 
 
 
-.password-box{
+.password-container{
 
 position:relative;
 
@@ -155,13 +142,13 @@ position:relative;
 
 
 
-.password-box span{
+.password-container span{
 
 position:absolute;
 
 left:15px;
 
-top:13px;
+top:12px;
 
 cursor:pointer;
 
@@ -171,18 +158,17 @@ font-size:20px;
 
 
 
-
 button{
 
 width:100%;
 
 padding:14px;
 
-background:#2563eb;
-
-border:none;
+border:0;
 
 border-radius:10px;
+
+background:#2563eb;
 
 color:white;
 
@@ -208,10 +194,7 @@ button:disabled{
 
 background:#94a3b8;
 
-cursor:not-allowed;
-
 }
-
 
 
 
@@ -224,23 +207,6 @@ text-align:center;
 font-size:14px;
 
 color:#dc2626;
-
-min-height:20px;
-
-}
-
-
-
-
-.footer{
-
-text-align:center;
-
-margin-top:25px;
-
-color:#64748b;
-
-font-size:13px;
 
 }
 
@@ -260,7 +226,21 @@ color:#2563eb;
 
 
 
+.footer{
+
+margin-top:25px;
+
+text-align:center;
+
+color:#64748b;
+
+font-size:13px;
+
+}
+
+
 </style>
+
 
 </head>
 
@@ -270,41 +250,32 @@ color:#2563eb;
 
 
 
-<div class="login-container">
+<div class="login-box">
 
 
 
 <div class="logo">
 
-
 <div class="icon">
 🏫
 </div>
-
 
 <h1>
 UCA
 </h1>
 
-
 <h1>
 School Management System
 </h1>
-
 
 <p>
 تسجيل الدخول إلى النظام
 </p>
 
-
 </div>
 
 
 
-
-
-
-<div class="input-group">
 
 
 <label>
@@ -314,26 +285,17 @@ School Management System
 
 <input
 
+class="input"
+
 id="email"
 
 type="email"
 
-placeholder="name@school.com"
-
-autocomplete="email"
+placeholder="example@school.com"
 
 >
 
 
-</div>
-
-
-
-
-
-
-
-<div class="input-group">
 
 
 <label>
@@ -342,10 +304,12 @@ autocomplete="email"
 
 
 
-<div class="password-box">
+<div class="password-container">
 
 
 <input
+
+class="input"
 
 id="password"
 
@@ -353,19 +317,14 @@ type="password"
 
 placeholder="********"
 
-autocomplete="current-password"
-
 >
 
 
 
-<span id="togglePassword">
+<span id="showPassword">
 👁
 </span>
 
-
-
-</div>
 
 
 </div>
@@ -383,20 +342,15 @@ autocomplete="current-password"
 
 
 
-
-
 <div class="loading" id="loading">
 
-جاري تسجيل الدخول ...
+جاري تسجيل الدخول...
 
 </div>
 
 
 
-
 <div id="message"></div>
-
-
 
 
 
@@ -406,7 +360,6 @@ autocomplete="current-password"
 UCA School Management System © 2026
 
 </div>
-
 
 
 </div>
@@ -421,11 +374,7 @@ UCA School Management System © 2026
 <script type="module">
 
 
-import {
-
-login
-
-}
+import { login }
 
 from "./auth.js";
 
@@ -433,42 +382,31 @@ from "./auth.js";
 
 
 
-const loginButton =
-document.getElementById(
-"loginBtn"
-);
+const btn =
+document.getElementById("loginBtn");
 
-
-
-const message =
-document.getElementById(
-"message"
-);
-
-
+const msg =
+document.getElementById("message");
 
 const loading =
-document.getElementById(
-"loading"
-);
+document.getElementById("loading");
 
 
 
 
 
 
+btn.addEventListener(
+"click",
+async()=>{
 
-loginButton.onclick =
-async function(){
+
+msg.innerHTML="";
 
 
-
-message.innerHTML="";
+btn.disabled=true;
 
 loading.style.display="block";
-
-
-loginButton.disabled=true;
 
 
 
@@ -484,8 +422,7 @@ await login();
 catch(error){
 
 
-
-message.innerHTML =
+msg.innerHTML =
 error.message;
 
 
@@ -496,38 +433,36 @@ error.message;
 finally{
 
 
-loading.style.display="none";
+btn.disabled=false;
 
-loginButton.disabled=false;
+loading.style.display="none";
 
 
 }
 
 
+}
 
-};
-
-
-
+);
 
 
 
 
 
 
-// Enter key login
+
+
+// Enter key
 
 
 document.addEventListener(
 "keydown",
-function(e){
+(e)=>{
 
 
 if(e.key==="Enter"){
 
-
-loginButton.click();
-
+btn.click();
 
 }
 
@@ -541,47 +476,37 @@ loginButton.click();
 
 
 
-
-// show password
+// Show password
 
 
 document
-.getElementById("togglePassword")
+.getElementById("showPassword")
 .onclick=function(){
 
 
-const password =
-document.getElementById(
-"password"
-);
+const pass =
+document.getElementById("password");
 
 
 
-if(password.type==="password"){
+if(pass.type==="password"){
 
-
-password.type="text";
-
+pass.type="text";
 
 this.innerHTML="🙈";
-
 
 }
 
 else{
 
-
-password.type="password";
-
+pass.type="password";
 
 this.innerHTML="👁";
-
 
 }
 
 
 };
-
 
 
 

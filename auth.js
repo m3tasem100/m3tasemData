@@ -38,20 +38,15 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 const firebaseConfig = {
 
-apiKey: "ضع_apiKey",
+import {
 
-authDomain: "ضع_authDomain",
+auth,
 
-databaseURL: "ضع_databaseURL",
+db
 
-projectId: "ضع_projectId",
+}
 
-storageBucket: "ضع_storageBucket",
-
-messagingSenderId: "ضع_senderId",
-
-appId: "ضع_appId"
-
+from "./firebase-config.js";
 };
 
 

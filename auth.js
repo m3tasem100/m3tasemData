@@ -1,6 +1,5 @@
 // auth.js
 
-
 import { initializeApp } 
 from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 
@@ -21,7 +20,8 @@ import {
 
 getDatabase,
 ref,
-get
+get,
+set
 
 }
 
@@ -30,45 +30,53 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
-// ===============================
-// Firebase Configuration
-// ===============================
+// ==========================
+// Firebase Config
+// ضع بيانات مشروعك هنا
+// ==========================
 
 
 const firebaseConfig = {
 
+apiKey: "ضع_apiKey",
 
-  apiKey: "AIzaSyBWpahddzrX3iffUThUQoo5edxGbi0J7yc",
-  authDomain: "uca-pms-8f7b1.firebaseapp.com",
-  projectId: "uca-pms-8f7b1",
-  storageBucket: "uca-pms-8f7b1.firebasestorage.app",
-  messagingSenderId: "559264692532",
-  appId: "1:559264692532:web:14426f15f058db05458d61",
-  measurementId: "G-EDMZHQRGHK"
+authDomain: "ضع_authDomain",
 
+databaseURL: "ضع_databaseURL",
+
+projectId: "ضع_projectId",
+
+storageBucket: "ضع_storageBucket",
+
+messagingSenderId: "ضع_senderId",
+
+appId: "ضع_appId"
 
 };
 
 
 
 
-// Initialize Firebase
+// Initialize
+
+const app =
+initializeApp(firebaseConfig);
 
 
-const app = initializeApp(firebaseConfig);
+const auth =
+getAuth(app);
 
 
-const auth = getAuth(app);
-
-
-const db = getDatabase(app);
-
+const db =
+getDatabase(app);
 
 
 
-// ===============================
-// LOGIN
-// ===============================
+
+
+// ==========================
+// Login
+// ==========================
 
 
 export async function login(){
@@ -95,23 +103,6 @@ document.getElementById("message");
 
 
 
-if(!email || !password){
-
-
-if(message){
-
-message.innerHTML =
-"أدخل البريد الإلكتروني وكلمة المرور";
-
-}
-
-return;
-
-}
-
-
-
-
 try{
 
 
@@ -128,41 +119,90 @@ password
 
 
 
+const firebaseUser =
+result.user;
+
+
 
 const uid =
-result.user.uid;
+firebaseUser.uid;
 
 
 
-
-// قراءة بيانات المستخدم
-
-
-const userSnapshot =
-await get(
-
-ref(
-db,
-"users/"+uid
-)
-
+console.log(
+"LOGIN UID:",
+uid
 );
 
 
 
 
 
-if(!userSnapshot.exists()){
+// قراءة بيانات المستخدم
+
+const userRef =
+ref(
+db,
+"users/"+uid
+);
 
 
-message.innerHTML =
-"المستخدم غير موجود في قاعدة البيانات";
+
+const snapshot =
+await get(userRef);
 
 
-await signOut(auth);
+
+let user;
 
 
-return;
+
+
+
+// إذا لم يكن موجودًا
+
+if(!snapshot.exists()){
+
+
+
+user={
+
+name:
+firebaseUser.displayName || "New User",
+
+email:
+firebaseUser.email,
+
+role:
+"Viewer",
+
+active:true
+
+};
+
+
+
+
+// إنشاء سجل تلقائي
+
+await set(
+
+userRef,
+
+user
+
+);
+
+
+
+}
+
+else{
+
+
+user =
+snapshot.val();
+
 
 }
 
@@ -170,14 +210,7 @@ return;
 
 
 
-const user =
-userSnapshot.val();
-
-
-
-
-
-// تخزين بيانات المستخدم
+// تخزين المستخدم
 
 
 localStorage.setItem(
@@ -198,11 +231,12 @@ uid:uid,
 
 
 
-
 // تحويل حسب الدور
 
 
-redirectByRole(user.role);
+redirectByRole(
+user.role
+);
 
 
 
@@ -216,26 +250,23 @@ console.error(error);
 
 if(message){
 
-
 message.innerHTML =
-getErrorMessage(error.code);
-
-
-}
-
+firebaseError(error.code);
 
 }
 
 
 }
 
+
+
+}
 
 
 
 
 
 // جعلها متاحة للزر القديم
-
 
 window.login = login;
 
@@ -246,10 +277,9 @@ window.login = login;
 
 
 
-
-// ===============================
-// REDIRECT
-// ===============================
+// ==========================
+// Redirect By Role
+// ==========================
 
 
 function redirectByRole(role){
@@ -257,6 +287,7 @@ function redirectByRole(role){
 
 
 switch(role){
+
 
 
 case "Manager":
@@ -334,13 +365,14 @@ alert(
 
 
 
-// ===============================
-// LOGOUT
-// ===============================
+
+
+// ==========================
+// Logout
+// ==========================
 
 
 export async function logout(){
-
 
 
 await signOut(auth);
@@ -351,12 +383,12 @@ localStorage.removeItem(
 );
 
 
+
 window.location.href =
 "index.html";
 
 
 }
-
 
 
 window.logout = logout;
@@ -369,24 +401,28 @@ window.logout = logout;
 
 
 
-
-// ===============================
-// CURRENT USER
-// ===============================
+// ==========================
+// Current User
+// ==========================
 
 
 export function currentUser(){
 
 
 const user =
-localStorage.getItem("user");
+localStorage.getItem(
+"user"
+);
 
 
-return user
-?
-JSON.parse(user)
-:
-null;
+
+if(!user)
+
+return null;
+
+
+
+return JSON.parse(user);
 
 
 }
@@ -399,18 +435,23 @@ null;
 
 
 
-// ===============================
-// PAGE PROTECTION
-// ===============================
+// ==========================
+// Protect Pages
+// ==========================
 
 
-export function protectPage(allowedRoles=[]){
+export function protectPage(
+allowedRoles=[]
+){
 
 
 
 onAuthStateChanged(
+
 auth,
+
 (firebaseUser)=>{
+
 
 
 if(!firebaseUser){
@@ -424,7 +465,6 @@ return;
 
 
 }
-
 
 
 
@@ -443,7 +483,10 @@ window.location.href =
 
 return;
 
+
 }
+
+
 
 
 
@@ -457,6 +500,7 @@ allowedRoles.length > 0
 !allowedRoles.includes(user.role)
 
 ){
+
 
 
 alert(
@@ -473,8 +517,8 @@ window.location.href =
 
 
 
-}
 
+}
 
 );
 
@@ -489,12 +533,13 @@ window.location.href =
 
 
 
-// ===============================
-// FIREBASE ERRORS
-// ===============================
+
+// ==========================
+// Firebase Error Messages
+// ==========================
 
 
-function getErrorMessage(code){
+function firebaseError(code){
 
 
 
@@ -521,8 +566,13 @@ return "كلمة المرور غير صحيحة";
 
 case "auth/invalid-credential":
 
-return "بيانات الدخول غير صحيحة";
+return "البريد أو كلمة المرور غير صحيحة";
 
+
+
+case "auth/too-many-requests":
+
+return "تم إيقاف المحاولة مؤقتًا بسبب كثرة المحاولات";
 
 
 default:

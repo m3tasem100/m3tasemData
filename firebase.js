@@ -1,71 +1,19 @@
-// ===============================
-// Firebase Configuration
-// ===============================
+////////////////////////////////////////////////////
+// FIREBASE MAIN EXPORT
+// UCA SCHOOL MANAGEMENT SYSTEM
+////////////////////////////////////////////////////
 
-const firebaseConfig = {
-     apiKey: "AIzaSyBWpahddzrX3iffUThUQoo5edxGbi0J7yc",
-  authDomain: "uca-pms-8f7b1.firebaseapp.com",
-  databaseURL: "https://uca-pms-8f7b1-default-rtdb.firebaseio.com",
-  projectId: "uca-pms-8f7b1",
-  storageBucket: "uca-pms-8f7b1.firebasestorage.app",
-  messagingSenderId: "559264692532",
-  appId: "1:559264692532:web:14426f15f058db05458d61",
-  measurementId: "G-EDMZHQRGHK"
-};
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+// هذا الملف لا ينشئ Firebase جديد
+// فقط يعيد تصدير الاتصال الأساسي
 
-// Services
-const auth = firebase.auth();
-const db = firebase.firestore();
 
-// Firestore Settings
-db.settings({
-    merge: true
-});
 
-// Collections
-const USERS = db.collection("users");
-const ROLES = db.collection("roles");
-const SETTINGS = db.collection("settings");
-const YEARS = db.collection("academicYears");
-const SEMESTERS = db.collection("semesters");
-const SECTIONS = db.collection("sections");
-const SUBSECTIONS = db.collection("subSections");
-const GRADES = db.collection("grades");
-const SUBJECTS = db.collection("subjects");
-const TEACHERS = db.collection("teachers");
-const ASSIGNMENTS = db.collection("teacherAssignments");
-const PLANS = db.collection("weeklyPlans");
-const OBJECTIVES = db.collection("weeklyObjectives");
-const PROGRESS = db.collection("teacherProgress");
-const REPORTS = db.collection("reports");
-const EVALUATIONS = db.collection("evaluations");
+export {
 
-// Timestamp Helper
-const serverTime = firebase.firestore.FieldValue.serverTimestamp;
+auth,
+db
 
-// ===============================
-// Current User
-// ===============================
+}
 
-let currentUser = null;
-
-auth.onAuthStateChanged(async(user)=>{
-
-    if(!user){
-
-        if(
-            !window.location.pathname.endsWith("index.html") &&
-            window.location.pathname !== "/"
-        ){
-            location.href="index.html";
-        }
-
-        return;
-    }
-
-    currentUser=user;
-
-});
+from "./firebase-config.js";

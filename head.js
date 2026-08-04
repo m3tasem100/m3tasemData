@@ -14,7 +14,7 @@ logout
 
 from "./auth.js";
 
-
+window.loadHeadModule=function(page){
 
 import {
 

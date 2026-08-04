@@ -1,7 +1,17 @@
 ////////////////////////////////////////////////////
-// UCA SCHOOL MANAGEMENT SYSTEM
-// SUBJECTS MANAGEMENT MODULE
+// SUBJECT MANAGEMENT
 ////////////////////////////////////////////////////
+
+
+import {
+
+protectPage,
+logout
+
+}
+
+from "./auth.js";
+
 
 
 import {
@@ -11,6 +21,7 @@ db
 }
 
 from "./firebase-config.js";
+
 
 
 import {
@@ -30,13 +41,56 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
-const content =
-
-document.getElementById("content");
 
 
+protectPage([
+
+"Manager"
+
+]);
 
 
+
+
+
+
+
+
+logoutBtn.onclick=logout;
+
+
+
+
+
+
+window.backAdmin=function(){
+
+location.href="admin.html";
+
+};
+
+
+
+
+
+
+
+
+const table=
+
+document.getElementById(
+"subjectTable"
+);
+
+
+
+
+
+
+
+
+
+loadDepartments();
 
 loadSubjects();
 
@@ -48,239 +102,26 @@ loadSubjects();
 
 
 
-// =======================================
-// واجهة المواد
-// =======================================
-
-
-async function loadSubjects(){
-
-
-
-content.innerHTML = `
-
-
-<h2>
-📚 إدارة المواد الدراسية
-</h2>
-
-
-
-
-
-<div class="card">
-
-
-<h3>
-إضافة مادة جديدة
-</h3>
-
-
-
-
-<div class="form-group">
-
-
-<label>
-اسم المادة
-</label>
-
-
-<input
-
-id="subjectName"
-
-placeholder="مثال: Mathematics"
-
->
-
-
-</div>
-
-
-
-
-
-
-<div class="form-group">
-
-
-<label>
-القسم
-</label>
-
-
-<select id="subjectDepartment">
-
-
-<option>
-جاري تحميل الأقسام...
-</option>
-
-
-</select>
-
-
-</div>
-
-
-
-
-
-
-
-<button
-
-class="btn btn-primary"
-
-id="addSubjectBtn">
-
-إضافة المادة
-
-</button>
-
-
-
-
-<p id="subjectMessage"></p>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h3>
-قائمة المواد
-</h3>
-
-
-
-
-<div class="table-container">
-
-
-<table>
-
-
-<thead>
-
-
-<tr>
-
-
-<th>
-المادة
-</th>
-
-
-<th>
-القسم
-</th>
-
-
-<th>
-الإجراءات
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-
-<tbody id="subjectsTable">
-
-
-</tbody>
-
-
-</table>
-
-
-
-</div>
-
-
-</div>
-
-
-
-`;
-
-
-
-
-await loadDepartments();
-
-
-
-document
-
-.getElementById(
-"addSubjectBtn"
-)
-
-.onclick=createSubject;
-
-
-
-getSubjects();
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// =======================================
+// ===============================
 // تحميل الأقسام
-// =======================================
+// ===============================
 
 
 async function loadDepartments(){
 
 
 
-const select =
+const select=
 
-document
-
-.getElementById(
-"subjectDepartment"
+document.getElementById(
+"department"
 );
 
 
 
 
 
-select.innerHTML="";
-
-
-
-
-
-const snapshot =
+const snap=
 
 await get(
 
@@ -292,40 +133,25 @@ ref(db,"departments")
 
 
 
-if(!snapshot.exists()){
 
-
-select.innerHTML=
-
-`
-
-<option>
-لا توجد أقسام
-</option>
-
-`;
+if(!snap.exists())
 
 return;
 
 
-}
 
 
 
 
 
+Object.entries(
 
-const departments =
+snap.val()
 
-snapshot.val();
+)
 
+.forEach(([id,d])=>{
 
-
-
-
-Object.entries(departments)
-
-.forEach(([id,dep])=>{
 
 
 select.innerHTML +=
@@ -335,10 +161,9 @@ select.innerHTML +=
 
 <option value="${id}">
 
-${dep.name}
+${d.name}
 
 </option>
-
 
 `;
 
@@ -358,41 +183,32 @@ ${dep.name}
 
 
 
-// =======================================
+// ===============================
 // إضافة مادة
-// =======================================
+// ===============================
 
 
-async function createSubject(){
+addSubject.onclick=
 
-
-
-const name =
-
-document
-
-.getElementById(
-"subjectName"
-)
-
-.value
-
-.trim();
+async function(){
 
 
 
+const name=
+
+subjectName.value.trim();
 
 
-const departmentId =
 
-document
+const departmentId=
 
-.getElementById(
-"subjectDepartment"
-)
+department.value;
 
-.value;
 
+
+const programValue=
+
+program.value;
 
 
 
@@ -400,14 +216,11 @@ document
 
 if(!name){
 
-
-subjectMessage.innerHTML=
-
-"أدخل اسم المادة";
-
+alert(
+"أدخل اسم المادة"
+);
 
 return;
-
 
 }
 
@@ -417,13 +230,14 @@ return;
 
 
 
-const newSubject =
+const id=
 
 push(
 
 ref(db,"subjects")
 
-);
+).key;
+
 
 
 
@@ -433,7 +247,13 @@ ref(db,"subjects")
 
 await set(
 
-newSubject,
+ref(
+
+db,
+
+"subjects/"+id
+
+),
 
 {
 
@@ -442,6 +262,9 @@ name:name,
 
 
 departmentId:departmentId,
+
+
+program:programValue,
 
 
 createdAt:
@@ -457,13 +280,7 @@ Date.now()
 
 
 
-
-
-subjectMessage.innerHTML=
-
-"تم إضافة المادة بنجاح";
-
-
+subjectName.value="";
 
 
 
@@ -471,7 +288,7 @@ loadSubjects();
 
 
 
-}
+};
 
 
 
@@ -481,23 +298,14 @@ loadSubjects();
 
 
 
-// =======================================
+
+
+// ===============================
 // عرض المواد
-// =======================================
+// ===============================
 
 
-async function getSubjects(){
-
-
-
-const table =
-
-document
-
-.getElementById(
-"subjectsTable"
-);
-
+async function loadSubjects(){
 
 
 
@@ -507,7 +315,7 @@ table.innerHTML="";
 
 
 
-const subjectSnap =
+const snap=
 
 await get(
 
@@ -519,35 +327,9 @@ ref(db,"subjects")
 
 
 
-const depSnap =
-
-await get(
-
-ref(db,"departments")
-
-);
 
 
-
-
-
-let departments={};
-
-
-
-if(depSnap.exists())
-
-departments =
-depSnap.val();
-
-
-
-
-
-
-
-if(!subjectSnap.exists()){
-
+if(!snap.exists()){
 
 
 table.innerHTML=
@@ -556,7 +338,7 @@ table.innerHTML=
 
 <tr>
 
-<td colspan="3">
+<td colspan="4">
 
 لا توجد مواد
 
@@ -577,19 +359,15 @@ return;
 
 
 
-const subjects =
+Object.entries(
 
-subjectSnap.val();
+snap.val()
+
+)
+
+.forEach(([id,s])=>{
 
 
-
-
-
-
-
-Object.entries(subjects)
-
-.forEach(([id,sub])=>{
 
 
 
@@ -603,7 +381,7 @@ table.innerHTML +=
 
 <td>
 
-${sub.name}
+${s.name}
 
 </td>
 
@@ -611,18 +389,15 @@ ${sub.name}
 
 <td>
 
-${
-departments[sub.departmentId]
+${s.departmentId}
 
-?
+</td>
 
-departments[sub.departmentId].name
 
-:
 
-"غير محدد"
+<td>
 
-}
+${s.program}
 
 </td>
 
@@ -631,18 +406,20 @@ departments[sub.departmentId].name
 
 
 <td>
+
 
 
 <button
 
 class="btn btn-warning"
 
-onclick="editSubject('${id}','${sub.name}')">
+onclick="editSubject('${id}','${s.name}')">
+
 
 تعديل
 
-</button>
 
+</button>
 
 
 
@@ -654,7 +431,9 @@ class="btn btn-danger"
 
 onclick="deleteSubject('${id}')">
 
+
 حذف
+
 
 </button>
 
@@ -685,24 +464,26 @@ onclick="deleteSubject('${id}')">
 
 
 
-// =======================================
-// تعديل المادة
-// =======================================
 
 
-window.editSubject =
+// ===============================
+// تعديل
+// ===============================
 
-async function(id,oldName){
+
+window.editSubject=
+
+async function(id,name){
 
 
 
-const name =
+const newName=
 
 prompt(
 
-"اسم المادة الجديد",
+"اسم المادة",
 
-oldName
+name
 
 );
 
@@ -710,7 +491,8 @@ oldName
 
 
 
-if(!name)
+
+if(!newName)
 
 return;
 
@@ -718,14 +500,21 @@ return;
 
 
 
+
 await update(
 
-ref(db,"subjects/"+id),
+ref(
+
+db,
+
+"subjects/"+id
+
+),
 
 {
 
 
-name:name
+name:newName
 
 
 }
@@ -748,9 +537,11 @@ loadSubjects();
 
 
 
-// =======================================
-// حذف المادة
-// =======================================
+
+
+// ===============================
+// حذف
+// ===============================
 
 
 window.deleteSubject=
@@ -770,13 +561,18 @@ return;
 
 
 
+
 await remove(
 
-ref(db,"subjects/"+id)
+ref(
+
+db,
+
+"subjects/"+id
+
+)
 
 );
-
-
 
 
 

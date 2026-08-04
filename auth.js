@@ -1,42 +1,5 @@
 // auth.js
 
-import { initializeApp } 
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-
-
-import {
-
-getAuth,
-signInWithEmailAndPassword,
-signOut,
-onAuthStateChanged
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-
-
-import {
-
-getDatabase,
-ref,
-get,
-set
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-
-
-
-// ==========================
-// Firebase Config
-// ضع بيانات مشروعك هنا
-// ==========================
-
-
-const firebaseConfig = {
 
 import {
 
@@ -47,31 +10,42 @@ db
 }
 
 from "./firebase-config.js";
-};
+
+
+
+import {
+
+signInWithEmailAndPassword,
+
+signOut,
+
+onAuthStateChanged
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+
+
+import {
+
+ref,
+
+get,
+
+set
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
 
-// Initialize
 
-const app =
-initializeApp(firebaseConfig);
-
-
-const auth =
-getAuth(app);
-
-
-const db =
-getDatabase(app);
-
-
-
-
-
-// ==========================
-// Login
-// ==========================
+// =================================
+// LOGIN
+// =================================
 
 
 export async function login(){
@@ -89,7 +63,6 @@ const password =
 document
 .getElementById("password")
 .value;
-
 
 
 
@@ -133,8 +106,6 @@ uid
 
 
 
-// قراءة بيانات المستخدم
-
 const userRef =
 ref(
 db,
@@ -154,7 +125,7 @@ let user;
 
 
 
-// إذا لم يكن موجودًا
+// المستخدم غير موجود في database
 
 if(!snapshot.exists()){
 
@@ -177,8 +148,6 @@ active:true
 
 
 
-
-// إنشاء سجل تلقائي
 
 await set(
 
@@ -205,7 +174,7 @@ snapshot.val();
 
 
 
-// تخزين المستخدم
+// حفظ بيانات المستخدم
 
 
 localStorage.setItem(
@@ -226,9 +195,6 @@ uid:uid,
 
 
 
-// تحويل حسب الدور
-
-
 redirectByRole(
 user.role
 );
@@ -240,7 +206,9 @@ user.role
 catch(error){
 
 
+
 console.error(error);
+
 
 
 if(message){
@@ -251,6 +219,10 @@ firebaseError(error.code);
 }
 
 
+
+throw error;
+
+
 }
 
 
@@ -261,7 +233,8 @@ firebaseError(error.code);
 
 
 
-// جعلها متاحة للزر القديم
+
+// دعم الزر القديم
 
 window.login = login;
 
@@ -272,9 +245,10 @@ window.login = login;
 
 
 
-// ==========================
-// Redirect By Role
-// ==========================
+
+// =================================
+// REDIRECT BY ROLE
+// =================================
 
 
 function redirectByRole(role){
@@ -287,7 +261,7 @@ switch(role){
 
 case "Manager":
 
-window.location.href =
+location.href =
 "admin.html";
 
 break;
@@ -296,7 +270,7 @@ break;
 
 case "Teacher":
 
-window.location.href =
+location.href =
 "teacher.html";
 
 break;
@@ -305,7 +279,7 @@ break;
 
 case "Head":
 
-window.location.href =
+location.href =
 "head.html";
 
 break;
@@ -314,7 +288,7 @@ break;
 
 case "Coordinator":
 
-window.location.href =
+location.href =
 "coordinator.html";
 
 break;
@@ -323,7 +297,7 @@ break;
 
 case "StageManager":
 
-window.location.href =
+location.href =
 "stage.html";
 
 break;
@@ -332,7 +306,7 @@ break;
 
 case "Viewer":
 
-window.location.href =
+location.href =
 "viewer.html";
 
 break;
@@ -347,14 +321,12 @@ alert(
 );
 
 
-}
-
-
 
 }
 
 
 
+}
 
 
 
@@ -362,9 +334,11 @@ alert(
 
 
 
-// ==========================
-// Logout
-// ==========================
+
+
+// =================================
+// LOGOUT
+// =================================
 
 
 export async function logout(){
@@ -373,17 +347,19 @@ export async function logout(){
 await signOut(auth);
 
 
+
 localStorage.removeItem(
 "user"
 );
 
 
 
-window.location.href =
+location.href =
 "index.html";
 
 
 }
+
 
 
 window.logout = logout;
@@ -396,28 +372,27 @@ window.logout = logout;
 
 
 
-// ==========================
-// Current User
-// ==========================
+// =================================
+// CURRENT USER
+// =================================
 
 
 export function currentUser(){
 
 
-const user =
+
+const data =
 localStorage.getItem(
 "user"
 );
 
 
 
-if(!user)
-
-return null;
-
-
-
-return JSON.parse(user);
+return data
+?
+JSON.parse(data)
+:
+null;
 
 
 }
@@ -430,9 +405,9 @@ return JSON.parse(user);
 
 
 
-// ==========================
-// Protect Pages
-// ==========================
+// =================================
+// PAGE PROTECTION
+// =================================
 
 
 export function protectPage(
@@ -452,7 +427,7 @@ auth,
 if(!firebaseUser){
 
 
-window.location.href =
+location.href =
 "index.html";
 
 
@@ -460,6 +435,7 @@ return;
 
 
 }
+
 
 
 
@@ -472,7 +448,7 @@ currentUser();
 if(!user){
 
 
-window.location.href =
+location.href =
 "index.html";
 
 
@@ -480,7 +456,6 @@ return;
 
 
 }
-
 
 
 
@@ -497,14 +472,13 @@ allowedRoles.length > 0
 ){
 
 
-
 alert(
-"ليس لديك صلاحية دخول هذه الصفحة"
+"ليس لديك صلاحية"
 );
 
 
 
-window.location.href =
+location.href =
 "index.html";
 
 
@@ -512,8 +486,8 @@ window.location.href =
 
 
 
-
 }
+
 
 );
 
@@ -529,9 +503,9 @@ window.location.href =
 
 
 
-// ==========================
-// Firebase Error Messages
-// ==========================
+// =================================
+// FIREBASE ERRORS
+// =================================
 
 
 function firebaseError(code){
@@ -549,7 +523,7 @@ return "البريد الإلكتروني غير صحيح";
 
 case "auth/user-not-found":
 
-return "المستخدم غير موجود";
+return "المستخدم غير موجود في Authentication";
 
 
 
@@ -561,18 +535,20 @@ return "كلمة المرور غير صحيحة";
 
 case "auth/invalid-credential":
 
-return "البريد أو كلمة المرور غير صحيحة";
+return "بيانات الدخول غير صحيحة";
 
 
 
 case "auth/too-many-requests":
 
-return "تم إيقاف المحاولة مؤقتًا بسبب كثرة المحاولات";
+return "تم إيقاف المحاولة مؤقتاً";
+
 
 
 default:
 
 return "حدث خطأ أثناء تسجيل الدخول";
+
 
 
 }

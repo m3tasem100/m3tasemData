@@ -1,10 +1,22 @@
 ////////////////////////////////////////////////////
-// USER MANAGEMENT
+// USERS MANAGEMENT
 ////////////////////////////////////////////////////
 
 
 import {
 
+protectPage,
+logout
+
+}
+
+from "./auth.js";
+
+
+
+import {
+
+auth,
 db
 
 }
@@ -15,9 +27,19 @@ from "./firebase-config.js";
 
 import {
 
+createUserWithEmailAndPassword
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+
+
+import {
+
 ref,
-get,
 set,
+get,
 update,
 remove,
 push
@@ -28,24 +50,78 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
-import {
-
-logout
-
-}
-
-from "./auth.js";
 
 
 
 
 
+protectPage([
+
+"Manager"
+
+]);
 
 
-const table =
 
-document.getElementById(
-"usersTable"
+
+
+
+
+logoutBtn.onclick=logout;
+
+
+
+
+
+
+
+window.backAdmin=function(){
+
+location.href="admin.html";
+
+};
+
+
+
+
+
+
+
+loadUsers();
+
+
+
+
+
+
+
+
+
+// =================================
+// CREATE USER
+// =================================
+
+
+createBtn.onclick=
+
+async function(){
+
+
+
+try{
+
+
+
+const userCredential =
+
+await createUserWithEmailAndPassword(
+
+auth,
+
+email.value,
+
+password.value
+
 );
 
 
@@ -54,11 +130,9 @@ document.getElementById(
 
 
 
-document
+const uid=
 
-.getElementById("logoutBtn")
-
-.onclick=logout;
+userCredential.user.uid;
 
 
 
@@ -66,11 +140,85 @@ document
 
 
 
+await set(
 
-window.goAdmin=function(){
+ref(
+
+db,
+
+"users/"+uid
+
+),
+
+{
 
 
-location.href="admin.html";
+name:name.value,
+
+
+email:email.value,
+
+
+role:role.value,
+
+
+active:true,
+
+
+createdAt:
+
+Date.now()
+
+
+}
+
+);
+
+
+
+
+
+
+
+alert(
+
+"تم إنشاء المستخدم"
+
+);
+
+
+
+
+
+
+name.value="";
+
+email.value="";
+
+password.value="";
+
+
+
+loadUsers();
+
+
+
+}
+
+catch(error){
+
+
+
+alert(
+
+error.message
+
+);
+
+
+
+}
+
 
 
 };
@@ -83,27 +231,21 @@ location.href="admin.html";
 
 
 
-// تحميل المستخدمين
-
-
-loadUsers();
-
-
-
-
-
-
+// =================================
+// LOAD USERS
+// =================================
 
 
 async function loadUsers(){
 
 
 
-table.innerHTML="";
+usersTable.innerHTML="";
 
 
 
-const snap =
+
+const snap=
 
 await get(
 
@@ -115,29 +257,9 @@ ref(db,"users")
 
 
 
-if(!snap.exists()){
-
-
-table.innerHTML=
-
-`
-
-<tr>
-
-<td colspan="5">
-
-لا يوجد مستخدمون
-
-</td>
-
-</tr>
-
-`;
+if(!snap.exists())
 
 return;
-
-
-}
 
 
 
@@ -146,6 +268,7 @@ return;
 
 
 Object.entries(
+
 snap.val()
 
 )
@@ -154,7 +277,9 @@ snap.val()
 
 
 
-table.innerHTML +=
+
+
+usersTable.innerHTML +=
 
 
 `
@@ -164,7 +289,7 @@ table.innerHTML +=
 
 <td>
 
-${u.name || ""}
+${u.name}
 
 </td>
 
@@ -172,7 +297,7 @@ ${u.name || ""}
 
 <td>
 
-${u.email || ""}
+${u.email}
 
 </td>
 
@@ -180,40 +305,81 @@ ${u.email || ""}
 
 <td>
 
-${u.role}
+<select onchange="changeRole('${uid}',this.value)">
+
+
+<option ${u.role=="Manager"?"selected":""}>
+Manager
+</option>
+
+
+<option ${u.role=="Teacher"?"selected":""}>
+Teacher
+</option>
+
+
+<option ${u.role=="Head"?"selected":""}>
+Head
+</option>
+
+
+<option ${u.role=="Coordinator"?"selected":""}>
+Coordinator
+</option>
+
+
+<option ${u.role=="StageManager"?"selected":""}>
+StageManager
+</option>
+
+
+<option ${u.role=="Viewer"?"selected":""}>
+Viewer
+</option>
+
+
+</select>
+
 
 </td>
 
 
 
-<td>
-
-${
-
-u.active
-
-?
-
-"فعال"
-
-:
-
-"معطل"
-
-}
-
-</td>
-
 
 
 <td>
+
 
 
 <button
 
-class="btn btn-warning"
+onclick="toggleUser('${uid}',${u.active})"
 
-onclick="editUser('${uid}')">
+class="btn btn-warning">
+
+
+${u.active?"تعطيل":"تفعيل"}
+
+
+</button>
+
+
+
+</td>
+
+
+
+
+
+<td>
+
+
+
+<button
+
+onclick="editUser('${uid}','${u.name}')"
+
+class="btn btn-primary">
 
 تعديل
 
@@ -221,27 +387,15 @@ onclick="editUser('${uid}')">
 
 
 
+
+
 <button
 
-class="btn btn-danger"
+onclick="deleteUser('${uid}')"
 
-onclick="deleteUser('${uid}')">
+class="btn btn-danger">
 
 حذف
-
-</button>
-
-
-
-
-<button
-
-class="btn btn-success"
-
-onclick="toggleUser('${uid}',${u.active})">
-
-
-تفعيل/تعطيل
 
 </button>
 
@@ -250,9 +404,7 @@ onclick="toggleUser('${uid}',${u.active})">
 </td>
 
 
-
 </tr>
-
 
 
 `;
@@ -273,65 +425,60 @@ onclick="toggleUser('${uid}',${u.active})">
 
 
 
-// إضافة مستخدم بيانات فقط
+// =================================
+// CHANGE ROLE
+// =================================
 
 
-document
+window.changeRole=
 
-.getElementById("addBtn")
-
-.onclick=
-
-async function(){
-
+async function(uid,newRole){
 
 
 
+await update(
 
-const id =
+ref(db,"users/"+uid),
 
-push(
+{
 
-ref(db,"users")
+role:newRole
 
-)
+}
 
-.key;
-
-
-
+);
 
 
-await set(
 
-ref(db,"users/"+id),
+};
+
+
+
+
+
+
+
+
+
+// =================================
+// ENABLE / DISABLE
+// =================================
+
+
+window.toggleUser=
+
+async function(uid,state){
+
+
+
+await update(
+
+ref(db,"users/"+uid),
 
 {
 
 
-name:
-
-name.value,
-
-
-email:
-
-email.value,
-
-
-role:
-
-role.value,
-
-
-active:
-
-active.value==="true",
-
-
-createdAt:
-
-Date.now()
+active:!state
 
 
 }
@@ -340,10 +487,66 @@ Date.now()
 
 
 
+loadUsers();
 
 
-alert(
-"تم إضافة المستخدم"
+};
+
+
+
+
+
+
+
+
+
+// =================================
+// EDIT NAME
+// =================================
+
+
+window.editUser=
+
+async function(uid,nameOld){
+
+
+
+const newName=
+
+prompt(
+
+"الاسم",
+
+nameOld
+
+);
+
+
+
+
+
+if(!newName)
+
+return;
+
+
+
+
+
+
+
+await update(
+
+ref(db,"users/"+uid),
+
+{
+
+
+name:newName
+
+
+}
+
 );
 
 
@@ -362,68 +565,9 @@ loadUsers();
 
 
 
-// تعديل
-
-
-window.editUser=
-
-async function(uid){
-
-
-
-const newRole =
-
-prompt(
-
-"الدور الجديد"
-
-);
-
-
-
-
-
-
-if(!newRole)
-
-return;
-
-
-
-
-
-
-await update(
-
-ref(db,"users/"+uid),
-
-{
-
-
-role:newRole
-
-
-}
-
-);
-
-
-
-loadUsers();
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// حذف
+// =================================
+// DELETE DATABASE RECORD
+// =================================
 
 
 window.deleteUser=
@@ -433,12 +577,12 @@ async function(uid){
 
 
 if(!confirm(
-"حذف المستخدم؟"
+
+"حذف المستخدم من النظام؟"
+
 ))
 
 return;
-
-
 
 
 
@@ -452,47 +596,9 @@ ref(db,"users/"+uid)
 
 
 
-loadUsers();
-
-
-}
-
-
-
-
-
-
-
-
-
-// تعطيل
-
-
-window.toggleUser=
-
-async function(uid,status){
-
-
-
-await update(
-
-ref(db,"users/"+uid),
-
-{
-
-
-active:
-
-!status
-
-
-}
-
-);
-
-
 
 loadUsers();
 
 
-}
+
+};

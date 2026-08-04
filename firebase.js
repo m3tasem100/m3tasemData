@@ -3,8 +3,9 @@
 // ===============================
 
 const firebaseConfig = {
-      apiKey: "AIzaSyBWpahddzrX3iffUThUQoo5edxGbi0J7yc",
+     apiKey: "AIzaSyBWpahddzrX3iffUThUQoo5edxGbi0J7yc",
   authDomain: "uca-pms-8f7b1.firebaseapp.com",
+  databaseURL: "https://uca-pms-8f7b1-default-rtdb.firebaseio.com",
   projectId: "uca-pms-8f7b1",
   storageBucket: "uca-pms-8f7b1.firebasestorage.app",
   messagingSenderId: "559264692532",

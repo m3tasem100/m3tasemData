@@ -2,23 +2,500 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
-<title>Viewer</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>
+UCA School Management System - Viewer
+</title>
+
+
+<style>
+
+*{
+box-sizing:border-box;
+font-family:Tahoma,Arial;
+}
+
+
+body{
+
+margin:0;
+
+background:#f1f5f9;
+
+}
+
+
+
+.header{
+
+background:#1e3a8a;
+
+color:white;
+
+padding:20px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+
+
+.header h1{
+
+margin:0;
+
+font-size:22px;
+
+}
+
+
+
+button{
+
+background:#dc2626;
+
+color:white;
+
+border:0;
+
+padding:10px 20px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+
+
+.container{
+
+padding:25px;
+
+}
+
+
+
+.card{
+
+background:white;
+
+padding:20px;
+
+border-radius:15px;
+
+margin-bottom:20px;
+
+box-shadow:0 5px 20px rgba(0,0,0,.1);
+
+}
+
+
+
+.card h2{
+
+color:#1e3a8a;
+
+}
+
+
+
+.info{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+gap:15px;
+
+}
+
+
+
+.box{
+
+background:#eff6ff;
+
+padding:15px;
+
+border-radius:10px;
+
+}
+
+
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+background:white;
+
+}
+
+
+
+th{
+
+background:#1e3a8a;
+
+color:white;
+
+padding:12px;
+
+}
+
+
+
+td{
+
+padding:12px;
+
+border-bottom:1px solid #ddd;
+
+text-align:center;
+
+}
+
+
+
+.empty{
+
+text-align:center;
+
+padding:30px;
+
+color:#64748b;
+
+}
+
+
+</style>
+
+
 </head>
+
+
 
 <body>
 
+
+
+<div class="header">
+
+
 <h1>
-مرحباً بك في صفحة العرض
+🏫 UCA School Management System
 </h1>
+
+
+<button id="logoutBtn">
+تسجيل الخروج
+</button>
+
+
+</div>
+
+
+
+
+
+<div class="container">
+
+
+
+<div class="card">
+
+
+<h2>
+بيانات المستخدم
+</h2>
+
+
+
+<div class="info">
+
+
+<div class="box">
+
+<strong>
+الاسم:
+</strong>
+
+<span id="name">
+</span>
+
+</div>
+
+
+
+<div class="box">
+
+<strong>
+البريد:
+</strong>
+
+<span id="email">
+</span>
+
+</div>
+
+
+
+<div class="box">
+
+<strong>
+الدور:
+</strong>
+
+<span id="role">
+</span>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+الخطط الدراسية
+</h2>
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+الصف
+</th>
+
+<th>
+المادة
+</th>
+
+<th>
+الفصل
+</th>
+
+<th>
+الحالة
+</th>
+
+
+</tr>
+
+</thead>
+
+
+<tbody id="plans">
+
+
+<tr>
+
+<td colspan="4">
+
+<div class="empty">
+
+لا توجد بيانات حالياً
+
+</div>
+
+</td>
+
+</tr>
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+التقارير
+</h2>
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+التقرير
+</th>
+
+<th>
+التاريخ
+</th>
+
+<th>
+الحالة
+</th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+
+<tr>
+
+<td>
+التقارير العامة
+</td>
+
+<td>
+-
+</td>
+
+<td>
+غير متوفر
+</td>
+
+
+</tr>
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
 
 <script type="module">
 
-import { protectPage } from "./auth.js";
 
-protectPage(["Viewer"]);
+import {
+
+protectPage,
+
+currentUser,
+
+logout
+
+}
+
+from "./auth.js";
+
+
+
+
+// حماية الصفحة
+
+
+protectPage([
+
+"Viewer",
+
+"Manager"
+
+]);
+
+
+
+
+
+const user =
+currentUser();
+
+
+
+if(user){
+
+
+document.getElementById("name")
+.innerHTML =
+user.name || "-";
+
+
+document.getElementById("email")
+.innerHTML =
+user.email || "-";
+
+
+document.getElementById("role")
+.innerHTML =
+user.role || "-";
+
+
+}
+
+
+
+
+
+document
+.getElementById("logoutBtn")
+.onclick=()=>{
+
+
+logout();
+
+
+};
+
+
+
 
 </script>
+
 
 </body>
 

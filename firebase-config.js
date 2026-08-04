@@ -5,35 +5,25 @@ import { initializeApp }
 from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 
 
-import {
-
-getAuth
-
+import { 
+getAuth 
 }
-
 from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
 
-import {
-
-getDatabase
-
+import { 
+getDatabase 
 }
-
 from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 
 
-// =====================================
-// Firebase Configuration
-// =====================================
-
 
 const firebaseConfig = {
 
 
-apiKey: "AIzaSyBWpahddzrX3iffUThUQoo5edxGbi0J7yc",
+ apiKey: "AIzaSyBWpahddzrX3iffUThUQoo5edxGbi0J7yc",
   authDomain: "uca-pms-8f7b1.firebaseapp.com",
   databaseURL: "https://uca-pms-8f7b1-default-rtdb.firebaseio.com",
   projectId: "uca-pms-8f7b1",
@@ -48,33 +38,20 @@ apiKey: "AIzaSyBWpahddzrX3iffUThUQoo5edxGbi0J7yc",
 
 
 
-// =====================================
-// Initialize Firebase
-// =====================================
-
-
-const app = initializeApp(firebaseConfig);
 
 
 
-const auth = getAuth(app);
-
-
-
-const db = getDatabase(app);
+export const app = 
+initializeApp(firebaseConfig);
 
 
 
 
-// تصدير الاتصال لاستخدامه في كل الملفات
+export const auth =
+getAuth(app);
 
 
-export {
 
-app,
 
-auth,
-
-db
-
-};
+export const db =
+getDatabase(app);

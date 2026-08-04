@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+ربط الخطط بالمعلمين
+</title>
+
+
+<link rel="stylesheet" href="style.css">
+
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+<aside class="sidebar">
+
+<h2>
+🏫 UCA
+</h2>
+
+
+<button onclick="backAdmin()">
+⬅ المدير
+</button>
+
+
+<button id="logoutBtn">
+🚪 خروج
+</button>
+
+
+</aside>
+
+
+
+
+
+<main class="main">
+
+
+<header class="header">
+
+<h2>
+ربط الخطط بالمعلمين
+</h2>
+
+
+</header>
+
+
+
+
+
+
+
+<section class="content">
+
+
+
+<div class="card">
+
+
+<select id="year">
+
+<option value="2025-2026">
+2025-2026
+</option>
+
+</select>
+
+
+
+<select id="semester">
+
+<option value="semester1">
+الفصل الأول
+</option>
+
+<option value="semester2">
+الفصل الثاني
+</option>
+
+</select>
+
+
+
+
+
+<select id="grade">
+
+<option>
+الصف
+</option>
+
+</select>
+
+
+
+
+
+
+<select id="subject">
+
+<option>
+المادة
+</option>
+
+</select>
+
+
+
+
+<button id="searchBtn"
+
+class="btn btn-primary">
+
+بحث عن المعلمين
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h3>
+المعلمون المطابقون
+
+</h3>
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+المعلم
+</th>
+
+
+<th>
+المادة
+</th>
+
+
+<th>
+الصف
+</th>
+
+
+<th>
+ربط
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="teachersTable">
+
+</tbody>
+
+
+
+</table>
+
+
+</div>
+
+
+
+
+</section>
+
+
+
+</main>
+
+
+
+</div>
+
+
+
+
+<script type="module" src="plan_assignment.js"></script>
+
+
+</body>
+
+
+</html>
